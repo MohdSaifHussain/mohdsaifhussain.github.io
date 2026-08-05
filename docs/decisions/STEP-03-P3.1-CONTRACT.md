@@ -114,6 +114,104 @@ Per your ruling: verified 2026-08-05 by owner, named exceptions listed, supersed
 
 ## 8. Honest limits entering this phase
 
-- The site cannot report C-01/C-02/C-03 at all until P3.5 has measurement tooling. Byte counts recorded in P3.1 are baselines, not claims.
-- C-17 cannot close on builder action alone; it depends on a director-only settings change.
-- The D-01 fix governs commits from this point forward on this machine. It does not alter authorship already published in other repos; C-33 governs this site only.
+*Recorded at contract time, before the work. Carried forward and updated in §9's Honest limits, which supersede these where they differ.*
+
+- The site cannot report C-01/C-02/C-03 at all until P3.5 has measurement tooling. Byte counts recorded in P3.1 are baselines, not claims. **Still true.**
+- C-17 cannot close on builder action alone; it depends on a director-only settings change. *Narrowed: the setting was made, and C-17 now waits only on the director's confirmation — the evidence (301 redirect) has been obtained.*
+- The D-01 fix governs commits from this point forward on this machine. It does not alter authorship already published in other repos; C-33 governs this site only. **Still true.**
+
+## 9. Outcome
+
+**Status:** Built, deployed and self-verified. **Awaiting the director's phase-close verification** (§10) before P3.1 is closed.
+
+**Shipped:** D1–D7 plus **D9, named as an added deliverable** (test suite, approved at the review stop). 9 commits, live at <https://mohdsaifhussain.github.io/>. 28 tests green locally and in CI. Font subsets 129,380 B total; measured home first view 110,804 B uncompressed against a 500,000 B budget.
+
+### Exit checklist, evidenced
+
+- [x] `python build.py` exits 0 and writes all five pages — *5 pages, 12,494 B of HTML; all five routes return 200 live.*
+- [x] Negative path: distinct reason code per failure mode — *12 reason codes, each demonstrated refusing: COLOR_LITERAL, TOKEN_UNKNOWN, INLINE_STYLE, INLINE_SCRIPT, MARK_DRIFT ×2, MARK_SOURCE, ASSET_MISSING, DATA_MISSING, DATA_MALFORMED, TEMPLATE_MISSING, plus the glyph gate.*
+- [x] Positive control: clean fixtures exit 0 — *7 positive controls; the gate accepts real input rather than refusing everything.*
+- [x] Determinism — *hash `9ba23fb8167a4e2a` identical across consecutive local runs **and identical in CI on Linux**. Cross-platform, not merely same-platform; see reading R-04.*
+- [x] Glyph-coverage report — *all 13 required codepoints present in the face that needs them; `✗` U+2717 and `●` U+25CF absent from all five faces and resolved in markup per D-14.*
+- [x] No third-party origin in output — *asserted as a passing test (`test_no_third_party_origin_in_output`); zero third-party resources ship.*
+- [x] No inline script or style attribute — *gated at build, asserted in tests, verified on live HTML.*
+- [x] No colour literal outside `tokens.css` — *gated across `site.css` and every template including `_macros`.*
+- [x] `git log -1 --format='%ae'` shows the noreply address on the first commit — *all 9 commits carry `263689115+MohdSaifHussain@users.noreply.github.com` and nothing else.*
+- [x] `_site` byte count recorded as a C-03 baseline — *110,804 B uncompressed home first view; recorded, **not** claimed as C-03 MET, which needs Lighthouse at P3.5.*
+- [x] `DECISIONS.md` and `DEFECTS.md` exist with the reading-pass defects — *18 defects and 5 review-stop findings.*
+- [ ] **C-17 — evidence obtained, awaiting the director's confirmation.** *`http://mohdsaifhussain.github.io/` returns `HTTP/1.1 301 Moved Permanently` → `https://`; the Pages API reports `https_enforced: true`. Stays unticked until the director re-confirms the checkbox per their standing instruction.*
+
+### Defects found by running it, not by inspection
+
+1. **D-13** — cp1252 console: every tool would have crashed printing its own evidence. Found by running the glyph scan.
+2. **D-14** — `✗` and `●` absent from all five faces. Found by a cmap probe. The site's motif would have silently fallen back to a third typeface, differently on every OS, with all tests green. No test would have caught it.
+3. **D-16** — the coverage matrix printed five indistinguishable column headers. Evidence the director cannot read is not evidence.
+4. **D-18** — the font tests read gitignored sources, so the suite's result *and its count* were environment-dependent, while asserting a property of the upstream font rather than the shipped subset. **The suite was green for the wrong reason.** Found by the first CI run; independently identified by the director from the same log.
+
+### Readings and deviations, recorded
+
+- **R-01** — Four type sizes used in the committed design (22/1.2, 30/1, 30/1.3, 26/1.15) have no entry in handoff §1. Tokenised in a separately marked "derived" block with provenance, rather than inlined silently. 26/1.15 is authoritative via handoff §4.
+- **R-02** — Contract 3.2 read as governing colour plus the handoff §1 type and spacing scale. Component-intrinsic `em` values are permitted, but the two mark values are tokenised anyway because D-14's ruling requires a single shared source.
+- **R-03** — The colophon sentence lives in `build.py`, not a data file: charter §5 fixes it verbatim as site chrome, and C-34 governs portfolio content.
+- **R-04** — At the review stop I stated determinism as a same-inputs property and privately scoped it to one platform. `.gitattributes` normalisation made it hold across Windows and Linux, evidenced by an identical hash in CI. **The claim widened only after the evidence did.**
+- **Deviation (D-02)** — version anchors and per-count evidence links change handoff §3 and §4. Charter-mandated (C-27, C-35), director-ruled, logged in DECISIONS 3.1.3b. Implemented P3.2.
+
+### Obligations
+
+**Discharged:** O-5a (Pages Source = Actions), O-5b (Enforce HTTPS ticked; *C-17 closes on the director's confirmation*), O-7 (`fonttools` 4.63.0 + `Brotli` 1.2.0 pinned in `requirements.txt`).
+
+**Carried into P3.2:** O-1 TS-Sentry metrics · O-2 certifications entries · **O-3 C-27 re-verification of D-02-rewritten fields, owned by the P3.2 review stop** · O-6 responsive derivation approval · **O-9 (new): P3.2 must sequence an early page carrying both marks — the Projects page does this naturally via verified ✓ rows and TS-Sentry's pending ✗ — and the P3.2 outcome must record `MARK_DRIFT`'s first coverage of real dual-mark output** (director's condition at the review stop).
+
+**Carried into P3.5:** O-8 `font-display: swap` measured against Lighthouse.
+
+### Honest limits
+
+1. `MARK_DRIFT` **cannot fire on real P3.1 output**. Every page carries exactly one mark, and one mark cannot disagree with itself; `mark_cross` renders nowhere yet. Proven against poisoned input only. Accepted by the director for P3.1 close under obligation O-9.
+2. C-01, C-02 and C-03 are **not claimed**. The 110,804 B figure is a recorded baseline measured with curl without content-encoding, so it is a conservative worst case; Pages gzips HTML and CSS. C-03 needs Lighthouse at P3.5.
+3. C-27 is **not MET**. Owner verification of 2026-08-05 covers the fields as they stood then; fields rewritten under D-02 are pending re-verification (O-3).
+4. The 16-character content hash is a change-detector for human comparison, **not** a security control, and must never be described as one.
+5. The D-01/Amendment-2 fix governs commits from this point forward. It does not alter authorship already published in other repos; C-33 governs this site only.
+6. The test count (28) measures **gate behaviours covered**, one negative and one positive control per behaviour. It is not comparable to a line- or branch-coverage figure and publishes on /audit only with that statement attached.
+
+## 10. Phase close — the director's ritual
+
+Run these personally. Every expected result is stated in advance.
+
+```powershell
+# 1. Footprint. Expected: 9 commits, all authored by the noreply address only.
+git log --oneline | Measure-Object -Line
+git log --format='%ae' | Sort-Object -Unique
+
+# 2. Build, gates, tests. Expected: exit 0, 0, 0 and "28 passed".
+python build.py;            "exit=$LASTEXITCODE"
+python build.py --selftest; "exit=$LASTEXITCODE"
+python -m pytest;           "exit=$LASTEXITCODE"
+
+# 3. NEGATIVE PATH — the build must REFUSE and write nothing.
+#    Expected: exit 1, REASON=COLOR_LITERAL, and _site NOT rewritten.
+Copy-Item static\css\site.css static\css\site.css.bak
+Add-Content static\css\site.css "/* poison */ .x { color: #ff0000; }"
+python build.py;            "exit=$LASTEXITCODE  (expect 1)"
+Move-Item -Force static\css\site.css.bak static\css\site.css
+python build.py;            "exit=$LASTEXITCODE  (expect 0)"
+
+# 4. Glyph coverage — read the matrix by eye.
+python tools\subset_fonts.py --report
+
+# 5. Live site. Expected: 301 to https, then the five pages.
+curl.exe -s -o NUL -D - http://mohdsaifhussain.github.io/
+start https://mohdsaifhussain.github.io/
+```
+
+| Scenario | Expected | Observed |
+|---|---|---|
+| `python build.py` | exit 0, five pages, hash `9ba23fb8167a4e2a` | |
+| `python build.py --selftest` | exit 0; 12 negative + 7 positive controls all PASS | |
+| `python -m pytest` | exit 0, `28 passed` | |
+| **Poisoned `site.css`** | **exit 1, `REASON=COLOR_LITERAL`, `_site/` untouched** | |
+| Restored `site.css` | exit 0, hash back to `9ba23fb8167a4e2a` | |
+| `http://` request | `301 Moved Permanently` → `https://` | |
+
+**The row worth keeping in view** is the poisoned one. It is the only step that demonstrates the build refusing on a real artifact rather than on a fixture — and after D-18, "the suite is green" has already been shown once in this phase to mean less than it looks.
+
+**Read by eye at step 5:** the nav marks the current page with the accent underline and a ✓; the footer reads `VISITS —` and not a number; the colophon links to /audit; the identity line renders in the serif with the amber clause. If the ✓ looks like a system-font glyph rather than a drawn stroke, D-14's fix has regressed.
