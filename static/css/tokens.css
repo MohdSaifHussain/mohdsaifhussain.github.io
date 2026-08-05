@@ -1,0 +1,117 @@
+/* ============================================================================
+   tokens.css — the single source of truth for every colour, type step and
+   spacing value on this site.  P3.1 / D3.
+
+   AUTHORITY: docs/decisions/STEP-02-HANDOFF.md §1.  Where reference/design.html
+   and the §1 table disagree, §1 wins — BUILD_KICKOFF states the handoff wins
+   every visual question, and design.html is reference only, never shipped code.
+
+   Contract requirement 3.2: no colour, type-step or spacing literal appears
+   anywhere outside this file.  Templates and site.css use var() only.
+   ========================================================================= */
+
+:root {
+
+  /* --- Colour (handoff §1, verbatim; contrast measured vs --bg) ----------- */
+  --bg:          #0d0d0c;              /* page background                    */
+  --ink:         #f2f0eb;              /* display text, strong rules 15.9:1  */
+  --body:        #cfccc3;              /* body / receipt text        10.6:1  */
+  --bright:      #e8e5dd;              /* evidence text              13.6:1  */
+  --dim:         #8f8c83;              /* metadata, labels            5.1:1  */
+  --accent:      #e8b64c;              /* THE one accent              9.3:1  */
+
+  /* Ratios above are the handoff's stated values. They are RE-DERIVED from
+     these hex values by tools/check_contrast.py at P3.4 close and reported
+     from that computation, never quoted from the table. (doctrine rule 13) */
+
+  --rule-strong: var(--ink);                    /* 2px — opens a section     */
+  --rule-mid:    rgba(242, 240, 235, .4);       /* 1px — separates rows      */
+  --rule-faint:  rgba(242, 240, 235, .25);      /* 1px — dense /audit rows   */
+
+  --rule-strong-w: 2px;
+  --rule-mid-w:    1px;
+  --rule-faint-w:  1px;
+
+  /* --- Families (handoff §1: two faces, self-hosted, no third party) ------ */
+  --font-serif: 'Instrument Serif', Georgia, 'Times New Roman', serif;
+  --font-mono:  'IBM Plex Mono', ui-monospace, 'Cascadia Mono', Consolas, monospace;
+
+  /* --- Type steps (handoff §1 table) -------------------------------------
+     Held as full `font` shorthand so a step is applied as one declaration:
+         font: var(--type-display-xl);
+     letter-spacing cannot ride in the shorthand, so it is tokenised beside. */
+
+  --type-display-xl:   400 62px/1.14 var(--font-serif);  /* home identity    */
+  --type-display-lg:   400 54px/1    var(--font-serif);  /* page h1          */
+  --type-display-md:   400 40px/1.05 var(--font-serif);  /* project name     */
+  --type-display-sm:   400 36px/1.05 var(--font-serif);  /* row title        */
+  --type-display-xs:   400 24px/1.15 var(--font-serif);  /* row title, small */
+  --type-numeral:      400 44px/1    var(--font-serif);  /* entry no. "01"   */
+  --type-wordmark-nav: 400 17px/1    var(--font-serif);
+  --type-wordmark-foot:400 13px/1    var(--font-serif);
+  --type-quote:        italic 400 17px/1.5 var(--font-serif);
+  --type-quote-sm:     italic 400 15px/1.5 var(--font-serif);
+  --type-mono-body:    400 13px/1.6  var(--font-mono);
+  --type-mono-body-sm: 400 12.5px/1.6 var(--font-mono);  /* floor, see D-12  */
+  --type-mono-meta:    400 11.5px/1.6 var(--font-mono);
+  --type-mono-meta-sm: 400 11px/1.6  var(--font-mono);
+  --type-mono-label:   600 10px/1    var(--font-mono);
+  --type-mono-link:    600 11px/1    var(--font-mono);
+
+  --ls-display-xl: -0.005em;
+  --ls-wordmark:    0.22em;
+  --ls-mono-label:  0.12em;
+
+  /* Handoff §1 floors. Nothing renders below these. */
+  --type-floor-label: 10px;
+  --type-floor-meta:  11px;
+  --type-floor-body:  12.5px;
+
+  /* --- Derived tokens ----------------------------------------------------
+     These four sizes appear in the COMMITTED design (turn 2a / 3a-3d) but have
+     no entry in the §1 table. They are recorded here with their provenance
+     rather than silently inlined, so the review stop can rule on each.
+     Flagged as reading R-01 in the phase outcome.                          */
+
+  --type-numeral-sm: 400 22px/1.2  var(--font-serif);  /* experience row nos.
+                                        design.html:172,182,193 — a second
+                                        numeral size; §1 lists only 44/1     */
+  --type-empty-numeral: 400 30px/1 var(--font-serif);  /* cert "00 / 00"
+                                        design.html:266                      */
+  --type-empty-quote: italic 400 30px/1.3 var(--font-serif); /* cert empty
+                                        state line, design.html:267          */
+  --type-tile-name:  400 26px/1.15 var(--font-serif);  /* badge tile course
+                                        name — specified in handoff §4, not
+                                        §1, so authoritative but out of table */
+
+  /* --- Spacing / layout (handoff §1) ------------------------------------- */
+  --gutter:            48px;
+  --pad-section-top:   56px;
+  --pad-section-top-lg:72px;
+  --pad-row:           26px;
+  --pad-row-sm:        24px;
+  --gap-grid:          28px;
+  --gap-table:         24px;
+  --pad-card:          34px 38px;
+
+  /* --- Component parameters ---------------------------------------------
+     Not handoff §1 tokens; intrinsic to components. The two mark values live
+     here because the D-14 ruling requires ONE definition the pair shares — the
+     SVG stroke-weight is the matching single source in templates/_macros
+     (MARK_STROKE). Changing a mark's size means changing it here, for both. */
+  --mark-size:   0.72em;
+  --mark-nudge: -0.04em;   /* optical baseline correction for both marks */
+  --dot-size:    0.5em;
+
+  /* --- Motion (handoff §5 — the complete list; nothing else animates) ----- */
+  --motion-reveal: 200ms;   /* A3.1 evidence layer, opacity only             */
+  --ease-reveal:   ease;
+}
+
+/* A3.1's transition is the ONLY timed motion on the site. C-10 adopts WCAG
+   AAA 2.3.3 as a hard rule: with reduced motion requested the transition is
+   removed and every state stays reachable and coherent. Implemented in P3.3;
+   the token is zeroed here so the kill switch has a single lever. */
+@media (prefers-reduced-motion: reduce) {
+  :root { --motion-reveal: 0ms; }
+}
