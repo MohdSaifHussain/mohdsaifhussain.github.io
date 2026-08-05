@@ -102,6 +102,13 @@ jobs:
           python -m pip install -r requirements-audit.txt
           python -m playwright install --with-deps chromium
 
+      # Selftest FIRST: a zero-violation audit is the result that most deserves
+      # suspicion, because "axe found nothing" and "axe never ran" print the
+      # same. This proves both detectors can fail before the real run claims
+      # they did not.
+      - name: Prove the browser audit can fail
+        run: python tools/browser_audit.py --root _site --selftest
+
       - name: C-06 / C-18 — axe-core and CSP violations, in a real browser
         run: python tools/browser_audit.py --root _site
 
