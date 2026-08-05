@@ -253,6 +253,7 @@ def load_snapshot() -> dict:
 def asset_sources() -> list[tuple[pathlib.Path, pathlib.Path]]:
     return [
         (STATIC / "css", OUT / "css"),
+        (STATIC / "js", OUT / "js"),
         (ASSETS / "fonts", OUT / "assets" / "fonts"),
         (ASSETS / "resume", OUT / "assets" / "resume"),
         (ASSETS / "img", OUT / "assets" / "img"),

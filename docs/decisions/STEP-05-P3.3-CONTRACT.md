@@ -91,7 +91,19 @@ The resume-baseline figures **stand as shipped**. They are true as stated, each 
 
 A test asserts both directions. Today it passes on the first. The day the last entry is upgraded and the sentence is left behind, it fails — so the sentence cannot quietly outlive its own truth while nobody is looking at it. This guards a change that may be months away, which is the only time such a guard is worth writing.
 
-## 7. Numbered questions — for the director before building D4
+## 7. Numbered questions — RULED 2026-08-06, contract APPROVED
+
+**Q1 — RULED: WHERE AM I.** The director accepted the correction and named the imprecision in their own first ruling: they had classified by *mechanism* (instant state), but **C-12 classifies by declared answer**, and WHAT CAN I DO on a control-free row would advertise a false affordance. The receipts state is a reading-position aid.
+
+**Q2 — RULED: `:focus-within` plus `:hover`, no `tabindex` on non-interactive rows.** Dead tab stops are the worse trade against C-07 and C-08. The honest limit — *the focus half is inert until a receipts row contains a focusable element* — is declared on /audit as stated, not left to read as working.
+
+**Q3 — RULED: it becomes A3.4, its own entry.** A consequence of Q1: an animation answering a different question is a different animation. The shipped list **updates to four**; `check_animations.py` asserts the **declared** list rather than a hardcoded three; recorded as an owner-directed addition to handoff §5 with this rationale.
+
+> **"Nothing else ships" is preserved as: the list changes only by recorded ruling, never silently.**
+
+That sentence is the actual guarantee, and it is stronger than a frozen number. A frozen count can only be honoured by refusing good changes or by breaking it quietly; a list that moves only under a recorded ruling can absorb a genuine improvement while still making an undeclared animation a defect. `check_animations.py` therefore compares what ships against `data/audit-spec.json`'s declared list — so adding an animation without declaring it fails the build, and declaring one without shipping it fails too.
+
+## 7a. Original numbered questions, as put
 
 The receipts row state is a good idea and I am not arguing against it. Two things about it are genuinely ambiguous, and both change what gets built.
 

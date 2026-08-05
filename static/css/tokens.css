@@ -28,6 +28,12 @@
   --rule-mid:    rgba(242, 240, 235, .4);       /* 1px — separates rows      */
   --rule-faint:  rgba(242, 240, 235, .25);      /* 1px — dense /audit rows   */
 
+  /* A3.4's reading tint. Same ink at very low alpha as the rule system, so the
+     row lifts without introducing a second surface colour. Background only —
+     text contrast is handled by stepping body -> bright, which keeps every
+     ratio above the C-09 floor rather than relying on the tint. */
+  --row-tint: rgba(242, 240, 235, .045);
+
   --rule-strong-w: 2px;
   --rule-mid-w:    1px;
   --rule-faint-w:  1px;

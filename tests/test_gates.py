@@ -329,6 +329,51 @@ def test_marks_never_claim_unverified(site):
             f"{name} has pending metrics but renders a verification check")
 
 
+def test_metrics_basis_agrees_with_entries():
+    """STEP-05 §6, as a passing test (doctrine rule 8).
+
+    Owner-measured counts for the remaining three projects are DEFERRED. While
+    any entry is resume-baseline the basis sentence must be present; once none
+    is, it must be gone. Today this passes on the first branch. The day the last
+    entry is upgraded and the sentence is left behind, it fails — so a sentence
+    describing a basis nobody uses cannot quietly outlive its own truth.
+    """
+    data = json.loads((ROOT / "data/projects.json").read_text(encoding="utf-8"))
+    basis = data["_metrics_basis"]
+    owner_measured = {"ts-sentry"}
+    any_resume_baseline = any(p["id"] not in owner_measured and p.get("verified_metrics")
+                              for p in data["projects"])
+    mentions = "resume-stated baselines" in basis
+    assert mentions == any_resume_baseline, (
+        "_metrics_basis and the entries disagree about which bases are in use: "
+        f"sentence present={mentions}, resume-baseline entries exist={any_resume_baseline}")
+
+
+def test_animation_list_matches_shipped(site):
+    """C-12: the declared list and what ships agree, in both directions."""
+    import subprocess
+    r = subprocess.run([sys.executable, "tools/check_animations.py"],
+                       cwd=ROOT, capture_output=True, text=True)
+    assert r.returncode == 0, r.stdout + r.stderr
+
+
+def test_evidence_layer_never_covers_the_links_column(site):
+    """Requirement 3.3 — the defect the committed design was rebuilt to fix.
+
+    Structural proof: the layer is pointer-events:none AND is bounded to end
+    before the links column. Observed behaviour is the director's at the stop;
+    this asserts the two properties that make it possible.
+    """
+    css = (ROOT / "static/css/site.css").read_text(encoding="utf-8")
+    block = css.split(".evidence {", 1)[1].split("}", 1)[0]
+    assert "pointer-events: none" in block
+    assert "right: calc(220px" in block, "layer must stop short of the 220px links column"
+    assert "left: calc(120px" in block, "layer must start after the 120px numeral column"
+
+    html = (site / "index.html").read_text(encoding="utf-8")
+    assert 'class="evidence" aria-hidden="true"' in html
+
+
 def test_every_page_has_exactly_one_h1(site):
     """C-24."""
     for page in sorted(site.rglob("*.html")):

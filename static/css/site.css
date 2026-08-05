@@ -398,3 +398,63 @@ footer { padding: var(--pad-row) var(--gutter) 38px; border-top: var(--rule-mid-
    the page would look correct while still being too wide. If the director sees
    a horizontal scrollbar at 375px, that is a real defect and must read as one. */
 .mono-body, .quote, .quote-sm, .receipt, .metric, .audit-row { overflow-wrap: anywhere; }
+
+/* ===========================================================================
+   A3.1 — Home flagship row evidence reveal.  P3.3 / D1.
+   Opacity only. 200ms via --motion-reveal, which the reduced-motion block in
+   tokens.css sets to 0ms — one lever, no second definition.
+   ======================================================================== */
+
+.ledger-row { position: relative; }
+
+.evidence {
+  position: absolute;
+  top: 2px;
+  bottom: 2px;
+  /* REQUIREMENT 3.3, the whole point of this component: the layer is bounded
+     to the name + problem columns. 148px clears the 120px numeral plus its
+     28px gap; 248px clears the 220px links column plus its gap. The links
+     column is therefore NEVER covered, in any state. */
+  left: calc(120px + var(--gap-grid));
+  right: calc(220px + var(--gap-grid));
+  background: var(--bg);
+  pointer-events: none;          /* belt to the bounds' braces */
+  opacity: 0;
+  transition: opacity var(--motion-reveal) var(--ease-reveal);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 7px;
+}
+.ledger-row.is-revealed .evidence { opacity: 1; }
+
+.evidence-list { display: flex; flex-wrap: wrap; gap: 6px 28px; }
+
+/* Desktop shows the first three metrics in the row itself; the layer carries
+   the full set. Below 900px the layer is gone and every metric shows inline. */
+.ledger-meta { flex-wrap: wrap; gap: 4px 10px; }
+.ledger-meta .lm:nth-of-type(n+4) { display: none; }
+
+@media (max-width: 900px) {
+  /* No pointer, no reveal — so nothing may live only inside it. */
+  .evidence { display: none; }
+  .ledger-meta .lm:nth-of-type(n+4) { display: inline; }
+}
+
+/* ===========================================================================
+   A3.4 — Experience receipts row reading state.  P3.3 / D4.
+   Owner-directed addition to the handoff §5 list. Declared WHERE AM I: it is a
+   reading-position aid, not an affordance — these rows carry no control.
+   Instant, no transition. :hover and :focus-within are IDENTICAL, and no
+   tabindex is added, so no dead tab stop is created (Q2 ruling).
+   Background and colour only: no geometry changes, so no layout shift.
+   ======================================================================== */
+
+.xp-row:hover,
+.xp-row:focus-within {
+  background: var(--row-tint);
+}
+.xp-row:hover .receipt,
+.xp-row:focus-within .receipt {
+  color: var(--bright);
+}

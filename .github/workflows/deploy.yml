@@ -69,6 +69,11 @@ jobs:
           python tools/check_content.py --selftest
           python tools/check_content.py
 
+      - name: C-12 / C-15 — shipped motion matches the declared list
+        run: |
+          python tools/check_animations.py --selftest
+          python tools/check_animations.py
+
       - name: Determinism — a second build must produce the same tree hash
         run: |
           FIRST=$(python build.py | grep 'content hash')

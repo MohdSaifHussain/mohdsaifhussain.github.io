@@ -5,6 +5,10 @@
 <script type="application/ld+json">{{ person_jsonld }}</script>
 {% endblock %}
 
+{% block scripts %}
+<script src="/js/evidence.js" defer></script>
+{% endblock %}
+
 {% block content %}
 
 {# ---- 01 / 04 IDENTITY (handoff §3, turn 2a) ---------------------------- #}
@@ -32,16 +36,19 @@
   </div>
 
   {% for p in flagship %}
-  <article class="ledger-row">
+  <article class="ledger-row" data-evidence-row>
     <span class="numeral">{{ '%02d' % loop.index }}</span>
 
     <div class="ledger-name">
       <span class="display-sm">{{ p.name }}</span>
+      {# Every metric renders here. Desktop shows the first three by CSS; narrow
+         viewports show all of them, because the A3.1 layer cannot open without
+         a pointer and nothing may be reachable by hover alone. #}
       <span class="ledger-meta">
         {%- if p.get('metrics_pending') -%}
         {{ m.mark_cross() }}<span class="status--pending">{{ p.get('metrics_pending') | upper }}</span>
         {%- else -%}
-        {{ m.mark_check() }}<span class="status--verified">{{ p.verified_metrics[:3] | join(' · ') | upper }}</span>
+        {{ m.mark_check() }}{% for metric in p.verified_metrics %}<span class="lm status--verified">{{ metric | upper }}</span>{% endfor %}
         {%- endif -%}
       </span>
     </div>
@@ -53,6 +60,19 @@
       <a class="mono-link" href="{{ url }}" rel="noopener noreferrer">{{ label | replace('_', ' ') | upper }} ↗</a>
       {% endfor %}
       {{ m.anchor(p._anchor, 'AS OF') }}
+    </div>
+
+    {# A3.1. pointer-events:none, bounded in CSS to the name + problem columns
+       only — the links column above is NEVER covered in any state
+       (requirement 3.3). aria-hidden: it duplicates content already present in
+       the row and on /projects/, so it is a reveal, not a source. #}
+    <div class="evidence" aria-hidden="true">
+      <span class="mono-label accent">VERIFIED EVIDENCE — NO. {{ '%02d' % loop.index }}</span>
+      <div class="evidence-list">
+        {% for metric in p.verified_metrics %}
+        <span class="metric">{{ m.mark_check() }}{{ metric }}</span>
+        {% endfor %}
+      </div>
     </div>
   </article>
   {% endfor %}

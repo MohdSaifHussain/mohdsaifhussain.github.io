@@ -81,5 +81,7 @@
   </div>
   <p class="colophon">{{ colophon }} <a class="mono-link" href="/audit/">&rarr; /AUDIT</a></p>
 </footer>
+{# External scripts only (C-18). `defer` so neither blocks rendering (C-04). #}
+{% block scripts %}{% endblock %}
 </body>
 </html>

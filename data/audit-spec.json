@@ -35,6 +35,9 @@
   "a3_animations": [
     { "id": "A3.1", "animation": "Home — flagship row evidence reveal (pointer-events:none layer)", "properties": "opacity", "duration": "200ms", "answers": "WHAT JUST HAPPENED" },
     { "id": "A3.2", "animation": "Projects — case slider, native CSS scroll-snap with visible scrollbar", "properties": "native scroll", "duration": "—", "answers": "WHERE AM I" },
-    { "id": "A3.3", "animation": "All pages — link and nav hover state (instant colour swap, no transition)", "properties": "colour (static)", "duration": "0ms", "answers": "WHAT CAN I DO" }
-  ]
+    { "id": "A3.3", "animation": "All pages — link and nav hover state (instant colour swap, no transition)", "properties": "colour (static)", "duration": "0ms", "answers": "WHAT CAN I DO" },
+    { "id": "A3.4", "animation": "Experience — receipts row reading state on hover and focus-within (background tint, body → bright text, instant)", "properties": "background-color, colour (static)", "duration": "0ms", "answers": "WHERE AM I", "note": "Owner-directed addition to the handoff §5 list, 2026-08-06. Declared WHERE AM I, not WHAT CAN I DO: the rows carry no control, and claiming an affordance that does not exist is what C-12 exists to catch. Keyboard parity is :focus-within, never tabindex — dead tab stops would cost more against C-07 and C-08 than they gain. HONEST LIMIT: no receipts row currently contains a focusable element, so the focus half is inert until one does." }
+  ],
+
+  "_a3_list_governance": "Handoff §5 called this list complete at three. It is now four. 'Nothing else ships' is preserved as: THE LIST CHANGES ONLY BY RECORDED RULING, NEVER SILENTLY. tools/check_animations.py compares what actually ships against this declared list in both directions — shipping an undeclared animation fails the build, and declaring one that does not ship fails too."
 }
