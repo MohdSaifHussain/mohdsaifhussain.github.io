@@ -42,10 +42,18 @@ AXE = ROOT / "node_modules" / "axe-core" / "axe.min.js"
 PAGES = ["/", "/projects/", "/experience/", "/certifications/", "/audit/"]
 
 
-def serve(directory: pathlib.Path, port: int) -> socketserver.TCPServer:
+class _Server(socketserver.TCPServer):
+    # Defect D-36: shutdown() stops the serve_forever loop but does NOT close
+    # the listening socket. The selftest step left the port bound, and the real
+    # audit step then died with "Address already in use" — a green selftest
+    # followed by a crash that had nothing to do with the site.
+    allow_reuse_address = True
+
+
+def serve(directory: pathlib.Path, port: int) -> _Server:
     handler = functools.partial(http.server.SimpleHTTPRequestHandler,
                                 directory=str(directory))
-    httpd = socketserver.TCPServer(("127.0.0.1", port), handler)
+    httpd = _Server(("127.0.0.1", port), handler)
     threading.Thread(target=httpd.serve_forever, daemon=True).start()
     return httpd
 
@@ -201,6 +209,7 @@ def main() -> int:
         problems, summary = audit(base)
     finally:
         httpd.shutdown()
+        httpd.server_close()      # release the socket, not just the loop (D-36)
 
     print("Browser audit — what was examined:\n")
     print(f"  {'page':<20}{'axe viol.':>11}{'checks eval.':>14}"
