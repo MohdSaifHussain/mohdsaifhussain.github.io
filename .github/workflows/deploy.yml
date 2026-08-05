@@ -110,7 +110,53 @@ jobs:
         run: python tools/browser_audit.py --root _site --selftest
 
       - name: C-06 / C-18 — axe-core and CSP violations, in a real browser
-        run: python tools/browser_audit.py --root _site
+        run: python tools/browser_audit.py --root _site --json-out axe.json
+
+      # --- Measurement pass (P3.5). Two-pass by necessity: /audit reports on
+      # the site it is part of, so the site must be built, measured, and then
+      # rebuilt with the measurements in it. -------------------------------
+      - name: C-23 — W3C Nu validator
+        run: |
+          java -jar "$(npm root)/vnu-jar/build/dist/vnu.jar" \
+            --format json --exit-zero-always --skip-non-html _site \
+            > vnu.json 2> vnu.stderr || true
+          # vnu writes its JSON to stderr; normalise whichever carries it.
+          if [ ! -s vnu.json ] || ! python -c "import json;json.load(open('vnu.json'))" 2>/dev/null; then
+            mv vnu.stderr vnu.json
+          fi
+          python -c "import json;d=json.load(open('vnu.json'));e=[m for m in d.get('messages',[]) if m.get('type')=='error'];print(f'validator errors: {len(e)}');[print('  ',m.get('message')) for m in e[:10]]"
+
+      - name: C-01 / C-02 / C-03 — Lighthouse, all five pages, both profiles
+        run: |
+          python -m http.server 8765 --directory _site &
+          sleep 2
+          npx --yes @lhci/cli@0.15.1 collect \
+            --url=http://127.0.0.1:8765/ \
+            --url=http://127.0.0.1:8765/projects/ \
+            --url=http://127.0.0.1:8765/experience/ \
+            --url=http://127.0.0.1:8765/certifications/ \
+            --url=http://127.0.0.1:8765/audit/ \
+            --settings.formFactor=mobile --settings.screenEmulation.mobile=true \
+            --numberOfRuns=1 || true
+          npx --yes @lhci/cli@0.15.1 collect \
+            --url=http://127.0.0.1:8765/ \
+            --url=http://127.0.0.1:8765/projects/ \
+            --url=http://127.0.0.1:8765/experience/ \
+            --url=http://127.0.0.1:8765/certifications/ \
+            --url=http://127.0.0.1:8765/audit/ \
+            --settings.formFactor=desktop --settings.screenEmulation.disabled=true \
+            --settings.preset=desktop --numberOfRuns=1 || true
+
+      # Scores publish EXACTLY as measured (requirement 3.2). No re-run for a
+      # better number: `|| true` above exists so a low score still reaches
+      # /audit, never so a bad run can be retried away.
+      - name: Write measured results into audit.json
+        run: |
+          python tools/write_audit.py --selftest
+          python tools/write_audit.py --lighthouse .lighthouseci --vnu vnu.json --axe axe.json
+
+      - name: Rebuild so /audit publishes what was measured
+        run: python build.py
 
       - uses: actions/configure-pages@v6.0.0
       - uses: actions/upload-pages-artifact@v5.0.0

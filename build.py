@@ -375,8 +375,10 @@ def build() -> int:
     audit_spec = json.loads((DATA / "audit-spec.json").read_text(encoding="utf-8"))
 
     measured_path = DATA / "generated" / "audit.json"
-    measured = (json.loads(measured_path.read_text(encoding="utf-8")).get("measured", {})
-                if measured_path.exists() else {})
+    measured_doc = (json.loads(measured_path.read_text(encoding="utf-8"))
+                    if measured_path.exists() else {})
+    measured = measured_doc.get("measured", {})
+    measured_as_of = measured_doc.get("as_of_display", "")
 
     problems += gate_anchors(projects, snapshot)
     if problems:
@@ -421,6 +423,7 @@ def build() -> int:
         # "— AT DEPLOY" honestly rather than an optimistic placeholder. That
         # absence is this pipeline's negative control (C-30, C-35).
         "measured": measured,
+        "measured_as_of": measured_as_of,
         "nav": NAV,
         "colophon": COLOPHON,
         "visits": VISITS,

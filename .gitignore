@@ -23,3 +23,11 @@ desktop.ini
 
 # Logs
 *.log
+
+# CI-written measurement output. Deliberately NOT committed: it is
+# produced by the publishing environment on every deploy, and a copy in
+# git could drift from what was actually measured (C-30, C-35).
+data/generated/audit.json
+vnu.json
+axe.json
+.lighthouseci/

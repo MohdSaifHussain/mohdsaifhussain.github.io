@@ -194,6 +194,8 @@ def main() -> int:
     ap.add_argument("--port", type=int, default=8765)
     ap.add_argument("--selftest", action="store_true",
                     help="prove axe and the CSP can both fail")
+    ap.add_argument("--json-out", type=pathlib.Path,
+                    help="write the axe result for tools/write_audit.py")
     args = ap.parse_args()
 
     root = (ROOT / args.root).resolve()
@@ -219,6 +221,15 @@ def main() -> int:
               f"{s['csp_violations']:>11}{s['console_errors']:>14}")
 
     rules = next(iter(summary.values()))["rules_available"] if summary else 0
+    if args.json_out:
+        args.json_out.write_text(json.dumps({
+            "total_violations": sum(s["axe_violations"] for s in summary.values()),
+            "total_checks_evaluated": sum(s["checks_evaluated"] for s in summary.values()),
+            "rules_loaded": next(iter(summary.values()))["rules_available"] if summary else 0,
+            "pages": summary,
+        }, indent=2, sort_keys=True) + "\n", encoding="utf-8", newline="\n")
+        print(f"  axe result written to : {args.json_out}")
+
     print(f"\n  pages loaded          : {len(summary)}")
     print(f"  axe-core rules loaded : {rules}")
     print(f"  CSP violations counted: from the browser's securitypolicyviolation "
