@@ -42,6 +42,13 @@ cost.
 
 ---
 
+## P3.4
+
+| # | Defect | Found by | Severity | Disposition |
+|---|---|---|---|---|
+| D-34 | **Erratum against the design authority.** Every contrast ratio stated in STEP-02-HANDOFF §1 disagrees with the value recomputed from `tokens.css` — ink 15.9 vs **17.07**, body 10.6 vs **12.11**, bright 13.6 vs **15.45**, dim 5.1 vs **5.78**, accent 9.3 vs **10.40** — all understated, all in the same direction | **Running** `check_contrast.py`, which recomputes rather than quotes (doctrine: re-derive a number from the artifact it describes) | Minor | **Root cause established numerically:** solving each stated ratio for the background it implies gives ~`#1a1a1a`–`#1c1c1c` (luminance ≈0.011); the shipped `--bg` is `#0d0d0c` (0.00400). Four of five land on the same implied background, so the figures are internally consistent with each other and with a **lighter background than the one that shipped**. Consequence is not adverse — the real contrast is *better* than claimed — but a number that does not describe the artifact is still wrong. Recorded as **Erratum 1** against the handoff; §1 left intact as the historical record; /audit publishes measured values |
+| D-35 | Jinja autoescaped the CSP's single quotes to `default-src &#39;self&#39;`. Entity decoding would very probably resolve it at parse time — but **meta CSP has no report-only mode**, so a policy the parser mishandles blocks every asset on the live site | **Reading** the rendered output immediately after writing the meta tag | Minor | **Fixed** by marking the value `Markup()` so quotes render literally; the value is built entirely from a constant dict, never from data, so no injection path is introduced. A test asserts the rendered policy contains no HTML entity |
+
 ## P3.3
 
 | # | Defect | Found by | Severity | Disposition |

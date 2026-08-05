@@ -74,6 +74,11 @@ jobs:
           python tools/check_animations.py --selftest
           python tools/check_animations.py
 
+      - name: C-09 — contrast recomputed from tokens
+        run: |
+          python tools/check_contrast.py --selftest
+          python tools/check_contrast.py
+
       - name: Determinism — a second build must produce the same tree hash
         run: |
           FIRST=$(python build.py | grep 'content hash')

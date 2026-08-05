@@ -41,6 +41,44 @@ DATA_FILES = ["profile", "projects", "experience", "certifications"]
 
 BASE_URL = "https://mohdsaifhussain.github.io"
 
+# --- Content Security Policy (C-18).  P3.4 / D1. -------------------------
+# Held as structured data rather than a string literal so it can be asserted
+# against directive by directive.
+#
+# DELIVERED VIA <meta>, because GitHub Pages serves no custom response headers
+# (charter §7). Verified against CSP Level 3 §3.3 on 2026-08-06:
+#   "Neither are the report-uri, frame-ancestors, and sandbox directives."
+#   "The Content-Security-Policy-Report-Only header is not supported inside a
+#    meta element."
+#   https://www.w3.org/TR/CSP3/
+#
+# Two consequences, both declared on /audit rather than papered over:
+#  1. `frame-ancestors` CANNOT be set here. It is the modern replacement for
+#     X-Frame-Options, so this platform offers NO clickjacking control at all —
+#     a wider gap than A4.1 originally described. It is deliberately ABSENT
+#     below: writing a directive the spec says is ignored would look like
+#     protection while providing none.
+#  2. There is no report-only mode via meta, so no staged rollout is possible.
+#     The policy is enforced from the first deploy, which is why D2 verifies it
+#     with captured console output from the published site.
+CSP = {
+    "default-src": "'self'",
+    "script-src": "'self'",      # no 'unsafe-inline', no 'unsafe-eval'
+    "style-src": "'self'",       # earned by the zero-inline-style gate since P3.1
+    "img-src": "'self'",
+    "font-src": "'self'",
+    "manifest-src": "'self'",
+    "connect-src": "'none'",     # nothing fetches; a future beacon would break loudly
+    "object-src": "'none'",
+    "frame-src": "'none'",
+    "base-uri": "'none'",
+    "form-action": "'none'",     # the site has no forms (charter §2)
+}
+
+
+def csp_value() -> str:
+    return "; ".join(f"{k} {v}" for k, v in CSP.items())
+
 # (template, output path, nav id, title, url path, description)
 # Titles follow R-07: every page title matches its nav label. Descriptions are
 # SEO metadata rather than portfolio content, so they live here on the R-03
@@ -368,6 +406,13 @@ def build() -> int:
         # Read from tokens.css rather than repeated: contract 3.2 means even the
         # browser-chrome colour has exactly one definition.
         "theme_color": read_token(tokens_css, "--bg"),
+        # Markup(), so the source quotes render literally as 'self' rather than
+        # &#39;self&#39;. Entity decoding would very probably resolve it at parse
+        # time — but meta CSP has no report-only mode, so a policy the parser
+        # mishandles blocks every asset on the live site. Not a place to depend
+        # on "very probably". The value is built entirely from the CSP dict
+        # above, never from data, so marking it safe introduces no injection path.
+        "csp": Markup(csp_value()),
         "audit_spec": audit_spec,
         "limitations": audit_spec["a4_limitations"],
         # CI writes measured values into data/generated/audit.json. Absent on

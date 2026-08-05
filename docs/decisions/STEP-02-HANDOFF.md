@@ -69,3 +69,33 @@ Reduced-motion: kill the 200ms transition; all states remain reachable and coher
 - TS-Sentry metrics: render honest ✗ pending until owner supplies.
 - Targets: Lighthouse 100×4 · WCAG 2.2 AA, axe 0 · W3C 0 errors · body contrast ≥4.5:1 (achieved ≥10:1).
 - Interaction QA (frozen project rule): no animation/overlay may block or overlap any interactive element in any state.
+
+---
+
+## Errata
+
+*Recorded against this document rather than edited into it. The original text above stands unchanged; corrections are appended here with their evidence, so the record shows what was believed, what is true, and how the difference was found.*
+
+### Erratum 1 — §1's stated contrast ratios were computed against a different background
+
+**Recorded:** 2026-08-06, P3.4 / D7. **Found by:** recomputing every ratio from the hex values in `tokens.css` instead of quoting the table (charter C-09; doctrine "re-derive a number from the artifact it describes").
+
+§1 states: ink 15.9:1 · body 10.6:1 · bright 13.6:1 · dim 5.1:1 · accent 9.3:1, all "vs bg #0d0d0c".
+
+Recomputed by the WCAG 2.2 relative-luminance formula against `--bg: #0d0d0c`:
+
+| token | §1 states | measured | difference |
+|---|---|---|---|
+| `--ink` | 15.9:1 | **17.07:1** | +1.17 |
+| `--body` | 10.6:1 | **12.11:1** | +1.51 |
+| `--bright` | 13.6:1 | **15.45:1** | +1.85 |
+| `--dim` | 5.1:1 | **5.78:1** | +0.68 |
+| `--accent` | 9.3:1 | **10.40:1** | +1.10 |
+
+**Every figure is understated, all in the same direction** — which is the signature of a systematic cause, not rounding.
+
+**Root cause, established numerically.** Solving each stated ratio for the background luminance it implies gives ~0.0080–0.0117, a grey of roughly `#1a1a1a`–`#1c1c1c`. The shipped `--bg: #0d0d0c` has luminance 0.00400. Four of the five land on nearly the same implied background, so the figures are **internally consistent with each other and with a lighter background than the one that shipped** — most likely a bg value from earlier in the design exploration, or a checker defaulting to a different dark.
+
+**Consequence: none adverse.** The shipped background is *darker* than the one the ratios were computed against, so actual contrast is **better** than §1 claims in every case. The direction of the error is toward under-claiming, which is the safe direction — but it is still a number that did not describe the artifact, and the site publishes measured values, never these.
+
+**Disposition.** `tools/check_contrast.py` computes all ratios from `tokens.css` at build time and prints the §1 figure beside each measured one, flagging disagreement. /audit publishes the **measured** values. §1's table is left intact as the historical record of what was believed at handoff.

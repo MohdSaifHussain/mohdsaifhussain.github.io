@@ -408,6 +408,45 @@ def test_evidence_layer_never_covers_the_links_column(site):
     assert 'class="evidence" aria-hidden="true"' in html
 
 
+def test_csp_present_and_strict(site):
+    """C-18. The policy must be on every page, and must not weaken itself."""
+    for page in sorted(site.rglob("*.html")):
+        html = page.read_text(encoding="utf-8")
+        m = re.search(r'http-equiv="Content-Security-Policy" content="([^"]+)"', html)
+        assert m, f"{page.name}: no CSP meta"
+        policy = m.group(1)
+        for weakener in ("unsafe-inline", "unsafe-eval", "unsafe-hashes", "*"):
+            assert weakener not in policy, f"{page.name}: CSP contains {weakener}"
+        assert "&#" not in policy, (
+            f"{page.name}: CSP contains an HTML entity — it must render literally, "
+            "because meta CSP has no report-only mode to catch a mis-parse")
+        for directive in ("default-src", "script-src", "style-src", "object-src", "base-uri"):
+            assert directive in policy, f"{page.name}: CSP missing {directive}"
+
+
+def test_csp_omits_directives_meta_ignores(site):
+    """CSP Level 3 §3.3: report-uri, frame-ancestors and sandbox are IGNORED
+    when delivered by meta. Writing one would look like protection while
+    providing none, so their ABSENCE from the policy is the honest state and is
+    asserted rather than left to drift back in."""
+    html = (site / "index.html").read_text(encoding="utf-8")
+    policy = re.search(r'http-equiv="Content-Security-Policy" content="([^"]+)"', html).group(1)
+    for ignored in ("frame-ancestors", "report-uri", "sandbox"):
+        assert ignored not in policy, (
+            f"CSP declares {ignored}, which meta delivery ignores — "
+            "declared protection that does not exist")
+
+
+def test_contrast_recomputed_meets_aa():
+    """C-09. Ratios come from tokens.css by the WCAG formula, never from the
+    handoff's table — see STEP-02-HANDOFF Erratum 1, where every stated figure
+    turned out to have been computed against a lighter background."""
+    import subprocess
+    r = subprocess.run([sys.executable, "tools/check_contrast.py"],
+                       cwd=ROOT, capture_output=True, text=True)
+    assert r.returncode == 0, r.stdout + r.stderr
+
+
 def test_every_page_has_exactly_one_h1(site):
     """C-24."""
     for page in sorted(site.rglob("*.html")):
