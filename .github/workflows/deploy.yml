@@ -87,6 +87,24 @@ jobs:
           echo "2: $SECOND"
           test "$FIRST" = "$SECOND"
 
+      # --- Real-browser audit (P3.4 / D2). Discharges O-10. -----------------
+      # Runs BEFORE deploy, against the built _site, so an axe violation or a
+      # CSP error blocks publication instead of being found afterwards. The
+      # builder has no local browser by the director's ruling: a figure measured
+      # there is not evidence about the published site.
+      - uses: actions/setup-node@v6.0.0
+        with:
+          node-version: '22'
+
+      - name: Install audit tooling (CI only)
+        run: |
+          npm ci || npm install
+          python -m pip install -r requirements-audit.txt
+          python -m playwright install --with-deps chromium
+
+      - name: C-06 / C-18 — axe-core and CSP violations, in a real browser
+        run: python tools/browser_audit.py --root _site
+
       - uses: actions/configure-pages@v6.0.0
       - uses: actions/upload-pages-artifact@v5.0.0
         with:

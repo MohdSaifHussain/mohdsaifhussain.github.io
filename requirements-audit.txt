@@ -1,0 +1,4 @@
+# CI-only. Kept separate from requirements.txt so the build stays lean and the
+# hermetic build never depends on a browser. Pinned: D-23's lesson was that an
+# unpinned tool makes a check environment-dependent.
+playwright==1.62.0

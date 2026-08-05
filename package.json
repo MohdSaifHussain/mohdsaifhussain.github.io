@@ -1,0 +1,8 @@
+{
+  "name": "mohdsaifhussain-github-io",
+  "private": true,
+  "description": "CI-only tooling. axe-core is pinned for the browser audit (P3.4 / D2); nothing here ships to the site.",
+  "devDependencies": {
+    "axe-core": "4.13.0"
+  }
+}
