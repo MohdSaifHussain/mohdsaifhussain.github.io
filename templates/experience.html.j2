@@ -31,8 +31,14 @@
       <span class="mono-meta">{{ role.company | upper }} · {{ role.location | upper }}</span>
     </div>
     <ul class="xp-receipts">
+      {# D-25: the reference marks each receipt with a neutral accent dash, not
+         a check. It is right on both counts — a ✓ on every resume bullet
+         implies a verification that never happened (C-27), and the ✓/✗ motif
+         must stay meaningful. The design's character is an em dash, which sits
+         inside C-27's em-dash scope on this page; a CSS-drawn accent rule is
+         the same mark visually, is the ledger-rule motif, and is not text. #}
       {% for h in role.highlights %}
-      <li class="receipt">{{ m.mark_check() }}<span>{{ h }}</span></li>
+      <li class="receipt"><span class="receipt-rule" aria-hidden="true"></span><span>{{ h }}</span></li>
       {% endfor %}
     </ul>
   </article>

@@ -246,8 +246,14 @@ nav {
 .display-xs { font: var(--type-display-xs); color: var(--ink); }
 .xp-receipts { display: flex; flex-direction: column; gap: 7px; }
 .receipt {
-  display: grid; grid-template-columns: auto 1fr; gap: 8px;
+  display: grid; grid-template-columns: auto 1fr; gap: 10px;
   font: var(--type-mono-body-sm); color: var(--body);
+}
+/* The receipt mark: the ledger rule, drawn not typed (defect D-25). */
+.receipt-rule {
+  width: 11px; height: var(--rule-mid-w);
+  background: var(--accent);
+  margin-top: 0.75em;
 }
 .xp-close {
   display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px;

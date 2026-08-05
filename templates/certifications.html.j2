@@ -48,10 +48,13 @@
     <span class="mono-label">TILE ANATOMY — NOT A CLAIM</span>
   </div>
   <div class="tile-grid">
+    {# D-26: the reference reads "NO. — / —" and "VERIFIABLE", not "01" and
+       "VERIFIED". A specimen labelled VERIFIED claims something about a tile
+       that does not exist. VERIFIABLE describes the requirement instead. #}
     <article class="tile tile--specimen">
       <div class="tile-head">
-        <span class="mono-label">01</span>
-        <span class="card-status">{{ m.mark_check() }}<span class="status--verified">VERIFIED</span></span>
+        <span class="mono-label">NO. — / —</span>
+        <span class="card-status">{{ m.mark_check() }}<span class="status--verified">VERIFIABLE</span></span>
       </div>
       <span class="tile-name">Exact course or certification name</span>
       <div class="tile-foot">
