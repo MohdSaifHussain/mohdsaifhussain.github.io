@@ -1,0 +1,80 @@
+# Build and publish to GitHub Pages.  P3.1 / D6.
+#
+# Pages Source is set to "GitHub Actions" (director, 2026-08-06). No suggested
+# workflow template was accepted — this is the only workflow in the repo.
+#
+# Action versions resolved from their current releases on 2026-08-06, not from
+# memory (doctrine rule 3):
+#   actions/checkout v7.0.1 · actions/setup-python v7.0.0
+#   actions/configure-pages v6.0.0 · actions/upload-pages-artifact v5.0.0
+#   actions/deploy-pages v5.0.0
+#
+# The subset woff2 files are COMMITTED, so this build is hermetic: it never
+# reaches the network for fonts, and the exact bytes served are inspectable in
+# the repo (C-32). tools/subset_fonts.py is a maintenance tool, not a CI step.
+#
+# The gates run BEFORE the build, and the build refuses rather than publishing
+# bad output. A red job here means nothing is deployed — that is the point.
+
+name: Build and deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Never let two deploys race; do not cancel a run that is mid-publish.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7.0.1
+
+      - uses: actions/setup-python@v7.0.0
+        with:
+          python-version: '3.14'
+          cache: pip
+
+      - name: Install pinned dependencies
+        run: python -m pip install -r requirements.txt
+
+      - name: Gate selftest — every check must be able to refuse
+        run: python build.py --selftest
+
+      - name: Test suite
+        run: python -m pytest -q
+
+      - name: Build
+        run: python build.py
+
+      - name: Determinism — a second build must produce the same tree hash
+        run: |
+          FIRST=$(python build.py | grep 'content hash')
+          SECOND=$(python build.py | grep 'content hash')
+          echo "1: $FIRST"
+          echo "2: $SECOND"
+          test "$FIRST" = "$SECOND"
+
+      - uses: actions/configure-pages@v6.0.0
+      - uses: actions/upload-pages-artifact@v5.0.0
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v5.0.0

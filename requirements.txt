@@ -1,0 +1,6 @@
+# Pinned so CI builds what was verified locally (obligation O-7).
+# Versions recorded in docs/DECISIONS.md 3.1.7.
+Jinja2==3.1.6
+fonttools==4.63.0
+Brotli==1.2.0
+pytest==9.1.1
