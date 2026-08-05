@@ -1,0 +1,86 @@
+{
+  "_status": "Owner-verified 2026-08-05 at Phase 1 close (chat record), covering the fields as they stood on that date. No open exceptions. Must never contradict the web-resume PDF (C-29); re-checked at every release. Any later edit is new text and requires owner re-verification before C-27 reports MET.",
+  "roles": [
+    {
+      "title": "Operations Manager",
+      "company": "Aeronaut Fans Industry Pvt Ltd.",
+      "location": "Balanagar, Hyderabad",
+      "period": "Jan 2026 - Apr 2026",
+      "highlights": [
+        "Built an ISO 9001:2015 quality management system from scratch for a 12-person precision engineering manufacturer: SOPs, risk register, document master list, audit checklists, and Excel-based operational trackers, with AI assistance.",
+        "Managed procurement, production, and quality engineers plus 6 factory employees; tracked axial-fan procurement, coordinated vendors, ensured ISO and ISI compliance.",
+        "Standardized cross-departmental process documentation using AI-assisted workflows under strict human-in-the-loop oversight."
+      ]
+    },
+    {
+      "title": "Data Annotation Specialist",
+      "company": "Microsoft",
+      "location": "Hyderabad",
+      "period": "May 2021 - Jun 2025",
+      "highlights": [
+        "Evaluated LLM outputs across text classification, summarization, and safety-labeling tasks at 99% accuracy across high-volume review cycles.",
+        "Developed annotation guidelines reaching 98% annotator adoption; reduced review errors by 12% via guideline improvements and calibration sessions.",
+        "Troubleshot escalations on AI assistant outputs, filing bugs to engineering and tracking to resolution; ran policy-update sessions with annotators.",
+        "Evaluated domain-specific audio annotation datasets across Medical, Enterprise, and Automated Driving Assistance pipelines."
+      ]
+    },
+    {
+      "title": "Annotation Analyst",
+      "company": "Apple",
+      "location": "Hyderabad",
+      "period": "Nov 2019 - Oct 2020",
+      "highlights": [
+        "Selected for a 15-person pilot annotation team whose structured feedback shaped AI assistant response-quality guidelines.",
+        "Graded AI assistant outputs for accuracy, tone, and policy compliance across high-volume daily queues.",
+        "Built a VBA macro auto-detecting routine grading cases, reducing manual classification effort."
+      ]
+    },
+    {
+      "title": "Catalog Lead",
+      "company": "Amazon",
+      "location": "Hyderabad",
+      "period": "Jul 2018 - May 2019",
+      "highlights": [
+        "Automated scripts and resolved 800 trouble tickets, saving 30 man-days across Weeks 1-22, 2019.",
+        "Identified product-level bugs, managed escalations, and provided interim resolutions with product and technical teams.",
+        "Improved operational efficiency 3% by end of 2018; onboarded and trained 3 new hires to 98% accuracy within 4 weeks."
+      ]
+    },
+    {
+      "title": "Business Operations Specialist",
+      "company": "Amazon",
+      "location": "Hyderabad",
+      "period": "Nov 2016 - Jul 2018",
+      "highlights": [
+        "Identified a systemic Brand Registry blocker; ran root-cause analysis, built a manual workaround, escalated to the software team, and validated the fix. Received the Moonwalker Award.",
+        "Served as point of contact between Operations and Product, driving quality and process-clarity improvements.",
+        "Improved workflow quality from 96% to 99% via structured reviews, escalation workflows, and coaching."
+      ]
+    },
+    {
+      "title": "Senior Analyst",
+      "company": "GlobalLogic",
+      "location": "Hyderabad",
+      "period": "Jan 2015 - Oct 2016",
+      "highlights": [
+        "Authored troubleshooting SOPs and mentored 100+ junior analysts across project rotations, reducing escalation error rates.",
+        "Managed 24/7 rotational high-volume support queues at 99%+ quality accuracy across 7+ concurrent workflows, exceeding SLA benchmarks.",
+        "Operational liaison to international stakeholders: daily reports, escalation updates, calibration insights."
+      ]
+    }
+  ],
+  "education": [
+    {
+      "degree": "M.Tech, Computer Science",
+      "institution": "Shadan College of Engineering and Technology, Hyderabad",
+      "graduated": "2015"
+    }
+  ],
+  "skills": {
+    "process_and_documentation": ["SOP development", "ISO 9001:2015 QMS", "audit checklists", "risk registers", "root cause analysis"],
+    "data_quality": ["DAMA framework", "data reconciliation", "variance detection", "structured issue reporting"],
+    "tools": ["Microsoft Excel", "Word", "PowerPoint", "SharePoint", "Google Sheets"],
+    "programming_and_ai": ["Foundational SQL and Python", "AI-assisted development and pair programming"],
+    "platforms": ["Annotation and labeling platforms", "Claude", "Claude Code", "NotebookLM", "Microsoft Copilot", "GitHub"]
+  }
+}

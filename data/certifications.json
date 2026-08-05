@@ -1,0 +1,12 @@
+{
+  "_status": "Owner-verified 2026-08-05 at Phase 1 close (chat record) as an empty set — the resume lists no certifications or completed courses. OPEN EXCEPTION: 00 entries, carried as a named debt and rendered as the designed empty state. Only entries with a real verification URL, or an honest no-public-verification flag, are accepted (C-27).",
+  "_schema_example": {
+    "issuer": "e.g. Google / Microsoft / Coursera",
+    "course": "exact course or certification name",
+    "completed": "YYYY-MM",
+    "verify_url": "official credential verification link, or null",
+    "no_public_verification": false,
+    "public": true
+  },
+  "certifications": []
+}

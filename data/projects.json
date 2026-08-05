@@ -1,0 +1,66 @@
+{
+  "_status": "Owner-verified 2026-08-05 at Phase 1 close (chat record), covering the fields as they stood on that date. OPEN EXCEPTION: TS-Sentry metrics unverified — renders as an honest ✗ pending owner supply. SUPERSEDED FIELDS: the promise strings and per-count version anchoring rewritten under decision D-02 are new text, pending owner re-verification at the P3.2 review stop. C-27 does not report MET until that re-verification is recorded.",
+  "projects": [
+    {
+      "id": "delivery-engine",
+      "name": "Delivery Engine",
+      "flagship": true,
+      "problem": "AI analysis you cannot audit is AI analysis you cannot trust.",
+      "method": "Governance-first AI engine: deterministic execution tools, dual cryptographic human approval gates, hash-verified Findings Store to prevent data fabrication. Guardrails aligned to EU AI Act Article 14, NIST AI RMF, and ISO/IEC 42001:2023; production leakage sentinel; pre-registered statistical inference rules.",
+      "verified_metrics": ["419 unit tests (resume baseline; live count fetched at build)", "8 executable TOML playbooks", "mypy strict, ruff clean", "Docker image on GHCR", "GitHub Actions CI"],
+      "ai_collaboration": "Built by directing Claude and Claude Code through iterative development with human-in-the-loop source verification and adversarial testing.",
+      "links": {
+        "repo": "https://github.com/MohdSaifHussain/delivery-engine",
+        "container": "https://ghcr.io/mohdsaifhussain/delivery-engine"
+      }
+    },
+    {
+      "id": "delivery-engine-fde",
+      "name": "Delivery Engine — FDE Case Study",
+      "flagship": false,
+      "archived": true,
+      "problem": "Can a governed engine survive a complete forward-deployed engagement on real data?",
+      "method": "Eight-step workflow translating an ambiguous customer request into a sealed, re-performable evidence package on real semiconductor data — analysis, verification, delivery, and field learnings fed back upstream.",
+      "verified_metrics": ["Learnings shipped upstream as delivery-engine v1.5.0/v1.6.0", "Live documentation site"],
+      "links": {
+        "repo": "https://github.com/MohdSaifHussain/delivery-engine-fde",
+        "docs_site": "https://mohdsaifhussain.github.io/delivery-engine-fde-case-study/index.html"
+      }
+    },
+    {
+      "id": "ts-sentry",
+      "name": "TS-Sentry",
+      "flagship": true,
+      "_note": "NOT in resume — discovered on GitHub profile. Owner to verify description and supply metrics.",
+      "problem": "Trust & Safety scaled-abuse analysis needs the same governance as any other high-stakes AI workflow.",
+      "method": "A governed agentic workbench for Trust & Safety scaled-abuse analysis (from repo description — owner to expand).",
+      "verified_metrics": ["OWNER TO SUPPLY — tests, defects, version"],
+      "links": {
+        "repo": "https://github.com/MohdSaifHussain/ts-sentry",
+        "case_study": "https://github.com/MohdSaifHussain/ts-sentry-case-study"
+      }
+    },
+    {
+      "id": "analystkit",
+      "name": "AnalystKit",
+      "flagship": false,
+      "problem": "Data quality review without reviewer-grade workpapers is just opinion.",
+      "method": "8-command, DAMA-DMBOK-aligned Python data quality toolkit with reviewer-grade reconciliation workpapers. Published on PyPI; core dependency of Delivery Engine.",
+      "verified_metrics": ["53 unit tests", "mypy strict", "PyPI package"],
+      "links": {
+        "repo": "https://github.com/MohdSaifHussain/analystkit"
+      }
+    },
+    {
+      "id": "opskit",
+      "name": "OpsKit",
+      "flagship": false,
+      "problem": "Weekly ops variance analysis should be re-performable, not a one-off spreadsheet.",
+      "method": "Operational playbook toolkit for variance detection and week-over-week driver analysis, generating Excel reports with re-performable methodology tabs.",
+      "verified_metrics": ["18 unit tests", "GitHub Actions CI"],
+      "links": {
+        "repo": "https://github.com/MohdSaifHussain/OpsKit"
+      }
+    }
+  ]
+}
