@@ -16,6 +16,7 @@ Usage (PowerShell):
 from __future__ import annotations
 
 import argparse
+import datetime as dt
 import hashlib
 import json
 import pathlib
@@ -75,7 +76,11 @@ class BuildRefused(Exception):
 # ---------------------------------------------------------------- gates ----
 # Each returns a list of (REASON, detail). Pure over text: poisonable.
 
-HEX = re.compile(r"#[0-9a-fA-F]{3,8}\b")
+# Defect D-19: a numeric HTML entity (&#8599; for ↗) is indistinguishable from
+# a 4-digit hex colour by shape alone, so the gate false-refused valid markup.
+# The negative lookbehind on & is the discriminator. A gate that refuses valid
+# input is as broken as one that accepts invalid input — it just fails loudly.
+HEX = re.compile(r"(?<!&)#[0-9a-fA-F]{3,8}\b")
 RGB = re.compile(r"\brgba?\s*\(")
 VAR_USE = re.compile(r"var\(\s*(--[\w-]+)")
 VAR_DEF = re.compile(r"^\s*(--[\w-]+)\s*:", re.M)
@@ -166,6 +171,47 @@ def load_data(data_dir: pathlib.Path | None = None) -> dict:
     return data
 
 
+def gate_anchors(projects: list[dict], snapshot: dict) -> list[tuple[str, str]]:
+    """Contract 3.3 — every project's figures must be able to render BOTH a
+    version anchor and an evidence link. A bare number is a claim without a
+    source, which is what defect D-02 was about.
+    """
+    out = []
+    repos = snapshot.get("repos", {})
+    for p in projects:
+        repo_url = (p.get("links") or {}).get("repo", "")
+        name = repo_url.rstrip("/").rsplit("/", 1)[-1] if repo_url else ""
+        if not name:
+            out.append(("STAT_UNANCHORED", f"{p['id']}: no repo link, nothing to anchor to"))
+        elif name not in repos:
+            out.append(("STAT_UNANCHORED", f"{p['id']}: '{name}' absent from the snapshot"))
+        elif not repos[name].get("anchor") or not repos[name].get("anchor_url"):
+            out.append(("STAT_UNANCHORED", f"{p['id']}: anchor or evidence link missing"))
+    return out
+
+
+def load_snapshot() -> dict:
+    """The committed GitHub snapshot. build.py never fetches (contract 3.2)."""
+    path = DATA / "generated" / "github.json"
+    if not path.exists():
+        raise BuildRefused(
+            "SNAPSHOT_MISSING",
+            f"{path.relative_to(ROOT)} not found  (run: python tools\\fetch_stats.py)")
+    snap = json.loads(path.read_text(encoding="utf-8"))
+
+    # Q2 ruling: staleness NEVER fails the build. Warn in build output only;
+    # the page carries its honest "as of" date regardless.
+    try:
+        as_of = dt.datetime.fromisoformat(snap["as_of"].replace("Z", "+00:00"))
+        days = (dt.datetime.now(dt.timezone.utc) - as_of).total_seconds() / 86400
+        if days > 21:
+            print(f"WARNING  stats snapshot is {days:.0f} days old (>21). "
+                  f"Not a failure — run tools\\fetch_stats.py to refresh.")
+    except (KeyError, ValueError):
+        print("WARNING  stats snapshot has no readable as_of timestamp.")
+    return snap
+
+
 def asset_sources() -> list[tuple[pathlib.Path, pathlib.Path]]:
     return [
         (STATIC / "css", OUT / "css"),
@@ -233,6 +279,18 @@ def build() -> int:
     )
 
     projects = data["projects"]["projects"]
+    snapshot = load_snapshot()
+    problems += gate_anchors(projects, snapshot)
+    if problems:
+        return refuse(problems)
+
+    # Attach each project's anchor so templates never do lookup logic, and a
+    # project can never render a figure without its source travelling with it.
+    for p in projects:
+        repo_url = (p.get("links") or {}).get("repo", "")
+        name = repo_url.rstrip("/").rsplit("/", 1)[-1]
+        p["_anchor"] = snapshot["repos"][name]
+
     ctx_common = {
         "profile": data["profile"],
         "projects": projects,
@@ -240,6 +298,13 @@ def build() -> int:
         "roles": data["experience"]["roles"],
         "education": data["experience"]["education"],
         "certifications": data["certifications"]["certifications"],
+        # Derived, not curated: every distinct employer in role order. The
+        # committed design names four; this renders all five, because omitting
+        # one would be a hand-made editorial choice inside a generated line
+        # (C-34). Flagged as reading R-05 for the director at the review stop.
+        "employers": list(dict.fromkeys(r["company"].split(" Pvt")[0].split(" Industry")[0]
+                                        for r in data["experience"]["roles"])),
+        "github": snapshot,
         "nav": NAV,
         "colophon": COLOPHON,
         "visits": VISITS,

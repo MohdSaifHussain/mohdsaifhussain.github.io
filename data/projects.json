@@ -1,5 +1,6 @@
 {
   "_status": "Owner-verified 2026-08-05 at Phase 1 close (chat record), covering the fields as they stood on that date. OPEN EXCEPTION: TS-Sentry metrics unverified — renders as an honest ✗ pending owner supply. SUPERSEDED FIELDS: the promise strings and per-count version anchoring rewritten under decision D-02 are new text, pending owner re-verification at the P3.2 review stop. C-27 does not report MET until that re-verification is recorded.",
+  "_metrics_basis": "NEW TEXT under decision D-02, pending owner re-verification (O-3). Figures in verified_metrics are resume-stated baselines, not fetched counts: the GitHub API returns no test count. Each project renders with a version anchor (release tag or commit SHA) fetched at build into data/generated/github.json, plus a link to the source repo, so every figure is traceable to the version it was stated against. The anchor never implies the figure was re-counted. Genuinely live counts are the recorded v1.1 path (DECISIONS 3.1.3a).",
   "projects": [
     {
       "id": "delivery-engine",
@@ -7,7 +8,7 @@
       "flagship": true,
       "problem": "AI analysis you cannot audit is AI analysis you cannot trust.",
       "method": "Governance-first AI engine: deterministic execution tools, dual cryptographic human approval gates, hash-verified Findings Store to prevent data fabrication. Guardrails aligned to EU AI Act Article 14, NIST AI RMF, and ISO/IEC 42001:2023; production leakage sentinel; pre-registered statistical inference rules.",
-      "verified_metrics": ["419 unit tests (resume baseline; live count fetched at build)", "8 executable TOML playbooks", "mypy strict, ruff clean", "Docker image on GHCR", "GitHub Actions CI"],
+      "verified_metrics": ["419 unit tests", "8 executable TOML playbooks", "mypy strict, ruff clean", "Docker image on GHCR", "GitHub Actions CI"],
       "ai_collaboration": "Built by directing Claude and Claude Code through iterative development with human-in-the-loop source verification and adversarial testing.",
       "links": {
         "repo": "https://github.com/MohdSaifHussain/delivery-engine",
@@ -34,7 +35,8 @@
       "_note": "NOT in resume — discovered on GitHub profile. Owner to verify description and supply metrics.",
       "problem": "Trust & Safety scaled-abuse analysis needs the same governance as any other high-stakes AI workflow.",
       "method": "A governed agentic workbench for Trust & Safety scaled-abuse analysis (from repo description — owner to expand).",
-      "verified_metrics": ["OWNER TO SUPPLY — tests, defects, version"],
+      "verified_metrics": [],
+      "metrics_pending": "Tests, defects and version pending owner verification",
       "links": {
         "repo": "https://github.com/MohdSaifHussain/ts-sentry",
         "case_study": "https://github.com/MohdSaifHussain/ts-sentry-case-study"

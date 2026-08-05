@@ -102,7 +102,33 @@ The data binding, the stats pipeline and the two checkers are load-bearing: meta
 | **O-9** | **`MARK_DRIFT` first real dual-mark coverage** | **P3.2 / D2** | **Open; discharged early by design** |
 | O-8 | `font-display: swap` measured | P3.5 | Carried |
 
-## 7. Numbered questions — for the director before building
+## 7. Numbered questions — RULED 2026-08-06
+
+**Q1 — RULED (a), with an added guard.** A scheduled Action re-fetches and commits the snapshot, **weekly**. Added condition: *the automation is constrained to that single path — a bot commit touching any other file fails rather than lands* — so the unreviewed surface is exactly one snapshot of public data and no wider. Bot author `github-actions[bot]@users.noreply.github.com` is covered by Amendment 1 item (1); no third amendment.
+
+*Implementation of the guard:* after fetching, the job stages only the snapshot path and then asserts that `git status --porcelain` reports no other modified file. Any other change fails the job before the commit is made, not after.
+
+*Path note, raised not resolved silently:* the director wrote `data/github.json`; this contract uses **`data/generated/github.json`** so machine-written data stays structurally separable from the four owner-verified files, which is what keeps the C-27 verification story legible and makes the single-path guard narrower. Trivially renamed on request.
+
+**Q2 — RULED (a), with a warning.** Staleness never fails the build. A **non-fatal warning when the snapshot exceeds 21 days**, visible in build output only — never on the page, which already carries its honest "as of" date.
+
+**Q3 — RULED (a).** C-05 reports **MET-not-applicable** on /audit, with the sentence spelled out: *the condition is satisfied because nothing it governs exists, which is not the same as passing a test.* The generated OG image is named as out-of-scope metadata, never rendered in-page.
+
+### Deliverable-order conflict, raised per doctrine
+
+D1's truth strip and D2's verified-metrics rows both consume the anchored counts produced by **D6**. D6 is listed after them but is a prerequisite for exercising either. **D6 is therefore built first.** Raised rather than reordered silently; the contract's deliverable numbering is unchanged.
+
+### Anchors as they actually resolve (probed 2026-08-06)
+
+| repo | anchor | type |
+|---|---|---|
+| delivery-engine | `v1.6.0` | release |
+| ts-sentry | `v1.0.0` | release |
+| delivery-engine-fde, ts-sentry-case-study, analystkit, OpsKit | commit SHA | no releases published |
+
+This is why anchor and count are separate fields: TS-Sentry has a real, citable anchor while its metrics remain an open debt (O-1). The anchor never implies the count is verified.
+
+## 7a. Original numbered questions, as put
 
 **Q1 — How does the stats snapshot stay fresh?** Charter §6A mentions a scheduled Action for C-35 refresh.
 - **(a) Scheduled Action re-fetches and commits `github.json` back (recommended).** Repo stays the single source of truth, `build.py` stays hermetic, and the commit is authored by `github-actions[bot]@users.noreply.github.com` — already exempt under Amendment 1 item (1), so no new amendment is needed. Cost: automated commits land without human review.

@@ -1,23 +1,70 @@
 {% extends 'base.html.j2' %}
+{% import '_macros.html.j2' as m %}
 {% block content %}
-<section class="section">
+
+{# ---- 01 / 04 IDENTITY (handoff §3, turn 2a) ---------------------------- #}
+<section class="section section--identity">
   <div class="section-head">
     <span class="mono-label">01 / 04 — IDENTITY</span>
+    <span class="mono-label">AS OF {{ github.as_of_display }}</span>
   </div>
   <h1 class="display-xl">{{ profile.identity_line }}</h1>
   <div class="rule-strip">
     <span>{{ profile.headline | upper }}</span>
-    <span class="accent">{{ profile.years_experience }} YEARS</span>
+    <span class="accent">{{ profile.years_experience }} YEARS — {{ employers | join(' · ') | upper }}</span>
     <span>{{ profile.location | upper }}</span>
   </div>
 </section>
 
-<section class="section">
+{# ---- 02 / 04 FLAGSHIP PROOF ------------------------------------------- #}
+{# The A3.1 evidence-reveal layer is NOT built here. It is an animation, and
+   handoff §5 assigns it to P3.3. Building its markup early would put a layer
+   over these columns before its behaviour has been ruled on. #}
+<section class="section section--ledger">
   <div class="section-head">
     <span class="mono-label">02 / 04 — FLAGSHIP PROOF</span>
-    {# D-07: every count is derived. No literal ever states how many. #}
     <span class="mono-meta">ENTRIES {{ '%02d' % (flagship | length) }}</span>
   </div>
-  <p class="mono-meta">P3.1 skeleton — flagship ledger rows are wired in P3.2.</p>
+
+  {% for p in flagship %}
+  <article class="ledger-row">
+    <span class="numeral">{{ '%02d' % loop.index }}</span>
+
+    <div class="ledger-name">
+      <span class="display-sm">{{ p.name }}</span>
+      <span class="ledger-meta">
+        {%- if p.get('metrics_pending') -%}
+        {{ m.mark_cross() }}<span class="status--pending">{{ p.get('metrics_pending') | upper }}</span>
+        {%- else -%}
+        {{ m.mark_check() }}<span class="status--verified">{{ p.verified_metrics[:3] | join(' · ') | upper }}</span>
+        {%- endif -%}
+      </span>
+    </div>
+
+    <p class="quote-sm">{{ p.problem }}</p>
+
+    <div class="ledger-links">
+      {% for label, url in p.links.items() %}
+      <a class="mono-link" href="{{ url }}" rel="noopener noreferrer">{{ label | replace('_', ' ') | upper }} ↗</a>
+      {% endfor %}
+      {{ m.anchor(p._anchor, 'AS OF') }}
+    </div>
+  </article>
+  {% endfor %}
+</section>
+
+{# ---- 03 / 04 TRUTH STRIP ----------------------------------------------
+     The live IST clock is P3.3 (it needs JS). Everything here is static and
+     sourced: each figure is that project's own first stated metric, carrying
+     the version anchor it was stated against and a link to its repo. #}
+<section class="truth-strip">
+  <span class="mono-label accent">03 / 04</span>
+  <span class="mono-meta">{{ profile.location | upper }}</span>
+  {% for p in projects if p.verified_metrics %}
+  <span class="truth-item">
+    <span class="mono-meta">{{ p.name | upper }} — {{ p.verified_metrics[0] }}</span>
+    {{ m.anchor(p._anchor) }}
+  </span>
+  {% endfor %}
 </section>
 {% endblock %}

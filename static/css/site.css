@@ -139,6 +139,85 @@ nav {
   font: var(--type-mono-meta); color: var(--dim);
 }
 
+/* --- Home: flagship ledger (handoff §3/§4) ------------------------------ */
+.section--ledger { padding-top: var(--pad-section-top); }
+
+.ledger-row {
+  display: grid;
+  grid-template-columns: 120px 1fr 1fr 220px;
+  gap: var(--gap-grid);
+  align-items: baseline;
+  padding: var(--pad-row) 0;
+  border-top: var(--rule-strong-w) solid var(--rule-strong);
+}
+.ledger-row + .ledger-row { border-top-width: var(--rule-mid-w); border-top-color: var(--rule-mid); }
+.ledger-row:last-child { border-bottom: var(--rule-strong-w) solid var(--rule-strong); }
+
+.numeral { font: var(--type-numeral); color: var(--accent); }
+.ledger-name { display: flex; flex-direction: column; gap: 8px; }
+.display-sm { font: var(--type-display-sm); color: var(--ink); }
+.ledger-meta { display: flex; align-items: center; gap: 6px; font: var(--type-mono-meta-sm); }
+.quote-sm { font: var(--type-quote-sm); color: var(--body); text-wrap: pretty; }
+.ledger-links { display: flex; flex-direction: column; gap: 8px; }
+
+.anchor { font: var(--type-mono-link); color: var(--dim); text-decoration: none; }
+.anchor:hover, .anchor:focus-visible { color: var(--accent); }
+
+/* --- Truth strip -------------------------------------------------------- */
+.truth-strip {
+  display: flex; flex-wrap: wrap; align-items: center;
+  gap: 12px 36px;
+  padding: 15px var(--gutter);
+  border-top: var(--rule-mid-w) solid var(--rule-mid);
+  border-bottom: var(--rule-mid-w) solid var(--rule-mid);
+}
+.truth-item { display: inline-flex; align-items: baseline; gap: 8px; }
+
+/* --- Projects: native scroll-snap slider (A3.2, C-14) -------------------
+   Native scrolling only. The scrollbar stays visible because it IS the
+   position indicator, alongside each card's "01 / 05". */
+.section--head { padding-bottom: 0; }
+
+.slider {
+  display: flex;
+  gap: var(--gap-table);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-padding-left: var(--gutter);
+  padding: var(--gap-grid) var(--gutter) 40px;
+}
+.slider:focus-visible { outline: var(--rule-strong-w) solid var(--accent); outline-offset: -4px; }
+
+.card {
+  flex: none;
+  width: 1100px;
+  scroll-snap-align: start;
+  border: var(--rule-mid-w) solid var(--rule-mid);
+  padding: var(--pad-card);
+  display: flex; flex-direction: column; gap: 20px;
+}
+.card-head { display: flex; align-items: baseline; justify-content: space-between; gap: var(--gap-table); }
+.card-pos { font: var(--type-mono-body-sm); color: var(--dim); }
+.card-status { display: inline-flex; align-items: center; gap: 6px; }
+.display-md { font: var(--type-display-md); color: var(--ink); margin: 0; }
+.quote { font: var(--type-quote); color: var(--body); text-wrap: pretty; }
+
+.card-grid { display: grid; grid-template-columns: 1.3fr 1fr; gap: 36px; }
+.card-col { display: flex; flex-direction: column; gap: 8px; }
+.mono-body { font: var(--type-mono-body); color: var(--body); text-wrap: pretty; }
+.metrics { display: flex; flex-direction: column; gap: 6px; }
+.metric { display: flex; align-items: baseline; gap: 7px; font: var(--type-mono-body-sm); color: var(--bright); }
+.metric--pending { color: var(--dim); }
+.card-basis { margin-top: 4px; }
+
+.card-foot {
+  border-top: var(--rule-mid-w) solid var(--rule-mid);
+  padding-top: 14px;
+  display: flex; align-items: baseline; justify-content: space-between;
+  gap: var(--gap-table); flex-wrap: wrap;
+}
+.card-links { display: flex; gap: 20px; flex-wrap: wrap; }
+
 /* --- Footer ------------------------------------------------------------- */
 footer { padding: var(--pad-row) var(--gutter) 38px; border-top: var(--rule-mid-w) solid var(--rule-mid); }
 .foot-row {

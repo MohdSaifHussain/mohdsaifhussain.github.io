@@ -86,6 +86,23 @@ def test_mark_source_rogue_template_refused():
     assert "MARK_SOURCE" in reasons(found)
 
 
+def test_anchor_missing_refused():
+    """Contract 3.3 — a figure with no version anchor or no evidence link is a
+    claim without a source, which is what defect D-02 was about."""
+    snap = {"repos": {"known": {"anchor": "v1", "anchor_url": "https://x/1"}}}
+
+    no_link = [{"id": "p", "links": {}}]
+    assert "STAT_UNANCHORED" in reasons(build.gate_anchors(no_link, snap))
+
+    not_in_snapshot = [{"id": "p", "links": {"repo": "https://github.com/o/unknown"}}]
+    assert "STAT_UNANCHORED" in reasons(build.gate_anchors(not_in_snapshot, snap))
+
+    half = {"repos": {"known": {"anchor": "v1", "anchor_url": ""}}}
+    has_repo = [{"id": "p", "links": {"repo": "https://github.com/o/known"}}]
+    assert "STAT_UNANCHORED" in reasons(build.gate_anchors(has_repo, half)), (
+        "an anchor without an evidence link must still refuse")
+
+
 def test_asset_missing_refused():
     found = build.gate_assets([(ROOT / "no-such-dir", ROOT / "out")])
     assert "ASSET_MISSING" in reasons(found)
@@ -163,6 +180,21 @@ def test_real_marks_resolve_from_single_source():
     assert build.gate_mark_source(macros, others) == []
 
 
+def test_html_entity_is_not_a_colour_literal():
+    """Regression for D-19: `&#8599;` (the ↗ entity) has the exact shape of a
+    4-digit hex colour, and the gate false-refused valid markup. A gate that
+    refuses valid input is as broken as one that accepts invalid input."""
+    assert build.gate_color_literal("<a>&#8599; &#183; &#8212;</a>", "x") == []
+    assert "COLOR_LITERAL" in reasons(build.gate_color_literal("a{color:#8599}", "x")), (
+        "the real 4-digit hex form must still refuse")
+
+
+def test_real_projects_all_anchored():
+    data = build.load_data()
+    snapshot = build.load_snapshot()
+    assert build.gate_anchors(data["projects"]["projects"], snapshot) == []
+
+
 def test_real_asset_trees_present():
     assert build.gate_assets(build.asset_sources()) == []
 
@@ -209,15 +241,43 @@ def test_counts_render_from_data_not_literals(site):
     assert f"{len(data['projects']):02d} ENTRIES" in listing
 
 
-def test_no_third_party_origin_in_output(site):
-    """C-04 as a passing test: the day a third-party resource appears, this
-    fails and forces the claim to be rewritten rather than quietly outliving
-    its own truth (doctrine rule 8)."""
-    allowed = re.compile(r"https://(www\.linkedin\.com|github\.com|ghcr\.io)/")
+def test_no_third_party_resources_load(site):
+    """C-04 and C-19 as a passing test: **zero third-party resources load**.
+
+    This checks only things the browser FETCHES — script/img/source src, and
+    <link href> (stylesheets, preloads, icons). Every one must be a same-origin
+    relative path. An outbound <a href> is navigation, not a loaded resource,
+    and is governed separately by C-20; conflating the two made one test answer
+    two different conditions and produced a false failure on the owner's own
+    Pages origin.
+
+    The day a real third-party resource appears, this fails and forces the
+    claim to be rewritten rather than quietly outliving its truth (rule 8).
+    """
+    fetched = re.compile(
+        r'<(?:script|img|source|iframe)\b[^>]*\ssrc="([^"]+)"'
+        r'|<link\b[^>]*\shref="([^"]+)"', re.I)
     for page in sorted(site.rglob("*.html")):
         html = page.read_text(encoding="utf-8")
-        for m in re.finditer(r'(?:src|href)="(https?://[^"]+)"', html):
-            assert allowed.match(m.group(1)), f"{page.name}: third-party {m.group(1)}"
+        for m in fetched.finditer(html):
+            url = m.group(1) or m.group(2)
+            assert not re.match(r"https?://|//", url), (
+                f"{page.name}: third-party resource {url}")
+
+
+def test_outbound_links_are_allowlisted(site):
+    """C-20 / charter §2: outbound navigation goes only where the charter says.
+
+    mohdsaifhussain.github.io is the site's OWN origin — other repos' Pages
+    sites live there — so it is not third-party. Listed explicitly rather than
+    waved through, so adding a new destination is a deliberate act.
+    """
+    allowed = re.compile(
+        r"https://(www\.linkedin\.com|github\.com|ghcr\.io|mohdsaifhussain\.github\.io)/")
+    for page in sorted(site.rglob("*.html")):
+        html = page.read_text(encoding="utf-8")
+        for m in re.finditer(r'<a\b[^>]*\shref="(https?://[^"]+)"', html):
+            assert allowed.match(m.group(1)), f"{page.name}: unlisted {m.group(1)}"
 
 
 def test_every_page_has_exactly_one_h1(site):

@@ -1,11 +1,76 @@
 {% extends 'base.html.j2' %}
+{% import '_macros.html.j2' as m %}
 {% block content %}
-<section class="section">
+
+{# Handoff §3 (3a). The slider is native CSS scroll-snap — no JS carousel, no
+   arrows. A3.2 in the animation list is precisely the declaration that this
+   scrolling is native and nothing else moves; the layout is built here because
+   the page cannot exist without it, and P3.3 verifies it against C-14/C-15 and
+   records it in the audit list. Recorded as reading R-06.
+
+   This is also the first page carrying BOTH marks — verified ✓ rows and
+   TS-Sentry's pending ✗ — which discharges obligation O-9: MARK_DRIFT's first
+   coverage of real dual-mark output. #}
+
+<section class="section section--head">
   <div class="section-head">
     <h1 class="display-lg">Case ledger</h1>
-    {# D-07: derived from data, never typed. #}
-    <span class="mono-meta">{{ '%02d' % (projects | length) }} ENTRIES</span>
+    <span class="mono-meta">{{ '%02d' % (projects | length) }} ENTRIES · SCROLL →</span>
   </div>
-  <p class="mono-meta">P3.1 skeleton — the scroll-snap case slider is wired in P3.2 (A3.2 in P3.3).</p>
 </section>
+
+<div class="slider" tabindex="0" role="region" aria-label="Project case studies, scrollable">
+  {% for p in projects %}
+  <article class="card">
+
+    <div class="card-head">
+      <span class="numeral">{{ '%02d' % loop.index }}
+        <span class="card-pos">/ {{ '%02d' % (projects | length) }}
+          {%- if p.get('flagship') %} · FLAGSHIP{% elif p.get('archived') %} · ARCHIVED{% endif -%}
+        </span>
+      </span>
+      {% if p.get('metrics_pending') %}
+      <span class="card-status">{{ m.mark_cross() }}<span class="status--pending">METRICS PENDING</span></span>
+      {% else %}
+      <span class="card-status">{{ m.mark_check() }}<span class="status--verified">VERIFIED</span></span>
+      {% endif %}
+    </div>
+
+    <h2 class="display-md">{{ p.name }}</h2>
+    <p class="quote">{{ p.problem }}</p>
+
+    <div class="card-grid">
+      <div class="card-col">
+        <span class="mono-label">METHOD</span>
+        <p class="mono-body">{{ p.method }}</p>
+      </div>
+      <div class="card-col">
+        <span class="mono-label">VERIFIED METRICS</span>
+        <div class="metrics">
+          {% for metric in p.verified_metrics %}
+          <span class="metric">{{ m.mark_check() }}{{ metric }}</span>
+          {% endfor %}
+          {% if p.get('metrics_pending') %}
+          <span class="metric metric--pending">{{ m.mark_cross() }}{{ p.get('metrics_pending') }}</span>
+          {% endif %}
+        </div>
+        <p class="mono-meta card-basis">Figures are resume-stated baselines, anchored to the version below. The anchor fixes the version; it does not re-count.</p>
+      </div>
+    </div>
+
+    <div class="card-foot">
+      {% if p.get('ai_collaboration') %}
+      <span class="mono-meta">{{ p.ai_collaboration }}</span>
+      {% else %}<span></span>{% endif %}
+      <div class="card-links">
+        {% for label, url in p.links.items() %}
+        <a class="mono-link" href="{{ url }}" rel="noopener noreferrer">{{ label | replace('_', ' ') | upper }} ↗</a>
+        {% endfor %}
+        {{ m.anchor(p._anchor, 'AS OF') }}
+      </div>
+    </div>
+
+  </article>
+  {% endfor %}
+</div>
 {% endblock %}
