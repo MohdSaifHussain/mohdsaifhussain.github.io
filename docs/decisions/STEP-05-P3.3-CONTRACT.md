@@ -22,6 +22,8 @@ Ship the three specified animations and nothing else, prove the reduced-motion k
 
 **Exit criterion:** `check_animations.py` proves exactly three animations ship and that motion touches only `transform`/`opacity`; the site is fully usable and complete with motion disabled; and no overlay or hover layer covers any interactive element in any state, demonstrated state by state.
 
+> **Corrected 2026-08-06.** This said *"exactly three animations ship"*. It is now **four**, and the criterion is not a count at all: `check_animations.py` proves that **what ships matches what `data/audit-spec.json` declares, in both directions**. Changed by the Q3 ruling (§7), which added A3.4. Found by re-reading the contract against its own rulings during the adversarial pass — §1, §3.1 and §5 had been left stating the pre-ruling number, so the document contradicted itself and a reader of §1 alone would have taken the wrong rule.
+
 ## 2. Deliverables
 
 | ID | Deliverable | Governing standard(s) |
@@ -39,6 +41,7 @@ Ship the three specified animations and nothing else, prove the reduced-motion k
 ## 3. Requirements
 
 - **3.1** **The shipped-animation list stays closed at three.** Any motion not on handoff §5's list is a defect, not a feature. `check_animations.py` fails if a fourth appears. *Standard: C-12; handoff §5.*
+  > **Corrected 2026-08-06.** The list is **four**, and the rule is no longer a count: *"nothing else ships"* is preserved as **the list changes only by recorded ruling, never silently.** Any **undeclared** motion is a defect; a declared one that does not ship is also a defect. Changed by the Q3 ruling (§7). A frozen count could only have been honoured by refusing a genuine improvement or by breaking quietly.
 - **3.2** Motion animates `transform` and `opacity` only. No `width`/`height`/`top`/`left`. Micro-interactions 150–250 ms; transitions ≤ 400 ms. *Standard: C-15.*
 - **3.3** The A3.1 evidence layer is `pointer-events:none` and spans the name+problem columns only. **The links column is never covered in any state.** This is the defect the committed design was rebuilt to fix; it is re-proved here, not assumed. *Standard: handoff §4, §6.*
 - **3.4** Every interactive element gives feedback within 100 ms of input. *Standard: C-16.*
@@ -67,8 +70,10 @@ The animation contract and its gate are load-bearing: the clock and the QA matri
 ## 5. Exit checklist
 
 - [ ] `check_animations.py` exits 0; exactly three animations ship
+      *(corrected: **four**; the check is list-agreement in both directions, not a count — Q3 ruling)*
 - [ ] **Negative:** an injected fourth animation, and a `width` transition, each exit non-zero with distinct reason codes
-- [ ] **Positive:** the real three do not trip it
+      *(corrected: an **undeclared** animation, and separately a **declared-but-unshipped** one)*
+- [ ] **Positive:** the real three do not trip it *(corrected: the real four)*
 - [ ] A3.1 layer proven `pointer-events:none`, bounded to two columns; **links clickable in every state, demonstrated**
 - [ ] Reduced motion: every state reachable, site complete and coherent — director toggles and reads
 - [ ] Clock ticks; **with JS disabled the fallback shows the snapshot stamp**, not a blank or a frozen time
