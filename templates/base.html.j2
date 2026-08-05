@@ -1,0 +1,57 @@
+{% import '_macros.html.j2' as m %}<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<title>{{ page_title }} — {{ profile.wordmark }}</title>
+{# Fonts are self-hosted and preloaded (C-04). `crossorigin` is required even
+   same-origin: fonts are always fetched in CORS mode.
+   Only the three faces used above the fold on every page are preloaded; the
+   italic and semibold faces load normally. O-8: font-display is retained
+   provisionally and measured against Lighthouse at P3.5. #}
+<link rel="preload" href="/assets/fonts/InstrumentSerif-Regular.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/IBMPlexMono-Regular.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/IBMPlexMono-Medium.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/css/tokens.css">
+<link rel="stylesheet" href="/css/site.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header>
+  <nav aria-label="Primary">
+    <span class="wordmark">{{ profile.wordmark }}</span>
+    <ul class="nav-list">
+      {% for item in nav %}
+      <li>
+        {%- if item.id == current -%}
+        <span class="nav-link nav-link--current" aria-current="page">{{ item.label }}{{ m.mark_check() }}</span>
+        {%- else -%}
+        <a class="nav-link" href="{{ item.href }}">{{ item.label }}</a>
+        {%- endif -%}
+      </li>
+      {% endfor %}
+    </ul>
+  </nav>
+</header>
+
+<main id="main">
+{% block content %}{% endblock %}
+</main>
+
+<footer>
+  <div class="foot-row">
+    <span class="wordmark-foot">{{ profile.wordmark }}</span>
+    <div class="foot-links">
+      <a class="mono-link" href="{{ profile.links.linkedin }}" rel="noopener noreferrer">LINKEDIN</a>
+      <a class="mono-link" href="{{ profile.links.github }}" rel="noopener noreferrer">GITHUB</a>
+      {# C-22 / decision D-03: v1.0.0 ships with zero third-party resources, so
+         the counter is honestly a dash rather than a number nobody measured. #}
+      <span class="foot-visits">VISITS {{ visits }}</span>
+    </div>
+  </div>
+  <p class="colophon">{{ colophon }} <a class="mono-link" href="/audit/">&rarr; /AUDIT</a></p>
+</footer>
+</body>
+</html>

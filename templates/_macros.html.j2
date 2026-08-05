@@ -1,0 +1,61 @@
+{# ============================================================================
+   Motif components.  P3.1 / D2.
+
+   Charter §5 and handoff §2 make the verification mark (✓ / ✗) THE motif, used
+   relentlessly.  Defect D-14, established by cmap probe: U+2717 BALLOT X and
+   U+25CF BLACK CIRCLE exist in NONE of the five shipped faces, and no X-mark
+   variant exists in either family.  Left as text they fall back to a system
+   symbol font — a third typeface, different on every OS, failing silently with
+   all tests green.
+
+   Director's ruling 2026-08-06 (D-14), with its added condition:
+     - both marks render as a matched inline-SVG pair; ● is a CSS-drawn dot;
+     - the pair renders from a SINGLE SVG source with shared stroke-weight and
+       size parameters — ONE definition, TWO marks — so a future edit cannot
+       drift one mark without the other;
+     - the checker asserts both marks resolve from that shared definition.
+
+   That condition is why _mark() below exists and why mark_check/mark_cross
+   carry no geometry of their own: they supply a path and a name, nothing else.
+   MARK_GEOMETRY is the single point of truth. build.py enforces this two ways —
+   a source check that only _mark emits a mark <svg>, and a rendered-output
+   check that every mark shares one viewBox and one stroke-width (MARK_DRIFT).
+
+   Accessibility: marks are aria-hidden. Meaning is carried by adjacent text
+   ("VERIFIED", "METRICS PENDING"), satisfying C-11's "no information conveyed
+   by color alone" and keeping the NVDA pass (C-08) free of "check mark /
+   ballot x" noise.
+   ========================================================================= #}
+
+{#- ---- THE SHARED DEFINITION. Edit these three values, both marks change. -#}
+{%- set MARK_VIEWBOX = '0 0 12 12' -%}
+{%- set MARK_STROKE  = '1.7' -%}
+{%- set MARK_LINECAP = 'square' -%}
+
+{%- macro _mark(kind, path, extra='') -%}
+<svg class="mark mark--{{ kind }}{% if extra %} {{ extra }}{% endif %}" viewBox="{{ MARK_VIEWBOX }}" aria-hidden="true" focusable="false"><path d="{{ path }}" fill="none" stroke="currentColor" stroke-width="{{ MARK_STROKE }}" stroke-linecap="{{ MARK_LINECAP }}"/></svg>
+{%- endmacro -%}
+
+{# The two marks: a name and a path each. No geometry, by design. #}
+{% macro mark_check(extra='') -%}
+{{ _mark('check', 'M1.6 6.3 4.5 9.2 10.4 3.3', extra) }}
+{%- endmacro %}
+
+{% macro mark_cross(extra='') -%}
+{{ _mark('cross', 'M2.6 2.6 9.4 9.4M9.4 2.6 2.6 9.4', extra) }}
+{%- endmacro %}
+
+{# Truth-strip live indicator. CSS-drawn; no glyph exists in either face. #}
+{% macro dot(extra='') -%}
+<span class="dot{% if extra %} {{ extra }}{% endif %}" aria-hidden="true"></span>
+{%- endmacro %}
+
+{# A claim row's status. `state` is 'verified' or 'pending' — never a bare
+   colour, so C-11 holds and the label always carries the meaning. #}
+{% macro status(state, label) -%}
+{%- if state == 'verified' -%}
+{{ mark_check() }}<span class="status status--verified">{{ label }}</span>
+{%- else -%}
+{{ mark_cross() }}<span class="status status--pending">{{ label }}</span>
+{%- endif -%}
+{%- endmacro %}

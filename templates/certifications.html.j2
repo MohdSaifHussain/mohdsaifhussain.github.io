@@ -1,0 +1,12 @@
+{% extends 'base.html.j2' %}
+{% block content %}
+<section class="section">
+  <div class="section-head">
+    <h1 class="display-lg">Certifications &amp; courses</h1>
+    <span class="mono-meta">{{ '%02d' % (certifications | length) }} ENTRIES · VERIFIED ONLY</span>
+  </div>
+  {# O-2 is an open, named debt. The empty state is the designed state, not a
+     placeholder: entries appear only when they carry real verification. #}
+  <p class="mono-meta">P3.1 skeleton — badge tiles and the empty state are wired in P3.2.</p>
+</section>
+{% endblock %}

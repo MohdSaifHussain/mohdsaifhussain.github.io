@@ -1,0 +1,23 @@
+{% extends 'base.html.j2' %}
+{% block content %}
+<section class="section">
+  <div class="section-head">
+    <span class="mono-label">01 / 04 — IDENTITY</span>
+  </div>
+  <h1 class="display-xl">{{ profile.identity_line }}</h1>
+  <div class="rule-strip">
+    <span>{{ profile.headline | upper }}</span>
+    <span class="accent">{{ profile.years_experience }} YEARS</span>
+    <span>{{ profile.location | upper }}</span>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-head">
+    <span class="mono-label">02 / 04 — FLAGSHIP PROOF</span>
+    {# D-07: every count is derived. No literal ever states how many. #}
+    <span class="mono-meta">ENTRIES {{ '%02d' % (flagship | length) }}</span>
+  </div>
+  <p class="mono-meta">P3.1 skeleton — flagship ledger rows are wired in P3.2.</p>
+</section>
+{% endblock %}

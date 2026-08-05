@@ -1,0 +1,151 @@
+/* ============================================================================
+   site.css — P3.1 skeleton.  Layout proper is built in P3.2.
+
+   Contract 3.2: every colour, type step and spacing value comes from
+   tokens.css via var(). No literal appears here; build.py refuses the build
+   with REASON=COLOR_LITERAL if one does.
+   Contract 3.3: nothing here is ever inlined into markup — no style attribute
+   ships, so the P3.4 CSP refactor is a no-op rather than a rewrite.
+   ========================================================================= */
+
+/* --- Self-hosted faces (C-04). O-8: font-display retained provisionally,
+       measured against Lighthouse at P3.5 before it is kept or dropped. --- */
+@font-face {
+  font-family: 'Instrument Serif';
+  src: url('/assets/fonts/InstrumentSerif-Regular.woff2') format('woff2');
+  font-weight: 400; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'Instrument Serif';
+  src: url('/assets/fonts/InstrumentSerif-Italic.woff2') format('woff2');
+  font-weight: 400; font-style: italic; font-display: swap;
+}
+@font-face {
+  font-family: 'IBM Plex Mono';
+  src: url('/assets/fonts/IBMPlexMono-Regular.woff2') format('woff2');
+  font-weight: 400; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'IBM Plex Mono';
+  src: url('/assets/fonts/IBMPlexMono-Medium.woff2') format('woff2');
+  font-weight: 500; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'IBM Plex Mono';
+  src: url('/assets/fonts/IBMPlexMono-SemiBold.woff2') format('woff2');
+  font-weight: 600; font-style: normal; font-display: swap;
+}
+
+/* --- Reset ------------------------------------------------------------- */
+*, *::before, *::after { box-sizing: border-box; }
+body, h1, p, ul, figure { margin: 0; }
+ul { padding: 0; list-style: none; }
+
+body {
+  background: var(--bg);
+  color: var(--body);
+  font: var(--type-mono-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* --- Skip link (C-07) --------------------------------------------------- */
+.skip {
+  position: absolute;
+  left: -9999px;
+  font: var(--type-mono-link);
+  letter-spacing: var(--ls-mono-label);
+  color: var(--bg);
+  background: var(--accent);
+  padding: 12px 18px;
+  text-decoration: none;
+}
+.skip:focus { left: var(--gutter); top: 12px; z-index: 10; }
+
+/* --- Motif marks -------------------------------------------------------
+   Geometry is defined once in templates/_macros.html.j2 (_mark). Size is
+   defined once here. Both marks share both. (D-14 ruling, added condition.) */
+.mark {
+  display: inline-block;
+  width: var(--mark-size);
+  height: var(--mark-size);
+  vertical-align: var(--mark-nudge);
+  flex: none;
+}
+.mark--check { color: var(--accent); }
+.mark--cross { color: var(--dim); }
+
+.dot {
+  display: inline-block;
+  width: var(--dot-size);
+  height: var(--dot-size);
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.status { font: var(--type-mono-label); letter-spacing: var(--ls-mono-label); }
+.status--verified { color: var(--accent); }
+.status--pending  { color: var(--dim); }
+
+/* --- Type helpers (handoff §1 steps) ------------------------------------ */
+.display-xl { font: var(--type-display-xl); letter-spacing: var(--ls-display-xl); color: var(--ink); text-wrap: pretty; }
+.display-lg { font: var(--type-display-lg); color: var(--ink); }
+.mono-label { font: var(--type-mono-label); letter-spacing: var(--ls-mono-label); color: var(--dim); text-transform: uppercase; }
+.mono-meta  { font: var(--type-mono-meta); color: var(--dim); }
+.mono-link  { font: var(--type-mono-link); color: var(--accent); text-decoration: none; }
+.accent     { color: var(--accent); }
+
+/* A3.3 is an INSTANT colour swap with no transition — that is the specified
+   animation, not an omission (handoff §5). */
+.mono-link:hover, .mono-link:focus-visible { color: var(--ink); }
+
+:where(a):focus-visible, :where(span[tabindex]):focus-visible {
+  outline: var(--rule-strong-w) solid var(--accent);
+  outline-offset: 3px;
+}
+
+/* --- Nav (C-13: always visible, current location always indicated) ------ */
+header { border-bottom: var(--rule-strong-w) solid var(--rule-strong); }
+nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: var(--gap-table); padding: 20px var(--gutter);
+}
+.wordmark { font: var(--type-wordmark-nav); letter-spacing: var(--ls-wordmark); color: var(--ink); }
+.nav-list { display: flex; gap: 26px; }
+.nav-link {
+  font: var(--type-mono-link); font-weight: 500;
+  letter-spacing: 0.08em; color: var(--dim); text-decoration: none;
+  display: inline-flex; align-items: center; gap: 6px;
+}
+.nav-link:hover, .nav-link:focus-visible { color: var(--ink); }
+.nav-link--current {
+  color: var(--accent);
+  border-bottom: var(--rule-mid-w) solid var(--accent);
+  padding-bottom: 3px;
+}
+
+/* --- Sections ----------------------------------------------------------- */
+.section { padding: var(--pad-section-top-lg) var(--gutter) var(--pad-section-top); }
+.section-head {
+  display: flex; align-items: baseline; justify-content: space-between;
+  gap: var(--gap-table); padding-bottom: 16px;
+}
+.rule-strip {
+  display: flex; flex-wrap: wrap; justify-content: space-between;
+  gap: var(--gap-table);
+  margin-top: var(--gap-grid);
+  padding: 12px 0;
+  border-top: var(--rule-strong-w) solid var(--rule-strong);
+  border-bottom: var(--rule-mid-w) solid var(--rule-mid);
+  font: var(--type-mono-meta); color: var(--dim);
+}
+
+/* --- Footer ------------------------------------------------------------- */
+footer { padding: var(--pad-row) var(--gutter) 38px; border-top: var(--rule-mid-w) solid var(--rule-mid); }
+.foot-row {
+  display: flex; flex-wrap: wrap; align-items: baseline;
+  justify-content: space-between; gap: 12px;
+}
+.wordmark-foot { font: var(--type-wordmark-foot); letter-spacing: var(--ls-wordmark); color: var(--dim); }
+.foot-links { display: flex; gap: 22px; align-items: baseline; }
+.foot-visits { font: var(--type-mono-link); color: var(--dim); }
+.colophon { margin-top: 18px; font: var(--type-mono-meta-sm); color: var(--dim); }

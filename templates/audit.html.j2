@@ -1,0 +1,15 @@
+{% extends 'base.html.j2' %}
+{% block content %}
+<section class="section">
+  <div class="section-head">
+    <h1 class="display-lg">Site audit</h1>
+    <span class="mono-meta">P3.1 SKELETON</span>
+  </div>
+  {# C-30. Tables A1/A2/A3 are generated in P3.5 from data/generated/audit.json,
+     which CI writes from Lighthouse, axe and the Nu validator. When that file
+     is absent — as it is now, and as it is on any first deploy — the measured
+     column reads "— AT DEPLOY". That absence is the negative control for the
+     whole audit pipeline, and it is demonstrated rather than assumed. #}
+  <p class="mono-meta">P3.1 skeleton — A1 standards, A2 charter checks and A3 shipped animations are generated in P3.5. Scores are written by CI and never hand-entered (C-35).</p>
+</section>
+{% endblock %}
