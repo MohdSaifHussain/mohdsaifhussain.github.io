@@ -115,8 +115,10 @@ def test_template_missing_refused():
 
 
 def test_font_coverage_gate_detects_missing_glyph():
-    """The glyph gate must fail on a codepoint no shipped face carries."""
-    cmaps, _gaps = subset_fonts.coverage()
+    """The glyph gate must fail on a codepoint no shipped face carries.
+
+    Reads the SHIPPED woff2, not the gitignored upstream TTFs (defect D-18)."""
+    cmaps, _gaps = subset_fonts.shipped_coverage()
     assert 0x2717 not in cmaps["InstrumentSerif-Regular"], (
         "U+2717 is expected absent — this negative control depends on it")
 
@@ -156,9 +158,14 @@ def test_real_data_loads():
     assert set(build.load_data()) == set(build.DATA_FILES)
 
 
-def test_font_required_glyphs_present():
-    """Every codepoint the design uses is in the face that needs it."""
-    _cmaps, gaps = subset_fonts.coverage()
+def test_shipped_fonts_carry_every_required_glyph():
+    """Every codepoint the design uses is present in the SHIPPED subset of the
+    face that needs it.
+
+    This is the test that matters: it asserts a property of the artifact the
+    browser downloads, so a subsetting bug that dropped a glyph fails here.
+    The previous version read the upstream TTFs and would have passed (D-18)."""
+    _cmaps, gaps = subset_fonts.shipped_coverage()
     assert gaps == [], f"missing glyphs: {[(s, hex(c)) for s, c in gaps]}"
 
 

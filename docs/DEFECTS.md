@@ -37,13 +37,22 @@ cost.
 | D-15 | Count expressions were written `'%02d' % projects \| length`; Jinja binds `\|` looser than `%`, so this formats the list and then takes the *string's* length — silently rendering a wrong count | **Reading** my own templates before running them | Material | **Fixed** by parenthesising: `'%02d' % (projects \| length)`. Would have shipped a wrong number on four pages in the one place C-34 is most visible |
 | D-16 | `subset_fonts.py --report` printed five columns all truncated to `InstrumentS` / `IBMPlexMono`, making the coverage matrix — the phase's key evidence — impossible to read | **Reading** the tool's own output | Minor | **Fixed.** Columns now short-labelled `IS-Regular`, `PM-SemiBold` etc. Evidence the director cannot read is not evidence |
 
-**P3.1 totals, counted from the rows above:** 16 logged — **12 found by reading**
-source, docs or data (D-01 to D-10, D-12, D-15), **4 found by running** a tool
-and reading its output (D-11, D-13, D-14, D-16). **8 material, 8 minor.**
+| D-17 | The commit-message convention appends `Co-Authored-By: … <noreply@anthropic.com>`, an email address in commit-published metadata. Amendment 1 exempted only `users.noreply.github.com`, so the first commit would have put C-33 straight back into violation | **Reading** the commit convention against Amendment 1, before the first commit | Material | **Resolved by charter Amendment 2:** exemptions stated as an enumerated list with an explicit purpose clause, not a pattern. Director's condition: `noreply@` at any *unlisted* domain must still trip the checker — which is what proves the implementation enumerates rather than pattern-matches |
+| D-18 | Both font tests read `build/fonts-src/*.ttf`, which is **gitignored**. They passed locally only because the downloads happened to be present. Worse, they asserted a property of the *upstream* font rather than of the shipped subset, so a subsetting bug that dropped a glyph would not have failed them | **Running** — the first CI run, which had no `build/fonts-src` | Material | **Fixed.** `shipped_coverage()` reads `assets/fonts/*.woff2` — committed, and what the browser actually downloads. Verified non-vacuous: the shipped Instrument Serif subset carries 101 glyphs, `✓` present in mono, `✗` absent as expected |
 
-Worth keeping in view: the three defects that would have shipped a false or
-broken claim — D-14 (the motif silently falling back to a third typeface),
-D-15 (a wrong count on four pages), D-01/D-10 (a published email address) —
-were all caught before the first commit existed, and none of them would have
-failed a test. Two were found only because a tool was actually run and its
-output read by eye.
+Five further defects (F-01 to F-05) were found in the adversarial pass at the
+P3.1 review stop, against code written the same session; they are recorded in
+STEP-03's outcome rather than here, because none of them ever left the phase.
+
+**P3.1 totals, counted from the rows above:** 18 logged — **13 found by reading**
+source, docs or data (D-01 to D-10, D-12, D-15, D-17), **5 found by running** a
+tool and reading its output (D-11, D-13, D-14, D-16, D-18). **10 material,
+8 minor.**
+
+Worth keeping in view: every defect that would have shipped a false or broken
+claim was caught before the site was ever served — D-14 (the motif silently
+falling back to a third typeface), D-15 (a wrong count on four pages),
+D-01/D-10/D-17 (a published email address, three separate times), D-18 (a test
+measuring the wrong artifact). **None of them would have been caught by a green
+test suite**: D-18 *was* a green test suite, passing for the wrong reason. Five
+were found only because a tool was run and its output read by eye.

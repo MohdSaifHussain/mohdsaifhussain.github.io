@@ -110,6 +110,34 @@ def coverage() -> tuple[dict[str, set[int]], list[tuple[str, int]]]:
     return cmaps, gaps
 
 
+def shipped_coverage() -> tuple[dict[str, set[int]], list[tuple[str, int]]]:
+    """Coverage of the woff2 files that ACTUALLY SHIP, not the upstream TTFs.
+
+    Defect D-18, found by CI: coverage() reads build/fonts-src/*.ttf, which is
+    gitignored. Those tests passed locally only because the downloads happened
+    to be present, and — worse — they asserted a property of the upstream font
+    rather than of the artifact the browser loads. A subsetting bug that
+    dropped a glyph would not have failed them.
+
+    This reads assets/fonts/*.woff2, which is committed and is what ships.
+    """
+    cmaps: dict[str, set[int]] = {}
+    for stem in FACES:
+        path = OUT / f"{stem}.woff2"
+        if not path.exists():
+            raise SystemExit(f"REASON=SUBSET_MISSING  {path} not built")
+        font = TTFont(str(path), lazy=True)
+        cmaps[stem] = set(font.getBestCmap())
+        font.close()
+
+    gaps: list[tuple[str, int]] = []
+    for stem, (_rel, family, *_r) in FACES.items():
+        for cp in REQUIRED[family]:
+            if cp not in cmaps[stem]:
+                gaps.append((stem, cp))
+    return cmaps, gaps
+
+
 def report(cmaps: dict[str, set[int]]) -> None:
     every = sorted(set(MONO_REQUIRED) | set(KNOWN_ABSENT) | set(EXTRA))
     shown = [cp for cp in every if cp > 0x7E]
