@@ -1,7 +1,7 @@
 # STEP-04 (P3.2): Pages wired from data, responsive derivation, metadata
 
 **Project:** mohdsaifhussain.github.io | **Phase:** P3.2, 2 of 5 | **Date:** 2026-08-06
-**Status:** Specified, not started
+**Status:** Built and deployed; awaiting the director's phase-close verification (§10), which includes the O-6 responsive approval and the 375px overflow check I could not perform.
 **Tier:** FULL
 
 **Depends on:**
@@ -149,3 +149,106 @@ This is why anchor and count are separate fields: TS-Sentry has a real, citable 
 - The responsive derivation is **new design not present in the frozen handoff**. It is derived from handoff §1 tokens, but it is my derivation and needs approval on its own terms (O-6).
 - P3.1's honest limit stands until D2 lands: `MARK_DRIFT` has never fired on real output.
 - The Nu validator and JSON-LD checks in this phase are run manually; wiring them into CI is P3.5 scope.
+
+## 9. Outcome
+
+**Status:** Built and deployed. **Awaiting the director's phase-close verification** (§10), which includes the O-6 responsive approval.
+
+**Shipped:** D1–D15, live at <https://mohdsaifhussain.github.io/>. 38 tests green locally and in CI; 16 C-33 controls; 10 content controls. Home first view **131,206 B uncompressed** against a 500,000 B budget.
+
+### Exit checklist, evidenced
+
+- [x] All five pages render committed layouts; no value hand-entered — *11 count sites, all `| length` or `loop.index`; `COUNT_LITERAL` refuses a typed count.*
+- [x] Negative: `check_c33.py --selftest` refuses a routable address **and** `noreply@` at an unlisted domain — *16 controls; the unlisted-domain case is what proves enumeration over pattern-matching.*
+- [x] Positive: real repo clean, ISO dates do not trip — *34 tracked files + PDF scanned, exit 0.*
+- [x] Negative: `check_content.py --selftest` refuses an em-dash in scope and a typed count — *10 controls.*
+- [x] Positive: real repo clean.
+- [x] `MARK_DRIFT` covers real dual-mark output — *at the review stop, Projects (17 ✓ / 2 ✗). After O-1 was discharged the last ✗ correctly left Projects and coverage migrated to /audit (1 ✓ / 8 ✗). Guarded by `test_some_page_carries_both_marks` so it cannot silently reach zero.*
+- [x] Every figure shows an anchor and an evidence link — *`STAT_UNANCHORED` refuses a project that cannot render both.*
+- [x] `github.json` carries a visible "as of"; the build never fetched — *`build.py` has no network call; snapshot committed.*
+- [x] One `h1` per page; landmarks present — *asserted as tests across all five pages.*
+- [x] JSON-LD emits `Person` and `SoftwareSourceCode` — *verified on the live pages.*
+- [ ] **No horizontal overflow at 375px — NOT verified by me.** *I have no browser in this environment. Director verifies by eye; see honest limit 1.*
+- [ ] **O-6 responsive approval — director's, at close.**
+- [x] **O-3 discharged** — *five items signed by the owner 2026-08-06.*
+- [x] Build deterministic and cross-platform — *identical hash locally and in CI.*
+
+### Defects found by running it, not by inspection
+
+1. **D-19** — the colour gate refused `&#8599;`, the ↗ entity: a 4-digit numeric entity has the exact shape of `#RGBA`. **A false refusal is as much a gate defect as a false pass.**
+2. **D-20 / D-27** — the same mistake twice: one test conflated *loaded resources* with *outbound navigation*, then treated `<link rel="canonical">` as a fetched resource. "Resource" is now defined by what the browser fetches, enumerated by `rel`.
+3. **D-21** — the defect log reproduced the very address D-01 was about, and it was pushed. Redacted; **history left intact by the owner's decision** and declared as A4.7 on /audit.
+4. **D-22** — the em-dash scope caught the handoff-mandated `VISITS —`. Enforcing it literally would have forced a change that violates the design authority. Narrowed to `<main>`.
+5. **D-23 / D-24** — two more environment-dependent failures: `pdfminer.six` unpinned, then the checker **failed itself** once tracked, on its own fixtures. Fixed without an exclusion, because excluding the checker's own path creates a permanent blind spot.
+6. **D-25 / D-26** — found by reading the reference against the build: a ✓ on every resume receipt implied verification that never happened, and a specimen tile claimed VERIFIED. Both were fidelity gaps *and* honesty gaps.
+
+### Readings and deviations, recorded
+
+- **R-05** — identity strip renders owner-authored `headline_employers`; Experience derives all five roles uncurated. Curation is authorship, not code-side omission.
+- **R-06** — the scroll-snap slider is built as page layout in P3.2; P3.3 owns its C-14/C-15 verification and the audit-list entry. Director-endorsed.
+- **R-07** — every page h1 matches its nav label. **One exception, flagged:** Home's h1 is the identity line, per the frozen design; the nav label "01 HOME" carries the wayfinding instead. Not changed on my own authority.
+- **R-08** — both live case-study sites render as evidence links.
+- **R-10** — nav "01 INDEX" → "01 HOME", owner-directed.
+- **R-11** — light mode deferred to v1.1 under charter §5's own "optional later". Declared as A4.8. No amendment needed.
+- **R-12** — per-page SEO descriptions live in `build.py` on the R-03 precedent; the counts inside them are still interpolated from data.
+- **Deviation (D-25)** — receipts use a CSS-drawn accent rule rather than the reference's em-dash character. Accepted by the director as a deviation toward honesty.
+- **Standing principle adopted** — *local success is not evidence about CI; any figure destined for /audit is measured in the environment that publishes it.*
+
+### Obligations
+
+**Discharged:** O-1 (TS-Sentry metrics, owner-measured and signed) · **O-3** (five items signed) · O-9 (dual-mark coverage, with the migration recorded).
+**Closed by decision, not debt:** O-2 — the owner holds no certifications; the empty state with its `status_note` **is** the shipped state.
+**Open at close:** O-6 (responsive approval, director) · O-11 (375px overflow check, director).
+**Carried to P3.4:** **O-10 (new)** — JSON-LD's CSP safety is verified against the HTML standard, *not* against a live console. P3.4 must confirm zero CSP violations with the real meta policy in place.
+**Carried to P3.5:** O-8 (`font-display: swap` measured against Lighthouse).
+
+### Honest limits
+
+1. **I could not verify the 375px no-overflow criterion by execution** — there is no browser in this environment. The responsive derivation is reasoned from the token scale and every fixed multi-column grid is overridden below 900px, but that is analysis, not observation. `overflow-x: hidden` was deliberately **not** used: it would hide overflow rather than prevent it and make the criterion unfalsifiable.
+2. JSON-LD is CSP-safe per WHATWG HTML "prepare the script element" (step 13 return precedes the step 21 CSP check). Verified against the specification, not against a running browser. O-10.
+3. C-01, C-02, C-03 are **not claimed**. 131,206 B is a recorded baseline measured uncompressed; Pages gzips HTML and CSS.
+4. The em-dash rule is enforced on `experience.json`, the Experience page's `<main>`, and the PDF — not site-wide, which the frozen design makes impossible.
+5. Phone detection deliberately ignores bare 7–9 digit runs, a stated recall/precision trade made after seven false positives on this repo's own content.
+6. A4.7 declares that one historical commit retains a contact-capable address. The working tree is clean; history is not rewritten.
+
+## 10. Phase close — the director's ritual
+
+```powershell
+# 1. Footprint and identity.
+git log --oneline | Measure-Object -Line
+git log --format='%ae' | Sort-Object -Unique      # expect only the noreply address
+
+# 2. Build, gates, tests, checkers. Expect exit 0 and "38 passed".
+python build.py;                       "exit=$LASTEXITCODE"
+python -m pytest;                      "exit=$LASTEXITCODE"
+python tools\check_c33.py --selftest;  "exit=$LASTEXITCODE"
+python tools\check_c33.py;             "exit=$LASTEXITCODE"
+python tools\check_content.py --selftest; "exit=$LASTEXITCODE"
+
+# 3. NEGATIVE PATHS — each must refuse.
+python tools\check_c33.py --selftest   # read: unlisted-domain noreply MUST trip
+Copy-Item data\projects.json data\projects.json.bak
+(Get-Content data\projects.json) -replace '"repo": "https://github.com/MohdSaifHussain/OpsKit"','"repo": ""' | Set-Content data\projects.json -Encoding utf8
+python build.py;                       "exit=$LASTEXITCODE  (expect 1, STAT_UNANCHORED)"
+Move-Item -Force data\projects.json.bak data\projects.json
+python build.py;                       "exit=$LASTEXITCODE  (expect 0)"
+
+# 4. Read by eye, at 375px AND at desktop.
+start https://mohdsaifhussain.github.io/
+```
+
+| Scenario | Expected | Observed |
+|---|---|---|
+| `python build.py` | exit 0, five pages | |
+| `python -m pytest` | exit 0, `38 passed` | |
+| `check_c33.py --selftest` | exit 0, 16 controls PASS | |
+| `check_content.py --selftest` | exit 0, 10 controls PASS | |
+| **Broken repo link in `projects.json`** | **exit 1, `REASON=STAT_UNANCHORED`** | |
+| Restored | exit 0 | |
+| **Browser at 375px, all five pages** | **no horizontal scrollbar** | |
+
+**The row worth keeping in view** is the 375px one — it is the only exit item I could not verify by execution, and the only one where your eye is the instrument.
+
+**Read by eye:** every project figure carries an anchor and a link; TS-Sentry now shows ✓ with your supplied metrics; /audit's measured columns read "— AT DEPLOY" with A4 declaring eight limitations including the D-21 history exception; Certifications shows `00 / 00` with your status note; nav reads "01 HOME".
+
+
