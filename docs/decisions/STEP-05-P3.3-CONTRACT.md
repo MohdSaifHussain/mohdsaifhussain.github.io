@@ -1,7 +1,7 @@
 # STEP-05 (P3.3): The three animations, reduced motion, clock, interaction QA
 
 **Project:** mohdsaifhussain.github.io | **Phase:** P3.3, 3 of 5 | **Date:** 2026-08-06
-**Status:** Specified, not started. Awaiting the director's approval, including rulings on Q1-Q3 (&sect;7) which gate deliverable D4.
+**Status:** Specified, not started. Awaiting the director's approval, including rulings on Q1–Q3 (§7), which gate deliverable D4.
 **Tier:** FULL
 
 **Depends on:**
