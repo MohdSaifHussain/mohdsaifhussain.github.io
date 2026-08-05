@@ -1,0 +1,18 @@
+# Line endings are normalised to LF in the index AND the working tree.
+#
+# Without eol=lf, Windows checks out CRLF while CI checks out LF. build.py
+# writes HTML with an explicit newline="\n" so pages are unaffected, but CSS is
+# copied verbatim into _site/ — so the content hash would differ between this
+# machine and CI, and "the build is deterministic" would quietly narrow to
+# "deterministic on one platform" without anyone noticing.
+* text=auto eol=lf
+
+# Binaries git must never touch.
+*.woff2 binary
+*.ttf   binary
+*.pdf   binary
+*.avif  binary
+*.webp  binary
+*.jpg   binary
+*.png   binary
+*.ico   binary
