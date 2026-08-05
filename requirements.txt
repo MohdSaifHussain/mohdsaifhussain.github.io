@@ -4,3 +4,8 @@ Jinja2==3.1.6
 fonttools==4.63.0
 Brotli==1.2.0
 pytest==9.1.1
+# Defect D-23: required by contract 3.5 — check_c33.py scans the extracted text
+# of the web-resume PDF. It was present locally and absent in CI, so the PDF
+# half of the C-33 scan silently did not run there. Same class as D-18: an
+# unpinned local dependency making behaviour environment-dependent.
+pdfminer.six==20260107
