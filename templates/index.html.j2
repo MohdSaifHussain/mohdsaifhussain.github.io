@@ -7,6 +7,7 @@
 
 {% block scripts %}
 <script src="/js/evidence.js" defer></script>
+<script src="/js/clock.js" defer></script>
 {% endblock %}
 
 {% block content %}
@@ -84,6 +85,13 @@
      the version anchor it was stated against and a link to its repo. #}
 <section class="truth-strip">
   <span class="mono-label accent">03 / 04</span>
+  {# D6. Without JS this reads "SNAPSHOT <stamp>" — true, and visibly a
+     snapshot. The live-indicator dot only appears once clock.js runs, so the
+     dot always means "this is ticking" (requirement 3.7). #}
+  <span class="truth-item" data-clock>
+    {{ m.dot('accent clock-dot') }}
+    <span class="mono-meta" data-clock-text>SNAPSHOT {{ github.as_of_display }}</span>
+  </span>
   <span class="mono-meta">{{ profile.location | upper }}</span>
   {% for p in projects if p.verified_metrics %}
   <span class="truth-item">

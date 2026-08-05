@@ -42,6 +42,35 @@ cost.
 
 ---
 
+## P3.3
+
+| # | Defect | Found by | Severity | Disposition |
+|---|---|---|---|---|
+| D-29 | The weekly stats-refresh Action approved in P3.2 Q1 — including its single-path guard — **was never built**. `fetch_stats.py` was written and the job was not, so an approved control existed only on paper for an entire phase | **Reading** the P3.2 rulings back against the repo while implementing the director's link-check placement | Material | **Fixed.** `.github/workflows/refresh-stats.yml` runs Mondays 04:17 UTC, re-fetches anchors, verifies every evidence link, and **diffs before committing** so a change touching anything but `data/generated/github.json` fails rather than lands. Accepted as disposed by the director |
+
+### D-30 — Reported defect, NOT reproduced. Logged in full because the record must show what was checked and found false.
+
+**Reported (owner, 2026-08-06):** the Delivery Engine FDE card's evidence anchor pointed to commit `7891608`, which "no longer exists (404)"; instructed to replace it with `e3df12e`, described as the repo's current last commit, as a signed data edit.
+
+**Measured, four independent ways, before touching anything:**
+
+| Check | Result |
+|---|---|
+| `gh api repos/…/commits/789160802ec…` | returned the SHA — **the commit exists** |
+| Current `main` head | **`7891608`**, 2026-07-31T04:18:52Z, *"Restructure as case study…"* |
+| Position of `e3df12e` | **the parent commit**, 2026-07-31T03:59:56Z — ~19 minutes earlier |
+| HTTP status, unauthenticated, redirects followed | full-SHA URL **200**, short-SHA URL **200**, `e3df12e` **200** |
+
+The href shipping on the live page was the full-SHA URL and it resolved. The newly built `--verify-links` job independently returned **200 for all twelve** anchor and repo URLs.
+
+**Disposition:** the edit was **refused pending confirmation**, because applying it would have moved the anchor *backwards* to the parent commit and made the site less accurate — on a premise the evidence contradicted. The owner **withdrew the correction on the evidence**; the anchor stands as shipped. No change was made.
+
+**Root cause of the "unreachable SHA":** there was none. `fetch_stats.py` stored the default-branch head SHA at fetch time, full SHA in the URL and 7-char prefix as display text. Both resolve. The mechanism worked correctly. The 404 was not reproduced.
+
+**Why this is recorded here rather than quietly dropped.** This is the verification discipline applied to the *director's own claim*, and the director endorsed the refusal as such. The method is not "the builder checks the builder" — it is that no claim is trusted wider than its evidence, **whoever makes it.** A record that only ever shows the builder being corrected would be a flattering record, and an inaccurate one.
+
+---
+
 ## P3.2
 
 | # | Defect | Found by | Severity | Disposition |

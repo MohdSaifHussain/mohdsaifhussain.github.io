@@ -458,3 +458,9 @@ footer { padding: var(--pad-row) var(--gutter) 38px; border-top: var(--rule-mid-
 .xp-row:focus-within .receipt {
   color: var(--bright);
 }
+
+/* Truth-strip clock (D6). The live-indicator dot is hidden until clock.js
+   marks the host live, so the dot never claims a tick that is not happening.
+   It does NOT pulse — a pulsing dot would be a fifth, undeclared animation. */
+.clock-dot { display: none; }
+[data-clock].is-live .clock-dot { display: inline-block; }
