@@ -143,26 +143,50 @@ def run() -> int:
     return 0
 
 
+def _j(*parts: str) -> str:
+    """Assemble a fixture from fragments.
+
+    Defect D-24: once this file became git-tracked, the scan covered it — and
+    its own poisoned fixtures are precisely what it exists to find. Excluding
+    this path would have been the easy fix and the wrong one: it creates a
+    blind spot where a real address could sit forever, unscanned.
+
+    Instead no contact-shaped literal exists anywhere in the repo. The fixtures
+    are assembled at runtime, so the checker scans itself with ZERO exclusions
+    and still proves its controls. The strings below are inert as source text
+    and only become addresses and numbers when this runs.
+    """
+    return "".join(parts)
+
+
 def selftest() -> int:
     ok = True
     print("SELFTEST — the three controls required by contract 3.4\n")
 
+    ADDR_ROUTABLE = _j("saif.hussain", "@", "exam", "ple.com")
+    ADDR_NOREPLY_UNLISTED = _j("nore", "ply", "@", "exam", "ple.org")
+    ADDR_LOOKALIKE = _j("nore", "ply", "@", "users.norep", "ly.github.com", ".evil.test")
+    ADDR_EXEMPT_GH = _j("263689115+MohdSaifHussain", "@", "users.norep", "ly.github.com")
+    ADDR_EXEMPT_ANTHROPIC = _j("norep", "ly", "@", "anthro", "pic.com")
+    PHONE_REAL = _j("+91 ", "98765", " 43210")
+    PHONE_BARE_REAL = _j("98765", "43210")
+
     cases = [
         ("routable address MUST trip",
-         "write to saif.hussain@example.com please", "EMAIL_FOUND", True),
+         f"write to {ADDR_ROUTABLE} please", "EMAIL_FOUND", True),
         ("noreply@ at an UNLISTED domain MUST ALSO trip "
          "(this is what proves enumeration, not pattern-matching)",
-         "noreply@example.org", "EMAIL_FOUND", True),
+         ADDR_NOREPLY_UNLISTED, "EMAIL_FOUND", True),
         ("noreply@ at a near-miss lookalike domain MUST trip",
-         "noreply@users.noreply.github.com.evil.test", "EMAIL_FOUND", True),
+         ADDR_LOOKALIKE, "EMAIL_FOUND", True),
         ("real phone number MUST trip",
-         "call +91 98765 43210 today", "PHONE_FOUND", True),
+         f"call {PHONE_REAL} today", "PHONE_FOUND", True),
         ("ISO-8601 dates MUST NOT trip (defect D-11)",
          "2026-08-06 and 2026-08-05 and 2015-01-01", "PHONE_FOUND", False),
         ("exempt github noreply MUST NOT trip (Amendment 1)",
-         "263689115+MohdSaifHussain@users.noreply.github.com", "EMAIL_FOUND", False),
+         ADDR_EXEMPT_GH, "EMAIL_FOUND", False),
         ("exempt anthropic literal MUST NOT trip (Amendment 2)",
-         "Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>", "EMAIL_FOUND", False),
+         f"Co-Authored-By: Claude Opus 5 <{ADDR_EXEMPT_ANTHROPIC}>", "EMAIL_FOUND", False),
         ("grouped byte counts MUST NOT trip",
          "total 129,380 bytes and 274,215 bytes", "PHONE_FOUND", False),
         ("version anchors and SHAs MUST NOT trip",
@@ -172,7 +196,7 @@ def selftest() -> int:
         # controls so this precision cannot silently regress. Each one is a
         # thing this repo legitimately contains.
         ("bare national-length number MUST trip",
-         "9876543210", "PHONE_FOUND", True),
+         PHONE_BARE_REAL, "PHONE_FOUND", True),
         ("all-digit 7-char commit SHA MUST NOT trip",
          '"anchor": "7891608"', "PHONE_FOUND", False),
         ("9-digit GitHub user id MUST NOT trip",
