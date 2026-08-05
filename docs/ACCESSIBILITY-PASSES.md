@@ -35,23 +35,13 @@ axe alike.
 ## C-11 — 200% zoom, all five pages
 
 **Observed by the owner, 2026-08-06:** no content lost, no overlap, no
-horizontal scroll.
-
-> ⚠ **Awaiting confirmation.** The submitted text read
-> `[no content lost, no overlap, no horizontal scroll / anything seen]`. The
-> portion before the slash is recorded above as the finding; the trailing
-> `/ anything seen` is read as an unfilled template alternative. **Confirm, or
-> supply what was seen.**
+horizontal scroll. Confirmed complete as written. **C-11 MET.**
 
 ## C-07 — keyboard pass, all five pages
 
 **Observed by the owner, 2026-08-06:** skip link worked on first Tab; every link
 reachable; focus visible throughout; tab order logical; slider scrolled with
-arrow keys; no traps.
-
-> ⚠ **Awaiting confirmation.** The submitted text ended `no traps / deviations`.
-> Recorded as "no traps"; the trailing `/ deviations` is read as an unfilled
-> template alternative. **Confirm, or supply the deviations.**
+arrow keys; no traps. Confirmed complete as written, no deviations. **C-07 MET.**
 
 Cross-reference: the slider carries the only `tabindex` on the site, because it
 genuinely is a scroll region (C-14). Every other component was deliberately left
