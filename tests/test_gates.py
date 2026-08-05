@@ -317,16 +317,50 @@ def test_some_page_carries_both_marks(site):
     assert dual, "no page carries both marks — MARK_DRIFT is unexercised on real output"
 
 
-def test_marks_never_claim_unverified(site):
-    """C-27, as a passing test: a ✓ must never sit on an entry whose metrics are
-    pending. Defect D-25 was this failure in the Experience receipts."""
+def test_verified_entries_render_a_check(site):
+    """C-27 positive direction: every entry that HAS metrics shows the mark.
+
+    Non-vacuous by construction — it asserts something for all five projects.
+    """
     data = json.loads((ROOT / "data/projects.json").read_text(encoding="utf-8"))
-    pending = [p["name"] for p in data["projects"] if p.get("metrics_pending")]
     html = (site / "projects/index.html").read_text(encoding="utf-8")
-    for name in pending:
-        block = html.split(name, 1)[1][:1200] if name in html else ""
-        assert "mark--check" not in block.split("</article>")[0], (
-            f"{name} has pending metrics but renders a verification check")
+    cards = html.split('<article class="card">')[1:]
+    assert len(cards) == len(data["projects"]), "card count must match the data"
+
+    checked = 0
+    for card, p in zip(cards, data["projects"]):
+        if p.get("verified_metrics"):
+            assert "mark--check" in card, f"{p['name']} has metrics but renders no check"
+            checked += 1
+    assert checked, "no project has metrics; this assertion would be vacuous"
+
+
+def test_pending_entries_never_render_a_check(site):
+    """C-27 negative direction: a ✓ must never sit on an entry whose metrics
+    are pending. Defect D-25 was this failure in the Experience receipts.
+
+    Defect D-32: the earlier version of this test looped over pending entries
+    and, once the owner supplied TS-Sentry's metrics, that list became empty —
+    so the loop body never ran and the test PASSED BY ASSERTING NOTHING. A test
+    guarding against overclaiming that silently stopped guarding is the same
+    failure as D-18.
+
+    It now skips loudly when there is nothing to check, so the absence of
+    coverage is visible in the test output instead of masquerading as a pass.
+    """
+    data = json.loads((ROOT / "data/projects.json").read_text(encoding="utf-8"))
+    pending = [p for p in data["projects"] if p.get("metrics_pending")]
+    if not pending:
+        pytest.skip("no entry currently has pending metrics — nothing to verify, "
+                    "and this is reported rather than passed silently (D-32)")
+
+    html = (site / "projects/index.html").read_text(encoding="utf-8")
+    cards = html.split('<article class="card">')[1:]
+    for card, p in zip(cards, data["projects"]):
+        if p.get("metrics_pending"):
+            assert "mark--check" not in card, (
+                f"{p['name']} has pending metrics but renders a verification check")
+            assert "mark--cross" in card, f"{p['name']} is pending but shows no cross"
 
 
 def test_metrics_basis_agrees_with_entries():

@@ -90,7 +90,10 @@
      dot always means "this is ticking" (requirement 3.7). #}
   <span class="truth-item" data-clock>
     {{ m.dot('accent clock-dot') }}
-    <span class="mono-meta" data-clock-text>SNAPSHOT {{ github.as_of_display }}</span>
+    {# Time only, not the full date: the date already appears in the identity
+       strip above, and a shorter fallback means less reserved width for the
+       CLS guard below (defect D-31). #}
+    <span class="mono-meta" data-clock-text>SNAPSHOT {{ github.as_of_display.split(' ')[1] }} IST</span>
   </span>
   <span class="mono-meta">{{ profile.location | upper }}</span>
   {% for p in projects if p.verified_metrics %}

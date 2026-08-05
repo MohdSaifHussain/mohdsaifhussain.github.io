@@ -464,3 +464,11 @@ footer { padding: var(--pad-row) var(--gutter) 38px; border-top: var(--rule-mid-
    It does NOT pulse — a pulsing dot would be a fifth, undeclared animation. */
 .clock-dot { display: none; }
 [data-clock].is-live .clock-dot { display: inline-block; }
+
+/* Defect D-31: clock.js swaps "SNAPSHOT 02:45 IST" (18ch) for "04:23:17 IST"
+   (12ch) after DOMContentLoaded — inside the CLS measurement window. Without a
+   reserved box the truth strip reflows, against C-02's CLS = 0.00.
+   Reserving the LONGER of the two states means the swap cannot move anything.
+   Both strings are IBM Plex Mono, so ch is an exact unit here. */
+[data-clock] { min-width: 18ch; }
+[data-clock] [data-clock-text] { white-space: nowrap; }
