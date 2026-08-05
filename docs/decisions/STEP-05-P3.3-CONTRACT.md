@@ -1,7 +1,7 @@
 # STEP-05 (P3.3): The three animations, reduced motion, clock, interaction QA
 
 **Project:** mohdsaifhussain.github.io | **Phase:** P3.3, 3 of 5 | **Date:** 2026-08-06
-**Status:** Built and deployed; awaiting the director's phase-close verification (§11).
+**Status:** **CLOSED 2026-08-06.** D1–D9 shipped and deployed. Phase-close ritual §11 executed by hand by the director, all steps matching pre-stated expectations: exit 0 throughout, hash `c6d32ad5345d78f3` restored after the poison step, 41 passed / 1 skipped with its reason printed, `--verify-links` 12 URLs at 200. **The two-direction gate proof was performed:** renaming A3.4 to A3.7 in the spec made the gate FAIL as required, proving declared-but-unshipped motion is refused; restored and re-verified. By-eye: with JS disabled Home reads `SNAPSHOT hh:mm IST` with no dot; re-enabled, the dot appears and the clock crossed a minute boundary with seconds advancing and nothing else moving — D-31 reservation holds. D-31, D-32, D-33 dispositions endorsed; D-33 supersession-not-edit handling noted as correct record practice.
 **Tier:** FULL
 
 **Depends on:**
