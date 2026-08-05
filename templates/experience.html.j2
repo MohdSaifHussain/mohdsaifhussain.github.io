@@ -1,10 +1,51 @@
 {% extends 'base.html.j2' %}
+{% import '_macros.html.j2' as m %}
 {% block content %}
-<section class="section">
+
+{# Handoff §3 (3b). The h1 is the handoff's wording, NOT the nav label. R-07
+   changed the Projects h1 to match its nav item; that ruling was scoped to
+   Projects, so it is not extended here on my own authority. Raised in the R-09
+   fidelity report as the one remaining h1/nav mismatch. #}
+
+<section class="section section--head">
   <div class="section-head">
     <h1 class="display-lg">Nine years, receipted</h1>
-    <span class="mono-meta">{{ '%02d' % (roles | length) }} ROLES</span>
+    <a class="pdf-button" href="/assets/resume/MohdSaifHussain_Resume_Web.pdf">WEB RESUME (PDF) ↓</a>
   </div>
-  <p class="mono-meta">P3.1 skeleton — the receipts table and PDF button are wired in P3.2.</p>
+</section>
+
+<section class="section section--table">
+  <div class="xp-head">
+    <span class="mono-label">NO.</span>
+    <span class="mono-label">PERIOD</span>
+    <span class="mono-label">ROLE</span>
+    <span class="mono-label">RECEIPTS</span>
+  </div>
+
+  {% for role in roles %}
+  <article class="xp-row">
+    <span class="numeral-sm">{{ '%02d' % loop.index }}</span>
+    <span class="mono-meta">{{ role.period | upper }}</span>
+    <div class="xp-role">
+      <span class="display-xs">{{ role.title }}</span>
+      <span class="mono-meta">{{ role.company | upper }} · {{ role.location | upper }}</span>
+    </div>
+    <ul class="xp-receipts">
+      {% for h in role.highlights %}
+      <li class="receipt">{{ m.mark_check() }}<span>{{ h }}</span></li>
+      {% endfor %}
+    </ul>
+  </article>
+  {% endfor %}
+
+  <div class="xp-close">
+    {% for e in education %}
+    {# Middle dot, not an em dash: this page is inside C-27's em-dash scope
+       (defect D-08), and check_content.py enforces that on the RENDERED page,
+       so site chrome here is bound by the same rule as the data. #}
+    <span class="mono-meta">EDUCATION · {{ e.degree | upper }} · {{ e.institution | upper }} · {{ e.graduated }}</span>
+    {% endfor %}
+    <span class="mono-meta">{{ '%02d' % (roles | length) }} ROLES · CONTACT VIA LINKEDIN ONLY</span>
+  </div>
 </section>
 {% endblock %}

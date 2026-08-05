@@ -1,0 +1,38 @@
+{
+  "_status": "Design-authority transcription, not portfolio content. A1/A2 row LABELS and TARGETS come from STEP-01-CHARTER §3/§4 and STEP-02-HANDOFF §3 (3d). A3 comes from HANDOFF §5, which is the complete list — nothing else ships (C-12).",
+  "_measured_values": "This file carries NO measured values and NO pass/fail statuses. Those are written by CI into data/generated/audit.json and rendered from there (C-30, C-35). When that file is absent — as on any first deploy — the measured column reads '— AT DEPLOY'. Hand-entering a score here would be the exact thing C-35 forbids.",
+
+  "a1_standards": [
+    { "id": "A1.1", "standard": "Lighthouse — Performance / Accessibility / Best Practices / SEO", "target": "100 × 4", "key": "lighthouse" },
+    { "id": "A1.2", "standard": "WCAG 2.2 AA — axe violations", "target": "0", "key": "axe" },
+    { "id": "A1.3", "standard": "Body text contrast vs page background", "target": "≥ 4.5:1 · AIM 7:1", "key": "contrast" },
+    { "id": "A1.4", "standard": "W3C Nu validator errors", "target": "0", "key": "validator" },
+    { "id": "A1.5", "standard": "Home first-view transfer", "target": "≤ 500 KB", "key": "transfer" }
+  ],
+
+  "a2_charter_checks": [
+    { "id": "A2.1", "check": "Motion uses transform / opacity only; micro 150–250ms; transitions ≤ 400ms", "key": "motion", "conditions": "C-15" },
+    { "id": "A2.2", "check": "Native scrolling only; slider is CSS scroll-snap with visible position", "key": "scroll", "conditions": "C-14" },
+    { "id": "A2.3", "check": "No preloaders, sound, trackers, cookies, third-party logos or assets", "key": "no_third_party", "conditions": "C-04, C-19, C-21" },
+    { "id": "A2.4", "check": "No contact-capable email or phone anywhere; contact via LinkedIn only", "key": "c33", "conditions": "C-33 + Amendments 1, 2" },
+    { "id": "A2.5", "check": "Interaction QA — no hover layer blocks or overlaps another interactive element", "key": "interaction_qa", "conditions": "handoff §6" },
+    { "id": "A2.6", "check": "All displayed values real; unverified items marked with an honest cross", "key": "honesty", "conditions": "C-27" },
+    { "id": "A2.7", "check": "Complete and coherent with prefers-reduced-motion", "key": "reduced_motion", "conditions": "C-10" },
+    { "id": "A2.8", "check": "Every figure carries a version anchor and an evidence link", "key": "anchored", "conditions": "C-27, C-35" }
+  ],
+
+  "a4_limitations": [
+    { "id": "A4.1", "limitation": "HSTS preload and X-Frame-Options are not set", "reason": "GitHub Pages serves no custom HTTP response headers. Charter §7 platform constraint register; CSP is applied via meta instead. Declared, never claimed as met." },
+    { "id": "A4.2", "limitation": "TS-Sentry test, defect and version metrics are unverified", "reason": "Pending owner verification. Renders as an honest cross on its card rather than an estimate. Obligation O-1." },
+    { "id": "A4.3", "limitation": "Certifications shows 00 entries", "reason": "Only entries carrying real credential verification are accepted (C-27). The empty state is the designed state, not a missing feature. Obligation O-2." },
+    { "id": "A4.4", "limitation": "The visit counter shows a dash, not a count", "reason": "v1.0.0 ships with zero third-party resources by decision: the counter's script publishes no stable SRI hash, so C-19 could not fully cover it. Decision D-03." },
+    { "id": "A4.5", "limitation": "C-05 (image formats, sizing, lazy-loading) reports MET-not-applicable", "reason": "The committed design is pure typography; no content images ship, so the condition is satisfied because nothing it governs exists — which is not the same as passing a test. The generated Open Graph image is out-of-scope metadata and is never rendered in-page." },
+    { "id": "A4.6", "limitation": "Displayed project figures are resume-stated baselines, not live counts", "reason": "The GitHub API returns no test count. Each figure carries the release tag or commit SHA it was stated against, plus a link to its source. The anchor fixes the version; it does not re-count. Decision D-02." }
+  ],
+
+  "a3_animations": [
+    { "id": "A3.1", "animation": "Home — flagship row evidence reveal (pointer-events:none layer)", "properties": "opacity", "duration": "200ms", "answers": "WHAT JUST HAPPENED" },
+    { "id": "A3.2", "animation": "Projects — case slider, native CSS scroll-snap with visible scrollbar", "properties": "native scroll", "duration": "—", "answers": "WHERE AM I" },
+    { "id": "A3.3", "animation": "All pages — link and nav hover state (instant colour swap, no transition)", "properties": "colour (static)", "duration": "0ms", "answers": "WHAT CAN I DO" }
+  ]
+}

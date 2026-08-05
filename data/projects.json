@@ -39,7 +39,8 @@
       "metrics_pending": "Tests, defects and version pending owner verification",
       "links": {
         "repo": "https://github.com/MohdSaifHussain/ts-sentry",
-        "case_study": "https://github.com/MohdSaifHussain/ts-sentry-case-study"
+        "case_study": "https://github.com/MohdSaifHussain/ts-sentry-case-study",
+        "case_study_site": "https://mohdsaifhussain.github.io/ts-sentry-case-study/"
       }
     },
     {

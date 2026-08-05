@@ -19,6 +19,7 @@ from __future__ import annotations
 import json
 import pathlib
 import re
+import sys
 
 import pytest
 
@@ -294,6 +295,31 @@ def test_every_page_declares_lang_and_landmarks(site):
         assert '<html lang="en">' in html, f"{page.name}"
         for tag in ("<header", "<nav", "<main", "<footer"):
             assert tag in html, f"{page.name} missing {tag}"
+
+
+@pytest.mark.parametrize("tool", ["check_c33.py", "check_content.py"])
+def test_checker_selftests_pass(tool, site):
+    """Each checker proves its own controls. Their detailed control output is
+    printed by the tools themselves and run in CI; these two tests assert the
+    verdict so a broken checker fails the suite too.
+
+    The suite count deliberately does NOT absorb every individual control
+    inside those tools — inflating the number by re-counting assertions is the
+    overclaiming C-27 forbids. /audit states what the count covers."""
+    import subprocess
+    r = subprocess.run([sys.executable, f"tools/{tool}", "--selftest"],
+                       cwd=ROOT, capture_output=True, text=True)
+    assert r.returncode == 0, r.stdout + r.stderr
+
+
+@pytest.mark.parametrize("tool", ["check_c33.py", "check_content.py"])
+def test_checkers_accept_the_real_repo(tool, site):
+    """Positive control at the repo level: the checkers must not refuse the
+    real thing, or they would be gates that refuse everything."""
+    import subprocess
+    r = subprocess.run([sys.executable, f"tools/{tool}"],
+                       cwd=ROOT, capture_output=True, text=True)
+    assert r.returncode == 0, r.stdout + r.stderr
 
 
 def test_external_links_carry_noopener(site):

@@ -280,6 +280,12 @@ def build() -> int:
 
     projects = data["projects"]["projects"]
     snapshot = load_snapshot()
+    audit_spec = json.loads((DATA / "audit-spec.json").read_text(encoding="utf-8"))
+
+    measured_path = DATA / "generated" / "audit.json"
+    measured = (json.loads(measured_path.read_text(encoding="utf-8")).get("measured", {})
+                if measured_path.exists() else {})
+
     problems += gate_anchors(projects, snapshot)
     if problems:
         return refuse(problems)
@@ -298,13 +304,19 @@ def build() -> int:
         "roles": data["experience"]["roles"],
         "education": data["experience"]["education"],
         "certifications": data["certifications"]["certifications"],
-        # Derived, not curated: every distinct employer in role order. The
-        # committed design names four; this renders all five, because omitting
-        # one would be a hand-made editorial choice inside a generated line
-        # (C-34). Flagged as reading R-05 for the director at the review stop.
-        "employers": list(dict.fromkeys(r["company"].split(" Pvt")[0].split(" Industry")[0]
-                                        for r in data["experience"]["roles"])),
+        # R-05, director's ruling: the identity strip renders profile.json's
+        # owner-authored `headline_employers` verbatim — curation is authorship,
+        # not a code-side omission. The Experience page derives all five roles
+        # uncurated from experience.json; that derivation lives in `roles`.
+        "employers": data["profile"]["headline_employers"],
         "github": snapshot,
+        "audit_spec": audit_spec,
+        "limitations": audit_spec["a4_limitations"],
+        # CI writes measured values into data/generated/audit.json. Absent on
+        # any first deploy, and absent now — so the audit page renders
+        # "— AT DEPLOY" honestly rather than an optimistic placeholder. That
+        # absence is this pipeline's negative control (C-30, C-35).
+        "measured": measured,
         "nav": NAV,
         "colophon": COLOPHON,
         "visits": VISITS,

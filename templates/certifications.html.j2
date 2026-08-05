@@ -1,12 +1,68 @@
 {% extends 'base.html.j2' %}
+{% import '_macros.html.j2' as m %}
 {% block content %}
-<section class="section">
+
+{# Handoff §3 (3c). The empty state is the DESIGNED state, not a placeholder:
+   obligation O-2 is an open, named debt, and entries appear only when they
+   carry real verification (C-27). Every count here is derived. #}
+
+<section class="section section--head">
   <div class="section-head">
     <h1 class="display-lg">Certifications &amp; courses</h1>
     <span class="mono-meta">{{ '%02d' % (certifications | length) }} ENTRIES · VERIFIED ONLY</span>
   </div>
-  {# O-2 is an open, named debt. The empty state is the designed state, not a
-     placeholder: entries appear only when they carry real verification. #}
-  <p class="mono-meta">P3.1 skeleton — badge tiles and the empty state are wired in P3.2.</p>
 </section>
+
+{% if certifications %}
+<section class="section tile-grid">
+  {% for c in certifications %}
+  <article class="tile">
+    <div class="tile-head">
+      <span class="mono-label">{{ '%02d' % loop.index }}</span>
+      {% if c.verify_url %}
+      <span class="card-status">{{ m.mark_check() }}<span class="status--verified">VERIFIED</span></span>
+      {% else %}
+      <span class="card-status">{{ m.mark_cross() }}<span class="status--pending">NO PUBLIC VERIFICATION</span></span>
+      {% endif %}
+    </div>
+    <span class="tile-name">{{ c.course }}</span>
+    <div class="tile-foot">
+      <span class="mono-meta">{{ c.issuer | upper }}</span>
+      <span class="mono-meta">COMPLETED {{ c.completed }}</span>
+      {% if c.verify_url %}
+      <a class="mono-link" href="{{ c.verify_url }}" rel="noopener noreferrer">VERIFY CREDENTIAL ↗</a>
+      {% endif %}
+    </div>
+  </article>
+  {% endfor %}
+</section>
+{% else %}
+<section class="section empty-state">
+  <span class="empty-numeral">{{ '%02d' % (certifications | length) }} / {{ '%02d' % (certifications | length) }}</span>
+  <p class="empty-quote">Entries appear as completed — verified only.</p>
+  <p class="mono-meta empty-policy">Only entries carrying a real credential-verification link, or an honest declaration that no public verification exists, are accepted here. No issuer logos or trademarks are reproduced.</p>
+</section>
+
+<section class="section">
+  <div class="section-head">
+    <span class="mono-label">TILE ANATOMY — NOT A CLAIM</span>
+  </div>
+  <div class="tile-grid">
+    <article class="tile tile--specimen">
+      <div class="tile-head">
+        <span class="mono-label">01</span>
+        <span class="card-status">{{ m.mark_check() }}<span class="status--verified">VERIFIED</span></span>
+      </div>
+      <span class="tile-name">Exact course or certification name</span>
+      <div class="tile-foot">
+        <span class="mono-meta">ISSUER, SET TYPOGRAPHICALLY</span>
+        <span class="mono-meta">COMPLETED YYYY-MM</span>
+        <span class="mono-link">VERIFY CREDENTIAL ↗</span>
+      </div>
+    </article>
+    <article class="tile tile--empty" aria-hidden="true"></article>
+    <article class="tile tile--empty" aria-hidden="true"></article>
+  </div>
+</section>
+{% endif %}
 {% endblock %}

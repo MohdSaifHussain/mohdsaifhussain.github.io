@@ -56,6 +56,19 @@ jobs:
       - name: Build
         run: python build.py
 
+      # Run AFTER the build: both checkers inspect rendered output as well as
+      # source, and each proves its own controls can fail before asserting the
+      # repo is clean.
+      - name: C-33 — contact-capable addresses and phone numbers
+        run: |
+          python tools/check_c33.py --selftest
+          python tools/check_c33.py
+
+      - name: Content rules — em-dash scope, typed counts, inline markup
+        run: |
+          python tools/check_content.py --selftest
+          python tools/check_content.py
+
       - name: Determinism — a second build must produce the same tree hash
         run: |
           FIRST=$(python build.py | grep 'content hash')

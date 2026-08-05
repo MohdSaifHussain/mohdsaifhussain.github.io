@@ -218,6 +218,83 @@ nav {
 }
 .card-links { display: flex; gap: 20px; flex-wrap: wrap; }
 
+/* --- Experience: receipts table (handoff §3, 3b) ------------------------ */
+.pdf-button {
+  font: var(--type-mono-link);
+  letter-spacing: var(--ls-mono-label);
+  color: var(--accent);
+  border: var(--rule-mid-w) solid var(--accent);
+  padding: 11px 18px;
+  text-decoration: none;
+}
+.pdf-button:hover, .pdf-button:focus-visible { background: var(--accent); color: var(--bg); }
+
+.section--table { padding-top: var(--pad-section-top); }
+.xp-head, .xp-row {
+  display: grid;
+  grid-template-columns: 60px 200px 1fr 1.35fr;
+  gap: var(--gap-table);
+}
+.xp-head { padding: 10px 0; border-top: var(--rule-strong-w) solid var(--rule-strong); }
+.xp-row {
+  padding: var(--pad-row-sm) 0;
+  border-top: var(--rule-mid-w) solid var(--rule-mid);
+  align-items: start;
+}
+.numeral-sm { font: var(--type-numeral-sm); color: var(--accent); }
+.xp-role { display: flex; flex-direction: column; gap: 6px; }
+.display-xs { font: var(--type-display-xs); color: var(--ink); }
+.xp-receipts { display: flex; flex-direction: column; gap: 7px; }
+.receipt {
+  display: grid; grid-template-columns: auto 1fr; gap: 8px;
+  font: var(--type-mono-body-sm); color: var(--body);
+}
+.xp-close {
+  display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+  padding-top: 14px;
+  border-top: var(--rule-strong-w) solid var(--rule-strong);
+}
+
+/* --- Certifications: tiles and empty state (handoff §3 3c, §4) ---------- */
+.tile-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--gap-grid); }
+.tile {
+  border: var(--rule-mid-w) solid var(--rule-mid);
+  padding: 26px;
+  min-height: 200px;
+  display: flex; flex-direction: column; gap: 14px;
+}
+.tile--specimen, .tile--empty { border-style: dashed; }
+.tile--specimen .tile-name, .tile--specimen .mono-meta, .tile--specimen .mono-link { color: var(--dim); }
+.tile-head { display: flex; align-items: baseline; justify-content: space-between; }
+.tile-name { font: var(--type-tile-name); color: var(--ink); }
+.tile-foot { margin-top: auto; display: flex; flex-direction: column; gap: 6px; }
+
+.empty-state {
+  display: flex; flex-direction: column; align-items: center; gap: 18px;
+  text-align: center;
+  padding-top: var(--pad-section-top-lg);
+}
+.empty-numeral { font: var(--type-empty-numeral); color: var(--accent); }
+.empty-quote { font: var(--type-empty-quote); color: var(--ink); max-width: 640px; text-wrap: pretty; }
+.empty-policy { max-width: 620px; }
+
+/* --- /audit tables (handoff §3, 3d) ------------------------------------ */
+.audit-tables { display: flex; flex-direction: column; gap: 40px; }
+.audit-head, .audit-row { display: grid; gap: var(--gap-table); align-items: baseline; }
+.audit-head { padding: 10px 0; border-top: var(--rule-strong-w) solid var(--rule-strong); }
+.audit-row {
+  padding: 12px 0;
+  border-top: var(--rule-faint-w) solid var(--rule-faint);
+  font: var(--type-mono-body-sm); color: var(--body);
+}
+.audit-row--a1, .audit-head--a1 { grid-template-columns: 80px 1fr 200px 260px; }
+.audit-row--a2, .audit-head--a2 { grid-template-columns: 80px 1fr 200px 200px; }
+.audit-row--a3, .audit-head--a3 { grid-template-columns: 80px 1fr 160px 120px 260px; }
+.audit-row--a4, .audit-head--a4 { grid-template-columns: 80px 1fr 1.4fr; }
+.audit-row span { display: inline-flex; align-items: baseline; gap: 7px; }
+.dim { color: var(--dim); }
+.audit-note { max-width: 1000px; }
+
 /* --- Footer ------------------------------------------------------------- */
 footer { padding: var(--pad-row) var(--gutter) 38px; border-top: var(--rule-mid-w) solid var(--rule-mid); }
 .foot-row {
