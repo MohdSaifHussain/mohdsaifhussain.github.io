@@ -92,7 +92,7 @@ jobs:
       # CSP error blocks publication instead of being found afterwards. The
       # builder has no local browser by the director's ruling: a figure measured
       # there is not evidence about the published site.
-      - uses: actions/setup-node@v6.0.0
+      - uses: actions/setup-node@v7.0.0        # current release, checked 2026-08-06
         with:
           node-version: '22'
 
