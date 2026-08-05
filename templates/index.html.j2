@@ -1,5 +1,10 @@
 {% extends 'base.html.j2' %}
 {% import '_macros.html.j2' as m %}
+
+{% block jsonld %}
+<script type="application/ld+json">{{ person_jsonld }}</script>
+{% endblock %}
+
 {% block content %}
 
 {# ---- 01 / 04 IDENTITY (handoff §3, turn 2a) ---------------------------- #}

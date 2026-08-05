@@ -2,14 +2,17 @@
 {% import '_macros.html.j2' as m %}
 {% block content %}
 
-{# Handoff §3 (3b). The h1 is the handoff's wording, NOT the nav label. R-07
-   changed the Projects h1 to match its nav item; that ruling was scoped to
-   Projects, so it is not extended here on my own authority. Raised in the R-09
-   fidelity report as the one remaining h1/nav mismatch. #}
+{# R-07, elevated site-wide: every page h1 matches its nav label. The retired
+   heading "Nine years, receipted" also hand-wrote a number ("Nine") that would
+   go stale — contrary to the computed-counts rule. The ledger voice moves to
+   the sub-line, where both figures are derived from data. #}
 
 <section class="section section--head">
   <div class="section-head">
-    <h1 class="display-lg">Nine years, receipted</h1>
+    <div class="head-stack">
+      <h1 class="display-lg">Experience</h1>
+      <span class="mono-meta">{{ '%02d' % (roles | length) }} ROLES, RECEIPTED · {{ profile.years_experience }} YEARS</span>
+    </div>
     <a class="pdf-button" href="/assets/resume/MohdSaifHussain_Resume_Web.pdf">WEB RESUME (PDF) ↓</a>
   </div>
 </section>

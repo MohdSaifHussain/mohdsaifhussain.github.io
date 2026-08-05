@@ -28,6 +28,7 @@ sys.stdout.reconfigure(encoding="utf-8")     # defect D-13: cp1252 console
 sys.stderr.reconfigure(encoding="utf-8")
 
 from jinja2 import Environment, FileSystemLoader, StrictUndefined, TemplateNotFound  # noqa: E402
+from markupsafe import Markup  # noqa: E402
 
 ROOT = pathlib.Path(__file__).resolve().parent
 DATA = ROOT / "data"
@@ -38,17 +39,35 @@ OUT = ROOT / "_site"
 
 DATA_FILES = ["profile", "projects", "experience", "certifications"]
 
+BASE_URL = "https://mohdsaifhussain.github.io"
+
+# (template, output path, nav id, title, url path, description)
+# Titles follow R-07: every page title matches its nav label. Descriptions are
+# SEO metadata rather than portfolio content, so they live here on the R-03
+# precedent; the counts inside them are still interpolated from data, never
+# typed. Recorded as reading R-12.
 PAGES = [
-    # (template,               output path,                    nav id,           title)
-    ("index.html.j2",          "index.html",                   "index",          "Index"),
-    ("projects.html.j2",       "projects/index.html",          "projects",       "Case ledger"),
-    ("experience.html.j2",     "experience/index.html",        "experience",     "Experience"),
-    ("certifications.html.j2", "certifications/index.html",    "certifications", "Certifications"),
-    ("audit.html.j2",          "audit/index.html",             "audit",          "Site audit"),
+    ("index.html.j2", "index.html", "index", "Home", "/",
+     "{headline}. Governed, audited systems where every claim is traceable."),
+    ("projects.html.j2", "projects/index.html", "projects", "Projects", "/projects/",
+     "{n_projects} engineering case studies, each with its method, its verified "
+     "metrics and a version anchor linking back to the source repository."),
+    ("experience.html.j2", "experience/index.html", "experience", "Experience", "/experience/",
+     "{n_roles} roles across {years} years in operations, technical escalation, "
+     "data quality and AI operations. Web resume available as PDF."),
+    ("certifications.html.j2", "certifications/index.html", "certifications",
+     "Certifications", "/certifications/",
+     "Certifications and completed courses. Entries appear only when completed "
+     "and publicly verifiable."),
+    ("audit.html.j2", "audit/index.html", "audit", "Audit", "/audit/",
+     "This site's own report card: measured standards, charter checks, the "
+     "complete list of shipped animations, and its declared limitations."),
 ]
 
 NAV = [
-    {"id": "index",          "label": "01 INDEX",          "href": "/"},
+    # R-10, owner-directed: "01 INDEX" -> "01 HOME". Every label names its page
+    # plainly; navigation clarity outranks ledger voice at the wayfinding layer.
+    {"id": "index",          "label": "01 HOME",           "href": "/"},
     {"id": "projects",       "label": "02 PROJECTS",       "href": "/projects/"},
     {"id": "experience",     "label": "03 EXPERIENCE",     "href": "/experience/"},
     {"id": "certifications", "label": "04 CERTIFICATIONS", "href": "/certifications/"},
@@ -88,7 +107,19 @@ MARK_SVG = re.compile(r'<svg[^>]*class="mark\b[^>]*>')
 VIEWBOX = re.compile(r'viewBox="([^"]+)"')
 STROKE_W = re.compile(r'stroke-width="([^"]+)"')
 INLINE_STYLE_ATTR = re.compile(r"<[^>]+\sstyle\s*=", re.I)
-INLINE_SCRIPT = re.compile(r"<script(?![^>]*\bsrc=)[^>]*>\s*\S", re.I)
+# An inline <script> with EXECUTABLE content. A data block is not executable
+# and is explicitly excluded, on the authority of the HTML standard rather than
+# from memory: in "prepare the script element"
+# (https://html.spec.whatwg.org/multipage/scripting.html), an unrecognised type
+# returns at step 13 — "No script is executed, and el's type is left as null" —
+# whereas the "Should element's inline behavior be blocked by Content Security
+# Policy?" check is step 21. A data block never reaches the CSP check, so
+# application/ld+json is safe under a strict script-src with no 'unsafe-inline'.
+# Verified against the spec 2026-08-06; P3.4 confirms it on a live console.
+DATA_BLOCK_TYPES = ("application/ld+json",)
+INLINE_SCRIPT = re.compile(
+    r"<script(?![^>]*\bsrc=)(?![^>]*\btype=[\"'](?:" +
+    "|".join(re.escape(t) for t in DATA_BLOCK_TYPES) + r")[\"'])[^>]*>\s*\S", re.I)
 
 
 def gate_color_literal(text: str, where: str) -> list[tuple[str, str]]:
@@ -190,6 +221,13 @@ def gate_anchors(projects: list[dict], snapshot: dict) -> list[tuple[str, str]]:
     return out
 
 
+def read_token(tokens_css: str, name: str) -> str:
+    m = re.search(rf"^\s*{re.escape(name)}:\s*(#[0-9a-fA-F]{{3,8}})\s*;", tokens_css, re.M)
+    if not m:
+        raise BuildRefused("TOKEN_UNKNOWN", f"{name} is not defined in tokens.css")
+    return m.group(1)
+
+
 def load_snapshot() -> dict:
     """The committed GitHub snapshot. build.py never fetches (contract 3.2)."""
     path = DATA / "generated" / "github.json"
@@ -217,6 +255,7 @@ def asset_sources() -> list[tuple[pathlib.Path, pathlib.Path]]:
         (STATIC / "css", OUT / "css"),
         (ASSETS / "fonts", OUT / "assets" / "fonts"),
         (ASSETS / "resume", OUT / "assets" / "resume"),
+        (ASSETS / "img", OUT / "assets" / "img"),
     ]
 
 
@@ -234,6 +273,20 @@ def gate_assets(pairs: list[tuple[pathlib.Path, pathlib.Path]]) -> list[tuple[st
 def copy_static() -> None:
     for src, dest in asset_sources():
         shutil.copytree(src, dest)
+    shutil.copy2(STATIC / "site.webmanifest", OUT / "site.webmanifest")
+
+
+def write_sitemap_and_robots() -> None:
+    """C-25. Both generated from PAGES, so a new page cannot be forgotten."""
+    urls = "\n".join(
+        f"  <url><loc>{BASE_URL}{p[4]}</loc></url>" for p in PAGES)
+    (OUT / "sitemap.xml").write_text(
+        '<?xml version="1.0" encoding="UTF-8"?>\n'
+        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+        f"{urls}\n</urlset>\n", encoding="utf-8", newline="\n")
+    (OUT / "robots.txt").write_text(
+        f"User-agent: *\nAllow: /\n\nSitemap: {BASE_URL}/sitemap.xml\n",
+        encoding="utf-8", newline="\n")
 
 
 def get_template_or_refuse(env: Environment, name: str):
@@ -304,12 +357,16 @@ def build() -> int:
         "roles": data["experience"]["roles"],
         "education": data["experience"]["education"],
         "certifications": data["certifications"]["certifications"],
+        "status_note": data["certifications"].get("status_note", ""),
         # R-05, director's ruling: the identity strip renders profile.json's
         # owner-authored `headline_employers` verbatim — curation is authorship,
         # not a code-side omission. The Experience page derives all five roles
         # uncurated from experience.json; that derivation lives in `roles`.
         "employers": data["profile"]["headline_employers"],
         "github": snapshot,
+        # Read from tokens.css rather than repeated: contract 3.2 means even the
+        # browser-chrome colour has exactly one definition.
+        "theme_color": read_token(tokens_css, "--bg"),
         "audit_spec": audit_spec,
         "limitations": audit_spec["a4_limitations"],
         # CI writes measured values into data/generated/audit.json. Absent on
@@ -325,10 +382,55 @@ def build() -> int:
     # Defect F-01: pages were written to disk BEFORE the output gates were
     # checked, so a refused build still left bad HTML in _site/ for anyone to
     # serve. Render everything into memory, gate it, and only then write.
+    # C-26 structured data, built from the same JSON the pages render from, so
+    # markup and content cannot disagree. No email, no phone: C-33 names
+    # structured data explicitly, and check_c33.py scans the rendered output.
+    profile = data["profile"]
+    person_ld = {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": profile["name"],
+        "url": BASE_URL + "/",
+        "jobTitle": profile["headline"].split("|")[0].strip(),
+        "description": profile["summary"],
+        "address": {"@type": "PostalAddress", "addressLocality": "Hyderabad",
+                    "addressCountry": "IN"},
+        "sameAs": [profile["links"]["linkedin"], profile["links"]["github"]],
+    }
+    projects_ld = {
+        "@context": "https://schema.org",
+        "@type": "ItemList",
+        "itemListElement": [
+            {"@type": "ListItem", "position": i,
+             "item": {"@type": "SoftwareSourceCode",
+                      "name": p["name"],
+                      "description": p["method"],
+                      "codeRepository": p["links"]["repo"],
+                      "programmingLanguage": "Python",
+                      "author": {"@type": "Person", "name": profile["name"]},
+                      "version": p["_anchor"]["anchor"]}}
+            for i, p in enumerate(projects, 1)],
+    }
+    ctx_common["person_jsonld"] = Markup(json.dumps(person_ld, indent=2))
+    ctx_common["projects_jsonld"] = Markup(json.dumps(projects_ld, indent=2))
+
+    facts = {
+        "headline": data["profile"]["headline"],
+        "n_projects": len(projects),
+        "n_roles": len(data["experience"]["roles"]),
+        "years": data["profile"]["years_experience"],
+    }
+
     rendered: list[tuple[str, str]] = []
-    for tpl_name, out_rel, nav_id, title in PAGES:
+    for tpl_name, out_rel, nav_id, title, url_path, desc in PAGES:
         tpl = get_template_or_refuse(env, tpl_name)
-        html = tpl.render(current=nav_id, page_title=title, **ctx_common)
+        html = tpl.render(
+            current=nav_id,
+            page_title=title,
+            page_description=desc.format(**facts),
+            canonical=BASE_URL + url_path,
+            base_url=BASE_URL,
+            **ctx_common)
         problems += gate_inline(html, out_rel)
         problems += gate_mark_drift(html, out_rel)
         problems += gate_mark_drift_paths(html, out_rel)
@@ -341,6 +443,8 @@ def build() -> int:
         shutil.rmtree(OUT)
     OUT.mkdir(parents=True)
     copy_static()
+
+    write_sitemap_and_robots()
 
     written = []
     for out_rel, html in rendered:
@@ -395,6 +499,8 @@ def selftest() -> int:
         ("TOKEN_UNKNOWN", lambda: gate_unknown_token("a{color:var(--nope)}", {"--bg"}, "poison")),
         ("INLINE_STYLE",  lambda: gate_inline('<p style="color:red">x</p>', "poison")),
         ("INLINE_SCRIPT", lambda: gate_inline("<script>alert(1)</script>", "poison")),
+        ("INLINE_SCRIPT", lambda: gate_inline(
+            '<script type="text/javascript">alert(1)</script>', "poison")),
         ("MARK_DRIFT",    lambda: gate_mark_drift(
             '<svg class="mark" viewBox="0 0 12 12"></svg><svg class="mark" viewBox="0 0 16 16"></svg>', "poison")),
         ("MARK_DRIFT",    lambda: gate_mark_drift_paths(
@@ -463,6 +569,8 @@ def selftest() -> int:
         ("_macros colour literals", gate_color_literal(macros_src, "_macros.html.j2")),
         ("mark single source", gate_mark_source(macros_src, others)),
         ("real asset trees present", gate_assets(asset_sources())),
+        ("ld+json data block accepted (HTML spec step 13, not step 21)",
+         gate_inline('<script type="application/ld+json">{"a":1}</script>', "ld")),
     ]
     for label, found in positives:
         if found:

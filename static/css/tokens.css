@@ -108,6 +108,45 @@
   --ease-reveal:   ease;
 }
 
+/* ---------------------------------------------------------------------------
+   RESPONSIVE DERIVATION (P3.2 / D14) — new design, not in the frozen handoff.
+   Derived from the §1 scale rather than invented: each step drops to the next
+   size the handoff already uses, so no new type sizes enter the system.
+   Requires the director's approval on its own terms (obligation O-6).
+
+   The type scale steps down by REDEFINING TOKENS, not by duplicating rules, so
+   there is still exactly one definition of each step (contract 3.2).
+   ------------------------------------------------------------------------ */
+
+@media (max-width: 900px) {
+  :root {
+    --type-display-xl: 400 38px/1.18 var(--font-serif);  /* was 62 */
+    --type-display-lg: 400 34px/1.05 var(--font-serif);  /* was 54 */
+    --type-display-md: 400 28px/1.1  var(--font-serif);  /* was 40 */
+    --type-display-sm: 400 26px/1.12 var(--font-serif);  /* was 36 */
+    --type-display-xs: 400 21px/1.2  var(--font-serif);  /* was 24 */
+    --type-numeral:    400 30px/1    var(--font-serif);  /* was 44 */
+    --type-quote:      italic 400 15px/1.5 var(--font-serif);
+    --type-empty-numeral: 400 24px/1 var(--font-serif);
+    --type-empty-quote: italic 400 22px/1.3 var(--font-serif);
+    --type-tile-name:  400 21px/1.15 var(--font-serif);
+
+    --gutter: 20px;
+    --pad-section-top: 36px;
+    --pad-section-top-lg: 44px;
+    --gap-grid: 18px;
+    --gap-table: 16px;
+    --pad-card: 22px 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  :root {
+    --type-display-xl: 400 30px/1.2 var(--font-serif);
+    --type-display-lg: 400 28px/1.08 var(--font-serif);
+  }
+}
+
 /* A3.1's transition is the ONLY timed motion on the site. C-10 adopts WCAG
    AAA 2.3.3 as a hard rule: with reduced motion requested the transition is
    removed and every state stays reachable and coherent. Implemented in P3.3;

@@ -50,7 +50,11 @@ COUNT_LITERAL = re.compile(rf"(?<![\w/])\d{{1,3}}\s+{COUNTED}\b")
 JINJA = re.compile(r"\{\{.*?\}\}|\{%.*?%\}|\{#.*?#\}", re.S)
 
 INLINE_STYLE_ATTR = re.compile(r"<[^>]+\sstyle\s*=", re.I)
-INLINE_SCRIPT = re.compile(r"<script(?![^>]*\bsrc=)[^>]*>\s*\S", re.I)
+# See build.py for the citation: an application/ld+json block returns at step 13
+# of HTML's "prepare the script element" and never reaches the step-21 CSP
+# check, so it is data, not executable script.
+INLINE_SCRIPT = re.compile(
+    r"<script(?![^>]*\bsrc=)(?![^>]*\btype=[\"']application/ld\+json[\"'])[^>]*>\s*\S", re.I)
 
 
 MAIN = re.compile(r"<main\b[^>]*>(.*?)</main>", re.S | re.I)

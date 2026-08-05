@@ -1,5 +1,10 @@
 {% extends 'base.html.j2' %}
 {% import '_macros.html.j2' as m %}
+
+{% block jsonld %}
+<script type="application/ld+json">{{ projects_jsonld }}</script>
+{% endblock %}
+
 {% block content %}
 
 {# Handoff §3 (3a). The slider is native CSS scroll-snap — no JS carousel, no

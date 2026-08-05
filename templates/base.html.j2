@@ -5,6 +5,29 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="referrer" content="no-referrer">
 <title>{{ page_title }} — {{ profile.wordmark }}</title>
+<meta name="description" content="{{ page_description }}">
+<link rel="canonical" href="{{ canonical }}">
+
+{# C-25: Open Graph + Twitter card with a real image. The image is DRAWN from
+   tokens.css by tools/gen_images.py, so it cannot drift from the site's own
+   palette and mark. It is metadata and is never rendered in-page — which is
+   why C-05 reports MET-not-applicable (A4.5 on /audit). #}
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="{{ profile.wordmark }}">
+<meta property="og:title" content="{{ page_title }} — {{ profile.wordmark }}">
+<meta property="og:description" content="{{ page_description }}">
+<meta property="og:url" content="{{ canonical }}">
+<meta property="og:image" content="{{ base_url }}/assets/img/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="{{ profile.wordmark }} — {{ profile.identity_line }}">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="icon" href="/assets/img/favicon.ico" sizes="any">
+<link rel="icon" href="/assets/img/icon-192.png" type="image/png" sizes="192x192">
+<link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<meta name="theme-color" content="{{ theme_color }}">
 {# Fonts are self-hosted and preloaded (C-04). `crossorigin` is required even
    same-origin: fonts are always fetched in CORS mode.
    Only the three faces used above the fold on every page are preloaded; the
@@ -15,6 +38,11 @@
 <link rel="preload" href="/assets/fonts/IBMPlexMono-Medium.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/css/tokens.css">
 <link rel="stylesheet" href="/css/site.css">
+{# C-26. application/ld+json is data, not executable script: it carries no
+   `src` and runs nothing, so it does not breach C-18's no-inline-script rule.
+   Contains NO email and no phone — C-33 covers structured data explicitly, and
+   check_c33.py scans the rendered output. #}
+{% block jsonld %}{% endblock %}
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>

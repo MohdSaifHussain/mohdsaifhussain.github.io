@@ -129,6 +129,8 @@ nav {
   display: flex; align-items: baseline; justify-content: space-between;
   gap: var(--gap-table); padding-bottom: 16px;
 }
+/* R-07: the h1 carries the nav label; the ledger voice sits beneath it. */
+.head-stack { display: flex; flex-direction: column; gap: 10px; }
 .rule-strip {
   display: flex; flex-wrap: wrap; justify-content: space-between;
   gap: var(--gap-table);
@@ -311,3 +313,88 @@ footer { padding: var(--pad-row) var(--gutter) 38px; border-top: var(--rule-mid-
 .foot-links { display: flex; gap: 22px; align-items: baseline; }
 .foot-visits { font: var(--type-mono-link); color: var(--dim); }
 .colophon { margin-top: 18px; font: var(--type-mono-meta-sm); color: var(--dim); }
+
+/* ===========================================================================
+   RESPONSIVE DERIVATION — P3.2 / D14.  Obligation O-6: this is NEW design,
+   derived from handoff §1 tokens but not present in the frozen handoff, and
+   requires the director's approval on its own terms.
+
+   Rules it follows:
+     - Native scrolling only (C-14). The slider stays a scroll-snap slider on
+       touch; it is never converted to a stack, because scroll-snap IS the
+       mobile-correct behaviour.
+     - No new animation (handoff §5 is closed). The nav WRAPS; there is no
+       disclosure menu, because a menu would be a fourth animation (D-06).
+     - Nav stays visible at every width, so C-13 holds without an interaction.
+     - Nothing may overflow horizontally at 375px.
+   ======================================================================== */
+
+@media (max-width: 900px) {
+
+  /* Nav wraps to a second line rather than collapsing behind a control. */
+  nav { flex-wrap: wrap; gap: 14px; padding: 16px var(--gutter); }
+  .nav-list { flex-wrap: wrap; gap: 12px 18px; width: 100%; }
+
+  .section-head { flex-wrap: wrap; }
+
+  /* Home ledger: the 4-column grid becomes a stack, numeral beside the name. */
+  .ledger-row {
+    grid-template-columns: auto 1fr;
+    gap: 10px 14px;
+    padding: 20px 0;
+  }
+  .numeral { grid-row: 1; align-self: center; }
+  .ledger-name { grid-column: 2; }
+  .quote-sm, .ledger-links { grid-column: 1 / -1; }
+  .ledger-links { flex-direction: row; flex-wrap: wrap; gap: 14px; }
+
+  .rule-strip { gap: 8px; }
+  .truth-strip { gap: 10px 20px; padding: 14px var(--gutter); }
+
+  /* Slider: cards shrink to the viewport and keep scroll-snap. The next card
+     deliberately peeks, so the scroll affordance is visible without an arrow. */
+  .card { width: 86vw; }
+  .card-grid { grid-template-columns: 1fr; gap: 18px; }
+  .card-foot { flex-direction: column; align-items: flex-start; gap: 12px; }
+
+  /* Experience table restacks; the receipts column drops below the role. */
+  .xp-head { display: none; }            /* column labels are meaningless once stacked */
+  .xp-row {
+    grid-template-columns: auto 1fr;
+    gap: 8px 14px;
+    padding: 20px 0;
+  }
+  .numeral-sm { grid-row: 1; }
+  .xp-row > .mono-meta { grid-column: 2; }
+  .xp-role, .xp-receipts { grid-column: 1 / -1; }
+  .xp-close { flex-direction: column; gap: 8px; }
+
+  /* Certification tiles: three columns to one. */
+  .tile-grid { grid-template-columns: 1fr; }
+
+  /* Audit tables restack: each row becomes a labelled block. */
+  .audit-head { display: none; }
+  .audit-row,
+  .audit-row--a1, .audit-row--a2, .audit-row--a3, .audit-row--a4 {
+    grid-template-columns: 1fr;
+    gap: 6px;
+    padding: 14px 0;
+  }
+
+  footer { padding: 20px var(--gutter) 28px; }
+  .foot-row { gap: 10px; }
+  .foot-links { flex-wrap: wrap; gap: 14px; }
+}
+
+@media (max-width: 480px) {
+  .card { width: 90vw; }
+  .ledger-links, .card-links { gap: 10px 14px; }
+}
+
+/* Long anchors, URLs and method prose wrap rather than forcing the page wider.
+   This FIXES the overflow source. `overflow-x: hidden` on body is deliberately
+   NOT used: it would hide horizontal overflow rather than prevent it, and the
+   exit criterion "no horizontal overflow at 375px" would become unfalsifiable —
+   the page would look correct while still being too wide. If the director sees
+   a horizontal scrollbar at 375px, that is a real defect and must read as one. */
+.mono-body, .quote, .quote-sm, .receipt, .metric, .audit-row { overflow-wrap: anywhere; }

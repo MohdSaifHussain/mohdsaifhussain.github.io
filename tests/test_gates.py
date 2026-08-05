@@ -245,25 +245,40 @@ def test_counts_render_from_data_not_literals(site):
 def test_no_third_party_resources_load(site):
     """C-04 and C-19 as a passing test: **zero third-party resources load**.
 
-    This checks only things the browser FETCHES — script/img/source src, and
-    <link href> (stylesheets, preloads, icons). Every one must be a same-origin
-    relative path. An outbound <a href> is navigation, not a loaded resource,
-    and is governed separately by C-20; conflating the two made one test answer
-    two different conditions and produced a false failure on the owner's own
-    Pages origin.
+    This checks only things the browser FETCHES. An outbound <a href> is
+    navigation, not a loaded resource, and is governed separately by C-20;
+    conflating the two made one test answer two different conditions and
+    produced a false failure on the owner's own Pages origin (defect D-20).
+
+    Defect D-27: <link rel="canonical"> is metadata and MUST be absolute — the
+    browser fetches nothing. Checking every <link href> flagged it, the same
+    mistake as D-20 in a new place. "Resource" is therefore defined by what the
+    browser actually FETCHES, enumerated by rel, not by attribute name.
 
     The day a real third-party resource appears, this fails and forces the
     claim to be rewritten rather than quietly outliving its truth (rule 8).
     """
-    fetched = re.compile(
-        r'<(?:script|img|source|iframe)\b[^>]*\ssrc="([^"]+)"'
-        r'|<link\b[^>]*\shref="([^"]+)"', re.I)
+    FETCHING_RELS = {"stylesheet", "preload", "prefetch", "preconnect",
+                     "dns-prefetch", "icon", "apple-touch-icon", "manifest",
+                     "modulepreload"}
+    src_re = re.compile(r'<(?:script|img|source|iframe|embed)\b[^>]*\ssrc="([^"]+)"', re.I)
+    link_re = re.compile(r"<link\b([^>]*)>", re.I)
+
     for page in sorted(site.rglob("*.html")):
         html = page.read_text(encoding="utf-8")
-        for m in fetched.finditer(html):
-            url = m.group(1) or m.group(2)
-            assert not re.match(r"https?://|//", url), (
-                f"{page.name}: third-party resource {url}")
+        for m in src_re.finditer(html):
+            assert not re.match(r"https?://|//", m.group(1)), (
+                f"{page.name}: third-party resource {m.group(1)}")
+        for m in link_re.finditer(html):
+            attrs = m.group(1)
+            rels = set((re.search(r'\brel="([^"]+)"', attrs, re.I) or
+                        re.match("", "")).group(1).lower().split()) \
+                if re.search(r'\brel="', attrs, re.I) else set()
+            if not (rels & FETCHING_RELS):
+                continue                     # canonical, alternate: metadata
+            href = re.search(r'\bhref="([^"]+)"', attrs, re.I)
+            assert href and not re.match(r"https?://|//", href.group(1)), (
+                f"{page.name}: third-party resource {href.group(1) if href else attrs}")
 
 
 def test_outbound_links_are_allowlisted(site):
@@ -279,6 +294,39 @@ def test_outbound_links_are_allowlisted(site):
         html = page.read_text(encoding="utf-8")
         for m in re.finditer(r'<a\b[^>]*\shref="(https?://[^"]+)"', html):
             assert allowed.match(m.group(1)), f"{page.name}: unlisted {m.group(1)}"
+
+
+def test_some_page_carries_both_marks(site):
+    """Obligation O-9 as a passing test.
+
+    MARK_DRIFT can only fire where both marks appear together; on a page with
+    one mark it is a decoration. At the P3.2 review stop that page was Projects
+    (17 ✓ / 2 ✗). The owner then supplied TS-Sentry's metrics, which correctly
+    removed the last ✗ from Projects, and coverage migrated to /audit, where
+    the A4 limitations table carries the crosses.
+
+    That migration is fine — but it must never silently become zero. This
+    asserts some page still exercises the gate for real.
+    """
+    dual = []
+    for page in sorted(site.rglob("*.html")):
+        html = page.read_text(encoding="utf-8")
+        svgs = re.findall(r'<svg[^>]*class="mark[^"]*"[^>]*>', html)
+        if any("mark--check" in s for s in svgs) and any("mark--cross" in s for s in svgs):
+            dual.append(page.name)
+    assert dual, "no page carries both marks — MARK_DRIFT is unexercised on real output"
+
+
+def test_marks_never_claim_unverified(site):
+    """C-27, as a passing test: a ✓ must never sit on an entry whose metrics are
+    pending. Defect D-25 was this failure in the Experience receipts."""
+    data = json.loads((ROOT / "data/projects.json").read_text(encoding="utf-8"))
+    pending = [p["name"] for p in data["projects"] if p.get("metrics_pending")]
+    html = (site / "projects/index.html").read_text(encoding="utf-8")
+    for name in pending:
+        block = html.split(name, 1)[1][:1200] if name in html else ""
+        assert "mark--check" not in block.split("</article>")[0], (
+            f"{name} has pending metrics but renders a verification check")
 
 
 def test_every_page_has_exactly_one_h1(site):

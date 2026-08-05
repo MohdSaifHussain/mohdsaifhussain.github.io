@@ -8,7 +8,12 @@
 
 <section class="section section--head">
   <div class="section-head">
-    <h1 class="display-lg">Certifications &amp; courses</h1>
+    {# R-07 site-wide: h1 matches the nav label ("04 CERTIFICATIONS"). The
+       "& courses" scope moves to the sub-line so the heading and the nav agree. #}
+    <div class="head-stack">
+      <h1 class="display-lg">Certifications</h1>
+      <span class="mono-meta">AND COMPLETED COURSES</span>
+    </div>
     <span class="mono-meta">{{ '%02d' % (certifications | length) }} ENTRIES · VERIFIED ONLY</span>
   </div>
 </section>
@@ -40,7 +45,10 @@
 <section class="section empty-state">
   <span class="empty-numeral">{{ '%02d' % (certifications | length) }} / {{ '%02d' % (certifications | length) }}</span>
   <p class="empty-quote">Entries appear as completed — verified only.</p>
-  <p class="mono-meta empty-policy">Only entries carrying a real credential-verification link, or an honest declaration that no public verification exists, are accepted here. No issuer logos or trademarks are reproduced.</p>
+  {# Owner-authored status note, signed 2026-08-06. Rendered in the existing
+     empty-state slot; retires by data edit when the first real entry lands. #}
+  <p class="mono-meta empty-policy">{{ status_note }}</p>
+  <p class="mono-meta empty-policy">Every tile will carry a live verification link. Nothing is listed that cannot be checked. No issuer logos or trademarks are reproduced.</p>
 </section>
 
 <section class="section">

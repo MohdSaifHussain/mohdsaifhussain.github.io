@@ -8,5 +8,7 @@
     "no_public_verification": false,
     "public": true
   },
+  "status_note": "In progress. Entries appear here only when completed and publicly verifiable — a policy, not a placeholder.",
+  "_status_note_provenance": "Owner-authored text, signed 2026-08-06. Rendered in the existing empty-state slot; no layout change. Retires by data edit when the first real entry lands.",
   "certifications": []
 }
