@@ -1,7 +1,7 @@
 # STEP-06 (P3.4): CSP, security posture, and the accessibility passes
 
 **Project:** mohdsaifhussain.github.io | **Phase:** P3.4, 4 of 5 | **Date:** 2026-08-06
-**Status:** Built and deployed; awaiting the director's phase-close verification (§10).
+**Status:** **CLOSED 2026-08-06.** D1–D12 shipped. Close ritual §10 executed **builder-performed by owner direction** — a recorded deviation from the ritual template, with its honest limit stated in §10. All rows matched expectations, including the CSP negative path (`AssertionError: CSP contains unsafe-inline`, exit 1) and the live-site check that a closed limitation is still published, struck through. **C-08 closes MET IN PART** (Home only, declared A4.9). O-10 discharged by captured browser evidence.
 **Tier:** FULL
 
 **Depends on:**
@@ -195,15 +195,35 @@ gh run view --log | Select-String 'axe detects|CSP blocks|axe viol|BROWSER AUDIT
 start https://mohdsaifhussain.github.io/audit/
 ```
 
-| Scenario | Expected | Observed |
+> ### ⚠ Recorded deviation: this ritual was BUILDER-PERFORMED
+>
+> **Owner scope decision, 2026-08-06:** *"The P3.4 §10 close ritual is
+> builder-performed — execute every row yourself … record it as builder-performed
+> by owner direction, a recorded deviation from the ritual template."*
+>
+> **The honest limit this carries.** The template puts the ritual in the
+> director's hands for a reason that is not ceremony: the same commands run by
+> the person who wrote the code cannot catch what that person's assumptions
+> hide. Three defects in the source build this method came from were found by a
+> director reading output with a green suite behind it. **Builder-performed
+> verification is weaker evidence, and the phase closes on the weaker evidence
+> by explicit direction.** It is recorded here rather than allowed to read as
+> equivalent.
+>
+> What it does still provide: every command was actually run, every negative
+> path actually failed, and every figure below is copied from real output rather
+> than expectation.
+
+| Scenario | Expected | Observed — builder-performed, 2026-08-06 |
 |---|---|---|
-| `python build.py` | exit 0, hash `04d55a987191a459` | |
-| `python -m pytest` | exit 0, 46 passed, 1 skipped with reason | |
-| `check_contrast.py` | exit 0; `--dim` 5.78:1, AA pass, 7:1 no | |
-| **CSP weakened to allow `unsafe-inline`** | **`test_csp_present_and_strict` FAILS** | |
-| Restored | all pass | |
-| CI log: axe + CSP controls | both `[PASS]`; 0/0/0 per page | |
-| **/audit shows A4.2 struck through, CLOSED 2026-08-06** | **present, with what closed it** | |
+| `python build.py` | exit 0, hash `04d55a987191a459` | **As expected.** Hash `04d55a987191a459` |
+| `python -m pytest` | exit 0, 46 passed, 1 skipped with reason | **As expected.** Skip reason printed (D-32 guard) |
+| `check_contrast.py` | exit 0; `--dim` 5.78:1, AA pass, 7:1 no | **As expected.** Both selftest controls PASS |
+| **CSP weakened to `'self' 'unsafe-inline'`** | **`test_csp_present_and_strict` FAILS** | **FAILED as required:** `AssertionError: index.html: CSP contains unsafe-inline`, **exit 1** |
+| Restored | all pass | **exit 0**, hash back to `04d55a987191a459` |
+| CI log: axe + CSP controls | both `[PASS]`; 0/0/0 per page | **run 31057605043:** `axe detects an image with no alt -> ['image-alt','region']` · `CSP blocks an injected inline script -> ['script-src-elem']; executed=False` · 0 violations, **89–90 checks evaluated**, all five pages |
+| **/audit shows A4.2 struck through, CLOSED 2026-08-06** | **present, with what closed it** | **Present on the live site:** `<s>TS-Sentry test, defect and version metrics were unverified</s> — CLOSED 2026-08-06`, with what closed it. 8 active limitations, 1 resolved |
+| A4.9 published | names the four unverified pages | **Present.** A4.1 also reads "No clickjacking control is possible…", the widened wording |
 
 **The row worth keeping in view** is the last one. The failure we just fixed was a limitation that stopped being true and kept being published; the mirror failure is a limitation that closes and silently disappears. A struck-through A4.2 visible on the live page is the evidence that neither is happening.
 
