@@ -91,8 +91,30 @@ def download() -> None:
               f"sha256={hashlib.sha256(data).hexdigest()[:16]}")
 
 
+def find_gaps(cmaps: dict[str, set[int]]) -> list[tuple[str, int]]:
+    """The gate itself: pure over cmaps, so a SYNTHETIC poisoned cmap can drive
+    the negative control.
+
+    Defect D-18: the negative control used to assert `0x2717 not in <a real
+    font>`, which tests a precondition of the fixture rather than the gate's
+    behaviour — and would fail for the wrong reason if that glyph were ever
+    added. It also made the suite's result depend on files that exist on one
+    machine and not in CI, which made the test COUNT environment-dependent.
+    That count is destined for /audit, and a number that changes with the
+    machine is not evidence.
+    """
+    gaps: list[tuple[str, int]] = []
+    for stem, (_rel, family, *_r) in FACES.items():
+        have = cmaps.get(stem, set())
+        for cp in REQUIRED[family]:
+            if cp not in have:
+                gaps.append((stem, cp))
+    return gaps
+
+
 def coverage() -> tuple[dict[str, set[int]], list[tuple[str, int]]]:
-    """Return per-face cmaps and the list of (face, codepoint) gaps that matter."""
+    """Coverage of the upstream TTFs. Maintenance tool only — requires the
+    downloaded sources, which are gitignored. Never used by the test suite."""
     cmaps: dict[str, set[int]] = {}
     for stem in FACES:
         path = SRC / f"{stem}.ttf"
@@ -101,13 +123,7 @@ def coverage() -> tuple[dict[str, set[int]], list[tuple[str, int]]]:
         font = TTFont(str(path), lazy=True)
         cmaps[stem] = set(font.getBestCmap())
         font.close()
-
-    gaps: list[tuple[str, int]] = []
-    for stem, (_rel, family, *_r) in FACES.items():
-        for cp in REQUIRED[family]:
-            if cp not in cmaps[stem]:
-                gaps.append((stem, cp))
-    return cmaps, gaps
+    return cmaps, find_gaps(cmaps)
 
 
 def shipped_coverage() -> tuple[dict[str, set[int]], list[tuple[str, int]]]:
@@ -129,13 +145,7 @@ def shipped_coverage() -> tuple[dict[str, set[int]], list[tuple[str, int]]]:
         font = TTFont(str(path), lazy=True)
         cmaps[stem] = set(font.getBestCmap())
         font.close()
-
-    gaps: list[tuple[str, int]] = []
-    for stem, (_rel, family, *_r) in FACES.items():
-        for cp in REQUIRED[family]:
-            if cp not in cmaps[stem]:
-                gaps.append((stem, cp))
-    return cmaps, gaps
+    return cmaps, find_gaps(cmaps)
 
 
 def report(cmaps: dict[str, set[int]]) -> None:

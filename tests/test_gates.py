@@ -114,13 +114,26 @@ def test_template_missing_refused():
     assert e.value.reason == "TEMPLATE_MISSING"
 
 
-def test_font_coverage_gate_detects_missing_glyph():
-    """The glyph gate must fail on a codepoint no shipped face carries.
+def _complete_synthetic_cmaps() -> dict[str, set[int]]:
+    """A cmap set that satisfies every requirement — built, not loaded."""
+    return {stem: set(subset_fonts.REQUIRED[family])
+            for stem, (_rel, family, *_r) in subset_fonts.FACES.items()}
 
-    Reads the SHIPPED woff2, not the gitignored upstream TTFs (defect D-18)."""
-    cmaps, _gaps = subset_fonts.shipped_coverage()
-    assert 0x2717 not in cmaps["InstrumentSerif-Regular"], (
-        "U+2717 is expected absent — this negative control depends on it")
+
+def test_font_coverage_gate_detects_missing_glyph():
+    """Negative control driven by a SYNTHETIC poisoned cmap.
+
+    Defect D-18: this used to assert `0x2717 not in <a real font>`, which tests
+    a property of the fixture rather than the gate, depends on gitignored files,
+    and would fail for the wrong reason if that glyph were ever added. Removing
+    one required codepoint from a synthetic complete set proves the gate finds
+    exactly that gap — identically on any machine, with no files and no network.
+    """
+    cmaps = _complete_synthetic_cmaps()
+    assert subset_fonts.find_gaps(cmaps) == [], "synthetic complete set must be clean"
+
+    cmaps["IBMPlexMono-Regular"].discard(0x2713)
+    assert subset_fonts.find_gaps(cmaps) == [("IBMPlexMono-Regular", 0x2713)]
 
 
 # ----------------------------------------------------- positive controls ---
