@@ -472,3 +472,9 @@ footer { padding: var(--pad-row) var(--gutter) 38px; border-top: var(--rule-mid-
    Both strings are IBM Plex Mono, so ch is an exact unit here. */
 [data-clock] { min-width: 18ch; }
 [data-clock] [data-clock-text] { white-space: nowrap; }
+
+/* Closed limitations remain published, visually distinguished from active ones
+   (defect D-37). Kept rather than deleted: a register showing only what is
+   currently broken teaches nothing about how the posture got here. */
+.audit-row--resolved { color: var(--dim); }
+.audit-row--resolved s { text-decoration-thickness: 1px; }

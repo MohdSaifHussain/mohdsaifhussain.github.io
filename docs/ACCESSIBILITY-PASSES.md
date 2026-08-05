@@ -49,24 +49,31 @@ unfocusable to avoid dead tab stops — see the A3.4 ruling and STEP-05 Q2.
 
 ## C-08 — NVDA, per page
 
+**C-08 status: MET IN PART, declared under charter §8.** Director's ruling,
+2026-08-06: *"NVDA covered Home only. Close C-08 as a declared partial — Home
+verified, the other four pages named on /audit as unverified by screen reader."*
+
 | Page | 1. Title & headings | 2. Link names | 3. Marks silent | 4. Current page | 5. Clock quiet |
 |---|---|---|---|---|---|
 | **Home** | announced; headings walked sensibly | — | marks silent | current page announced | **silent over one minute** |
-| Projects | *not yet recorded* | | | | |
-| Experience | *not yet recorded* | | | | |
-| Certifications | *not yet recorded* | | | | |
-| Audit | *not yet recorded* | | | | |
+| Projects | **not verified by screen reader** | — | — | — | n/a |
+| Experience | **not verified by screen reader** | — | — | — | n/a |
+| Certifications | **not verified by screen reader** | — | — | — | n/a |
+| Audit | **not verified by screen reader** | — | — | — | n/a |
 
-> ⚠ **C-08 IS NOT YET SATISFIED.** Four of the five pages have no recorded
-> findings — the submitted text carried the literal placeholder `[findings]` for
-> Projects, Experience, Certifications and Audit.
->
-> These rows are left visibly empty rather than filled by inference. A screen
-> reader pass is exactly the evidence that cannot be reconstructed from anything
-> else in this repo, and a plausible-looking row would be indistinguishable from
-> a real one to every future reader — including the owner.
->
-> **C-08 reports UNMET until they are supplied.**
+**What the partial does and does not cover.** The pass exercised the five
+checklist points on Home. The other four pages were **not** examined with a
+screen reader, and nothing here should be read as evidence about them. They
+share the same nav, footer, mark macros and heading structure, so there is a
+reasonable expectation they behave alike — **an expectation is not an
+observation**, and this row is the difference between the two.
+
+Declared on /audit as A4.9 rather than left implicit, so a reader of the site
+learns the limit from the site itself rather than from this file.
+
+**Carried forward:** the remaining four pages are re-offered at every release
+under the same five-point checklist. The limit narrows only when a page is
+actually examined — never by the passage of time or by the site being unchanged.
 
 **Home's result confirms the design intent behind two rulings:** the marks are
 `aria-hidden` with adjacent text carrying meaning (the D-14 ruling), and the

@@ -415,6 +415,7 @@ def build() -> int:
         "csp": Markup(csp_value()),
         "audit_spec": audit_spec,
         "limitations": audit_spec["a4_limitations"],
+        "resolved": audit_spec.get("a4_resolved", []),
         # CI writes measured values into data/generated/audit.json. Absent on
         # any first deploy, and absent now — so the audit page renders
         # "— AT DEPLOY" honestly rather than an optimistic placeholder. That

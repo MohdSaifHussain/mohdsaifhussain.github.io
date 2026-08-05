@@ -93,6 +93,18 @@
       <span class="mono-meta">{{ lim.reason }}</span>
     </div>
     {% endfor %}
+
+    {# Closed limitations stay published. A register showing only what is
+       currently broken teaches nothing about how the posture got here, and a
+       declaration that quietly disappears is indistinguishable from one never
+       made. A limit leaves the active list only when it genuinely narrowed. #}
+    {% for lim in resolved %}
+    <div class="audit-row audit-row--a4 audit-row--resolved">
+      <span class="mono-meta dim">{{ lim.id }}</span>
+      <span>{{ m.mark_check() }}<s>{{ lim.limitation }}</s> — CLOSED {{ lim.closed }}</span>
+      <span class="mono-meta">{{ lim.closed_by }}</span>
+    </div>
+    {% endfor %}
   </div>
 
 </section>

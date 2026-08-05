@@ -447,6 +447,44 @@ def test_contrast_recomputed_meets_aa():
     assert r.returncode == 0, r.stdout + r.stderr
 
 
+def test_declared_limitations_reach_the_published_page(site):
+    """Charter §8, as a passing test: a limitation declared in audit-spec.json
+    must actually appear on /audit.
+
+    A limit that exists only in a data file is a limit nobody is told about.
+    This is what stops the screen-reader partial (A4.9) — or any future
+    declaration — from being recorded internally and quietly not published.
+    """
+    spec = json.loads((ROOT / "data/audit-spec.json").read_text(encoding="utf-8"))
+    html = (site / "audit/index.html").read_text(encoding="utf-8")
+    for row in spec["a4_limitations"] + spec.get("a4_resolved", []):
+        assert row["id"] in html, f"{row['id']} declared but absent from /audit"
+    assert "A4.9" in html, "the screen-reader partial must be published"
+
+
+def test_no_limitation_contradicts_the_data(site):
+    """Defect D-37, as a passing test.
+
+    /audit published "TS-Sentry metrics are unverified" for a full phase after
+    the owner supplied them and the card started rendering a verification mark.
+    A declared limit that has quietly stopped being true is the same failure as
+    a test that has quietly stopped asserting (D-32), pointed the other way.
+
+    A limit must leave the ACTIVE list when it closes — into the resolved list,
+    never into nothing.
+    """
+    spec = json.loads((ROOT / "data/audit-spec.json").read_text(encoding="utf-8"))
+    projects = json.loads((ROOT / "data/projects.json").read_text(encoding="utf-8"))
+
+    active = " ".join(r["limitation"].lower() for r in spec["a4_limitations"])
+    for p in projects["projects"]:
+        if p.get("verified_metrics") and not p.get("metrics_pending"):
+            name = p["name"].lower()
+            assert not (name in active and "unverified" in active), (
+                f"{p['name']} has metrics but an active limitation still calls "
+                f"them unverified")
+
+
 def test_every_page_has_exactly_one_h1(site):
     """C-24."""
     for page in sorted(site.rglob("*.html")):
