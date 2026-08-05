@@ -1,7 +1,7 @@
 # STEP-03 (P3.1): Scaffold, build pipeline, fonts, tokens, repo connection
 
 **Project:** mohdsaifhussain.github.io | **Phase:** P3.1, 1 of 5 | **Date:** 2026-08-06
-**Status:** Specified, not started
+**Status:** **CLOSED 2026-08-06.** D1–D7 plus added deliverable D9 implemented and deployed. Phase-close ritual §10 executed by hand in PowerShell by the director, all steps matching their pre-stated expected results — including the poisoned `site.css` negative path (exit 1, `REASON=COLOR_LITERAL`, `_site/` untouched, hash restored on revert). Live-site eye check confirmed the nav ✓ renders as the drawn shared-definition stroke, no D-14 regression. C-17 closed on the director's re-confirmation plus a verified 301 redirect and `https_enforced: true`.
 **Tier:** FULL (director's ruling, this session)
 **Depends on:**
 - STEP-01-CHARTER.md v1.0 (frozen; 36 conditions; the `_status`/C-27 verification regime; §7 platform constraint register)
@@ -139,7 +139,7 @@ Per your ruling: verified 2026-08-05 by owner, named exceptions listed, supersed
 - [x] `git log -1 --format='%ae'` shows the noreply address on the first commit — *all 9 commits carry `263689115+MohdSaifHussain@users.noreply.github.com` and nothing else.*
 - [x] `_site` byte count recorded as a C-03 baseline — *110,804 B uncompressed home first view; recorded, **not** claimed as C-03 MET, which needs Lighthouse at P3.5.*
 - [x] `DECISIONS.md` and `DEFECTS.md` exist with the reading-pass defects — *18 defects and 5 review-stop findings.*
-- [ ] **C-17 — evidence obtained, awaiting the director's confirmation.** *`http://mohdsaifhussain.github.io/` returns `HTTP/1.1 301 Moved Permanently` → `https://`; the Pages API reports `https_enforced: true`. Stays unticked until the director re-confirms the checkbox per their standing instruction.*
+- [x] **C-17 MET.** *`http://mohdsaifhussain.github.io/` returns `HTTP/1.1 301 Moved Permanently` → `https://`; Pages API reports `https_enforced: true`; director re-confirmed the Settings checkbox after the deploy went green (2026-08-06). Closed on that evidence, not on the setting alone.*
 
 ### Defects found by running it, not by inspection
 
@@ -203,14 +203,15 @@ curl.exe -s -o NUL -D - http://mohdsaifhussain.github.io/
 start https://mohdsaifhussain.github.io/
 ```
 
-| Scenario | Expected | Observed |
+| Scenario | Expected | Observed — director, by hand, 2026-08-06 |
 |---|---|---|
-| `python build.py` | exit 0, five pages, hash `9ba23fb8167a4e2a` | |
-| `python build.py --selftest` | exit 0; 12 negative + 7 positive controls all PASS | |
-| `python -m pytest` | exit 0, `28 passed` | |
-| **Poisoned `site.css`** | **exit 1, `REASON=COLOR_LITERAL`, `_site/` untouched** | |
-| Restored `site.css` | exit 0, hash back to `9ba23fb8167a4e2a` | |
-| `http://` request | `301 Moved Permanently` → `https://` | |
+| `python build.py` | exit 0, five pages, hash `9ba23fb8167a4e2a` | As expected |
+| `python build.py --selftest` | exit 0; 12 negative + 7 positive controls all PASS | As expected |
+| `python -m pytest` | exit 0, `28 passed` | As expected |
+| **Poisoned `site.css`** | **exit 1, `REASON=COLOR_LITERAL`, `_site/` untouched** | **As expected — refused, `_site/` untouched** |
+| Restored `site.css` | exit 0, hash back to `9ba23fb8167a4e2a` | As expected |
+| `http://` request | `301 Moved Permanently` → `https://` | As expected |
+| Live eye check | nav ✓ is a drawn stroke, not a system glyph | As expected — no D-14 regression |
 
 **The row worth keeping in view** is the poisoned one. It is the only step that demonstrates the build refusing on a real artifact rather than on a fixture — and after D-18, "the suite is green" has already been shown once in this phase to mean less than it looks.
 
