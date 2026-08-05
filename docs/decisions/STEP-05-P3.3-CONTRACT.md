@@ -1,7 +1,7 @@
 # STEP-05 (P3.3): The three animations, reduced motion, clock, interaction QA
 
 **Project:** mohdsaifhussain.github.io | **Phase:** P3.3, 3 of 5 | **Date:** 2026-08-06
-**Status:** Specified, not started. Awaiting the director's approval, including rulings on Q1–Q3 (§7), which gate deliverable D4.
+**Status:** Built and deployed; awaiting the director's phase-close verification (§11).
 **Tier:** FULL
 
 **Depends on:**
@@ -141,3 +141,91 @@ You assigned it to the A3.3 family, whose declared answer is **WHAT CAN I DO**. 
 - I have no browser in this environment. Motion smoothness, the 60fps requirement in C-15, and "feedback within 100 ms" (C-16) are **not directly measurable by me**; I can prove the properties and durations in code, and the director observes the behaviour. Stated plainly rather than implied.
 - A3.2 was built as layout in P3.2 under R-06; its C-14/C-15 verification is carried into this phase and is a *verification*, not a rebuild.
 - The interaction-QA matrix is a manual artefact. Where a cell depends on observation, it records who observed it.
+
+## 10. Outcome
+
+**Status:** Built and deployed. Awaiting the director's phase-close verification (§11).
+
+**Shipped:** D1–D9. 41 tests passing, 1 skipped with a printed reason. Four checkers: 12 build gates, 16 C-33 controls, 10 content controls, 9 animation controls.
+
+### Exit checklist, evidenced
+
+- [x] `check_animations.py` exits 0 — *4 declared, 4 implemented, both directions agree.*
+- [x] Negative controls — *undeclared A3.9, `@keyframes`, `width` transition, `transition: all`, a **timed** colour transition, and a 900ms duration all refuse with distinct codes.*
+- [x] Positive control — *real `opacity 200ms` and `transform 250ms` accept; real CSS clean.*
+- [x] A3.1 bounded and inert — *`left: calc(120px + …)`, `right: calc(220px + …)` derived from grid tokens, plus `pointer-events: none`. Either alone suffices. **Links clickable with the layer open, observed by the director 2026-08-06.***
+- [x] Reduced motion — *one lever, `--motion-reveal: 0ms`. Director observed the reveal still functioning with zero transition.*
+- [x] Clock degrades honestly — *no-JS renders `SNAPSHOT 02:45 IST`; the live dot appears only once ticking; without `Intl` the snapshot label stays rather than substituting non-IST local time.*
+- [x] D4 identical `:hover`/`:focus-within`, no `tabindex`, **no layout shift** — *background and colour only; verified by inspection of the only two rules involved.*
+- [x] Interaction-QA matrix complete — *13 components × 7 states, with C/O/? distinguished.*
+- [x] Deterministic build; C-33, content and animation checkers clean.
+
+### Defects found by running it, or by reading it against its claims
+
+1. **D-29** — the weekly Action approved in P3.2 **was never built**; an approved control existed only on paper for a phase. Found by reading the prior rulings back against the repo.
+2. **D-31** — the clock's honest fallback **shifted the page**: an 18→12 character swap after DOMContentLoaded, inside the CLS window, against C-02. I built the correct behaviour and then let it break a different condition.
+3. **D-32** — a test that **passed by asserting nothing** once the data it guarded changed. Same class as D-18: green for the wrong reason. Now cannot go vacuous, and skips print their reasons.
+4. **D-30** — a reported defect that four measurements did not reproduce; the edit was refused and the report withdrawn on the evidence.
+
+### Readings and deviations, recorded
+
+- **A3.4 added to the handoff §5 list by recorded ruling.** The list is four. *"Nothing else ships"* is preserved as **the list changes only by recorded ruling, never silently** — and `check_animations.py` enforces that in both directions, which a frozen count could not.
+- **Q1 correction accepted from the builder:** the director had classified A3.4 by mechanism; C-12 classifies by declared answer. Declared **WHERE AM I**, not WHAT CAN I DO, because the rows carry no control.
+- **Mobile inline metrics** — approved as an owner-reviewed design ruling: nothing may be reachable by hover alone.
+
+### Obligations
+
+**Discharged:** the property/observation split (director's observations recorded in the QA matrix with dates).
+**Carried to P3.4:** O-10 (JSON-LD CSP behaviour confirmed by execution).
+**Carried to P3.5:** O-8 (`font-display: swap` measured).
+**Deferred, no owner:** owner-measured counts for the remaining three projects, guarded by the basis-agreement test.
+
+### Honest limits
+
+1. **`check_animations.py` identifies implementations by marker comment.** It proves the declared list and the CSS agree *by name*, not that the CSS behaves as its name claims. Three of the four carry the director's observation; that is what closes the gap.
+2. I have no browser. 60fps (C-15) and 100ms feedback (C-16) are **not measurable by me** and are marked `O` in the QA matrix or left `?`.
+3. **A3.4's focus half is inert** — no receipts row contains a focusable element, so `:focus-within` cannot fire on today's content. Declared on /audit.
+4. The A3.1 layer is hidden below 900px; all metrics render inline there instead, so nothing is hover-only.
+
+## 11. Phase close — the director's ritual
+
+```powershell
+# 1. Build, tests, all four checkers. Expect exit 0 throughout,
+#    "41 passed, 1 skipped", and the skip REASON printed.
+python build.py;                          "exit=$LASTEXITCODE"
+python -m pytest;                         "exit=$LASTEXITCODE"
+python tools\check_animations.py --selftest; "exit=$LASTEXITCODE"
+python tools\check_c33.py;                "exit=$LASTEXITCODE"
+python tools\check_content.py;            "exit=$LASTEXITCODE"
+
+# 2. NEGATIVE PATH — declare an animation that does not ship.
+#    Expect exit 1, REASON=UNSHIPPED_ANIMATION.
+Copy-Item data\audit-spec.json data\audit-spec.json.bak
+(Get-Content data\audit-spec.json -Raw) -replace '"id": "A3.4"','"id": "A3.7"' | Set-Content data\audit-spec.json -Encoding utf8
+python tools\check_animations.py;         "exit=$LASTEXITCODE  (expect 1)"
+Move-Item -Force data\audit-spec.json.bak data\audit-spec.json
+python tools\check_animations.py;         "exit=$LASTEXITCODE  (expect 0)"
+
+# 3. Evidence links resolve (the networked check, run by hand here).
+python tools\fetch_stats.py --verify-links; "exit=$LASTEXITCODE"
+
+# 4. By eye, on the live site.
+start https://mohdsaifhussain.github.io/
+```
+
+| Scenario | Expected | Observed |
+|---|---|---|
+| `python build.py` | exit 0, hash `c6d32ad5345d78f3` | |
+| `python -m pytest` | exit 0, 41 passed **1 skipped, reason printed** | |
+| `check_animations.py --selftest` | exit 0, 9 controls PASS | |
+| **A3.4 renamed to A3.7 in the spec** | **exit 1, `REASON=UNSHIPPED_ANIMATION`** | |
+| Restored | exit 0 | |
+| `--verify-links` | exit 0, 12 URLs at 200 | |
+| **Clock across a minute boundary** | **seconds tick; nothing beside it moves** | |
+| **JS disabled, reload Home** | **reads `SNAPSHOT hh:mm IST`, no dot** | |
+
+**The row worth keeping in view** is the renamed-animation one. It is the only step that demonstrates the *second* direction of the gate — that declaring motion which does not ship fails too. The first direction was already proved by the selftest; this one proves the list cannot drift away from reality in either direction.
+
+**Read by eye:** with JS off the clock reads `SNAPSHOT` and carries no dot; with JS on the dot appears and seconds advance without the strip shifting. Tab into a Home ledger row — the evidence should reveal and REPO should still be clickable. Hover an Experience receipts row — the tint should appear with no text reflow.
+
+
