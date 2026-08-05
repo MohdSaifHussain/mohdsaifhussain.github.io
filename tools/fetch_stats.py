@@ -121,6 +121,53 @@ def age_days(snapshot: dict) -> float:
     return (dt.datetime.now(dt.timezone.utc) - as_of).total_seconds() / 86400
 
 
+def verify_links() -> int:
+    """Every evidence link in the snapshot must actually resolve.
+
+    Director's ruling 2026-08-06: resolvability checking belongs HERE, in the
+    weekly networked job, not in the build. The build stays hermetic (contract
+    3.2) and a link that dies later is caught by machinery within a week rather
+    than by the owner's eye.
+
+    An anchor is a claim: "this figure was stated at this version, and here is
+    the proof". A claim whose proof 404s is worse than no claim, because it
+    looks checkable and is not.
+    """
+    if not OUT.exists():
+        print(f"REASON=SNAPSHOT_MISSING  {OUT.relative_to(ROOT)}")
+        return 1
+    snap = json.loads(OUT.read_text(encoding="utf-8"))
+
+    failures = []
+    for name, r in sorted(snap["repos"].items()):
+        for field in ("anchor_url", "repo_url"):
+            url = r.get(field)
+            if not url:
+                failures.append((name, field, "missing"))
+                continue
+            req = urllib.request.Request(url, method="HEAD", headers={
+                "User-Agent": "mohdsaifhussain.github.io-linkcheck"})
+            try:
+                with urllib.request.urlopen(req, timeout=30) as resp:
+                    code = resp.status
+            except urllib.error.HTTPError as e:
+                code = e.code
+            except Exception as e:                        # noqa: BLE001
+                code = f"ERR {e}"
+            ok = code == 200
+            print(f"  {'OK ' if ok else 'DEAD'}  {code:<6} {name:<24} {field}")
+            if not ok:
+                failures.append((name, field, code))
+
+    if failures:
+        print("\nEVIDENCE LINK CHECK FAILED")
+        for name, field, code in failures:
+            print(f"  REASON=DEAD_EVIDENCE_LINK  {name}.{field} -> {code}")
+        return 1
+    print("\nEVIDENCE LINKS OK — every anchor and repo URL resolves")
+    return 0
+
+
 def check() -> int:
     if not OUT.exists():
         print(f"REASON=SNAPSHOT_MISSING  {OUT.relative_to(ROOT)} has never been fetched")
@@ -140,9 +187,13 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--check", action="store_true",
                     help="report snapshot staleness without fetching")
+    ap.add_argument("--verify-links", action="store_true",
+                    help="confirm every evidence link in the snapshot resolves")
     args = ap.parse_args()
     if args.check:
         return check()
+    if args.verify_links:
+        return verify_links()
 
     now = dt.datetime.now(dt.timezone.utc)
     repos = {}

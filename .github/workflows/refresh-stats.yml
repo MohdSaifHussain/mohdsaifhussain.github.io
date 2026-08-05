@@ -1,0 +1,76 @@
+# Weekly stats snapshot refresh + evidence-link resolvability check.
+#
+# Approved in P3.2 Q1 (weekly cadence) and extended by the director's ruling of
+# 2026-08-06: resolvability checking lives HERE, in the networked job, not in
+# the build. The build stays hermetic (STEP-04 requirement 3.2), and a link that
+# dies later is caught by machinery within a week rather than by the owner's eye.
+#
+# THE SINGLE-PATH GUARD (director's added condition, P3.2 Q1):
+# "the automation must be constrained to that single path — a bot commit
+#  touching any other file fails rather than lands — so the unreviewed surface
+#  is exactly one snapshot of public data, no wider."
+# Implemented below by diffing the working tree against that one path BEFORE
+# committing, and failing the job if anything else changed. The check runs
+# before the commit, not after, so a wider change never lands at all.
+#
+# The bot author is github-actions[bot]@users.noreply.github.com, already exempt
+# under charter Amendment 1 item (1). No further amendment is required.
+
+name: Refresh stats snapshot
+
+on:
+  schedule:
+    - cron: "17 4 * * 1"        # Mondays, 04:17 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: refresh-stats
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7.0.1
+
+      - uses: actions/setup-python@v7.0.0
+        with:
+          python-version: '3.14'
+
+      - name: Fetch anchors
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python tools/fetch_stats.py
+
+      - name: Verify every evidence link resolves
+        run: python tools/fetch_stats.py --verify-links
+
+      - name: Single-path guard — refuse to commit anything but the snapshot
+        run: |
+          CHANGED=$(git status --porcelain | awk '{print $2}')
+          echo "changed files:"; echo "$CHANGED"
+          for f in $CHANGED; do
+            if [ "$f" != "data/generated/github.json" ]; then
+              echo "REASON=OUT_OF_SCOPE_CHANGE  $f"
+              echo "The scheduled job may only modify data/generated/github.json."
+              exit 1
+            fi
+          done
+
+      - name: Commit if the snapshot changed
+        run: |
+          if git diff --quiet -- data/generated/github.json; then
+            echo "snapshot unchanged; nothing to commit"
+            exit 0
+          fi
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/generated/github.json
+          git commit -m "chore: weekly stats snapshot refresh
+
+          Anchors re-fetched and every evidence link verified to resolve.
+          Constrained to data/generated/github.json by the single-path guard."
+          git push
