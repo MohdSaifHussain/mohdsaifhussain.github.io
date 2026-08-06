@@ -130,6 +130,13 @@ jobs:
         run: |
           python -m http.server 8765 --directory _site &
           sleep 2
+          # Discriminator for the robots-txt audit failure: does the SERVER
+          # serve robots.txt, or is the failure inside the page? If this is
+          # 200 and Lighthouse still "cannot download" it, the block is
+          # in-page — i.e. our own connect-src 'none' refusing the probe, not
+          # a defect a real crawler would ever encounter.
+          echo "robots.txt over HTTP: $(curl -sS -o /dev/null -w '%{http_code}' http://127.0.0.1:8765/robots.txt)"
+          echo "sitemap.xml over HTTP: $(curl -sS -o /dev/null -w '%{http_code}' http://127.0.0.1:8765/sitemap.xml)"
           npx --yes @lhci/cli@0.15.1 collect \
             --url=http://127.0.0.1:8765/ \
             --url=http://127.0.0.1:8765/projects/ \
