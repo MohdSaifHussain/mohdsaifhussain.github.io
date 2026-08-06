@@ -81,9 +81,17 @@ def lighthouse_scores(lhci_dir: pathlib.Path) -> dict:
                 a = audits.get(ref.get("id"), {})
                 if a.get("score") is not None and a["score"] < 1 and \
                         a.get("scoreDisplayMode") not in ("notApplicable", "informative"):
-                    failed.append({"category": key, "id": ref["id"],
-                                   "title": a.get("title", ""),
-                                   "score": a["score"]})
+                    entry = {"category": key, "id": ref["id"],
+                             "title": a.get("title", ""),
+                             "score": a["score"]}
+                    # The audit's own detail rows say WHICH rule failed and
+                    # where. Without them a failing audit id is still a guess.
+                    items = (a.get("details") or {}).get("items") or []
+                    if items:
+                        entry["items"] = items[:5]
+                    if a.get("explanation"):
+                        entry["explanation"] = a["explanation"]
+                    failed.append(entry)
         if failed:
             row["failed_audits"] = failed
         per_page.append(row)
@@ -177,6 +185,10 @@ def main() -> int:
                 continue
             seen.add(key)
             print(f"  WHY {f['category']:<16} {f['id']:<34} {f['title'][:60]}")
+            if f.get("explanation"):
+                print(f"      explanation: {f['explanation'][:200]}")
+            for item in f.get("items", []):
+                print(f"      item: {json.dumps(item)[:220]}")
     absent = {"lighthouse", "axe", "validator", "contrast"} - set(measured)
     if absent:
         print(f"  absent (renders '— AT DEPLOY'): {', '.join(sorted(absent))}")
