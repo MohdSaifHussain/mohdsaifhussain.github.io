@@ -172,6 +172,13 @@ def main() -> int:
     print(f"wrote {OUT.relative_to(ROOT)}  as of {payload['as_of_display']}")
     if not measured:
         print("  NO MEASURED VALUES — every /audit cell will read '— AT DEPLOY'")
+    if lh:
+        profiles = sorted({r["profile"] for r in lh.get("runs", [])})
+        print(f"  runs         {lh.get('run_count', 0)} lighthouse reports "
+              f"across profiles: {', '.join(profiles) or 'none'}")
+        if len(profiles) < 2:
+            print("  WARNING  fewer than two form factors measured — C-01 "
+                  "requires mobile AND desktop (defect D-41)")
     for k, v in sorted(measured.items()):
         print(f"  {k:<12} {v}")
 
