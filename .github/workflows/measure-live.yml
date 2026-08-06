@@ -107,3 +107,22 @@ jobs:
           https://mohdsaifhussain.github.io with its real headers — gzip and
           cache-control — rather than a bare CI test server."
           git push
+          echo "PUBLISH_NEEDED=true" >> "$GITHUB_ENV"
+
+      # Defect D-45: a push made with the default GITHUB_TOKEN does NOT trigger
+      # other workflows — GitHub's own guard against recursive runs. So the
+      # measurement committed numbers that would never deploy, and /audit would
+      # have lagged one measurement behind SILENTLY AND FOREVER, with the page
+      # still carrying an "as of" stamp that looked current.
+      #
+      # Found by the release verification comparing SERVED bytes against BUILT
+      # bytes — neither alone would have shown it.
+      #
+      # Dispatching deploy explicitly is the fix that needs no new secret.
+      - name: Publish the measurement
+        if: env.PUBLISH_NEEDED == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh workflow run deploy.yml --ref main
+          echo "deploy dispatched so the measurement actually reaches /audit"
