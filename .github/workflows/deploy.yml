@@ -98,7 +98,7 @@ jobs:
 
       - name: Install audit tooling (CI only)
         run: |
-          npm ci || npm install
+          npm ci
           python -m pip install -r requirements-audit.txt
           python -m playwright install --with-deps chromium
 
