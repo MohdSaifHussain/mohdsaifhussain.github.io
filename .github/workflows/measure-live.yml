@@ -1,0 +1,109 @@
+# Measure the PUBLISHED site and publish what was measured.  P3.5 / D4.
+#
+# WHY THIS EXISTS, SEPARATELY FROM THE DEPLOY JOB
+# The deploy workflow measures a `python -m http.server` copy of _site. That is
+# the right place for gates that must BLOCK a bad deploy (axe, CSP, validator —
+# all environment-independent). It is the wrong place for PERFORMANCE figures:
+#
+#   published origin : Content-Encoding: gzip · Cache-Control: max-age=600
+#   CI test server   : neither
+#
+# So `uses-text-compression` and `uses-long-cache-ttl` deductions measured there
+# describe the test server, not the site. Publishing them as the site's
+# performance would break the standing principle this build adopted:
+#
+#   "any figure destined for /audit is measured in the environment that
+#    publishes it."
+#
+# This job measures https://mohdsaifhussain.github.io — the real origin, real
+# headers, real CDN — and commits the result, which triggers a rebuild so
+# /audit renders it. The figures therefore describe the PREVIOUS deploy, which
+# is why every value carries an "as of" stamp rather than implying "now".
+
+name: Measure the live site
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "40 4 * * 1"        # Mondays, after the stats refresh
+
+permissions:
+  contents: write
+
+concurrency:
+  group: measure-live
+  cancel-in-progress: false
+
+jobs:
+  measure:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7.0.1
+
+      - uses: actions/setup-python@v7.0.0
+        with:
+          python-version: '3.14'
+
+      - uses: actions/setup-node@v7.0.0
+        with:
+          node-version: '22'
+
+      - name: Install
+        run: |
+          npm ci || npm install
+          python -m pip install -r requirements.txt
+
+      - name: Lighthouse against the LIVE origin, both profiles
+        run: |
+          BASE=https://mohdsaifhussain.github.io
+          npx --yes @lhci/cli@0.15.1 collect \
+            --url=$BASE/ --url=$BASE/projects/ --url=$BASE/experience/ \
+            --url=$BASE/certifications/ --url=$BASE/audit/ \
+            --settings.formFactor=mobile --settings.screenEmulation.mobile=true \
+            --numberOfRuns=1 || true
+          npx --yes @lhci/cli@0.15.1 collect \
+            --url=$BASE/ --url=$BASE/projects/ --url=$BASE/experience/ \
+            --url=$BASE/certifications/ --url=$BASE/audit/ \
+            --settings.formFactor=desktop --settings.screenEmulation.disabled=true \
+            --settings.preset=desktop --numberOfRuns=1 --additive || true
+          echo "lhr reports: $(ls .lighthouseci/lhr-*.json 2>/dev/null | wc -l)  (expect 10)"
+
+      - name: Validator against the live origin
+        run: |
+          BASE=https://mohdsaifhussain.github.io
+          java -jar "$(npm root)/vnu-jar/build/dist/vnu.jar" --format json \
+            --exit-zero-always $BASE/ $BASE/projects/ $BASE/experience/ \
+            $BASE/certifications/ $BASE/audit/ > vnu.json 2> vnu.stderr || true
+          if [ ! -s vnu.json ] || ! python -c "import json;json.load(open('vnu.json'))" 2>/dev/null; then
+            mv vnu.stderr vnu.json
+          fi
+
+      - name: Write measured results
+        run: |
+          python tools/write_audit.py --selftest
+          python tools/write_audit.py --lighthouse .lighthouseci --vnu vnu.json \
+            --measured-against "https://mohdsaifhussain.github.io (published origin)"
+
+      # Same single-path guard as the stats refresh: the unreviewed surface is
+      # exactly one file of machine-measured values, no wider.
+      - name: Single-path guard
+        run: |
+          git add -f data/generated/audit.json
+          CHANGED=$(git status --porcelain | awk '{print $2}')
+          for f in $CHANGED; do
+            if [ "$f" != "data/generated/audit.json" ]; then
+              echo "REASON=OUT_OF_SCOPE_CHANGE  $f"; exit 1
+            fi
+          done
+
+      - name: Commit the measurement
+        run: |
+          if git diff --cached --quiet; then echo "unchanged"; exit 0; fi
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git commit -m "chore: measured against the published origin
+
+          Lighthouse and the W3C validator run against
+          https://mohdsaifhussain.github.io with its real headers — gzip and
+          cache-control — rather than a bare CI test server."
+          git push

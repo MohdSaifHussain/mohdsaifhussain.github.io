@@ -111,6 +111,9 @@ def main() -> int:
     ap.add_argument("--lighthouse", type=pathlib.Path)
     ap.add_argument("--vnu", type=pathlib.Path)
     ap.add_argument("--axe", type=pathlib.Path)
+    ap.add_argument("--measured-against", default="CI test server "
+                    "(python http.server: no gzip, no cache headers)",
+                    help="the environment these figures describe")
     ap.add_argument("--selftest", action="store_true")
     args = ap.parse_args()
 
@@ -170,6 +173,10 @@ def main() -> int:
         "as_of_display": now.astimezone(
             dt.timezone(dt.timedelta(hours=5, minutes=30))).strftime("%Y-%m-%d %H:%M IST"),
         "measured": measured,
+        # WHICH environment produced these figures. Without it a
+        # performance number is unreadable: the CI test server sends no
+        # gzip and no cache headers, the published origin sends both.
+        "measured_against": args.measured_against,
         "detail": detail,
     }
     OUT.parent.mkdir(parents=True, exist_ok=True)
