@@ -152,7 +152,12 @@ jobs:
             --url=http://127.0.0.1:8765/certifications/ \
             --url=http://127.0.0.1:8765/audit/ \
             --settings.formFactor=desktop --settings.screenEmulation.disabled=true \
-            --settings.preset=desktop --numberOfRuns=1 || true
+            --settings.preset=desktop --numberOfRuns=1 --additive || true
+          # --additive is LOAD-BEARING (defect D-41). Without it this second
+          # collect wipes .lighthouseci and erases the mobile results, so the
+          # published figure would be desktop-only while C-01 requires BOTH
+          # profiles on every page — a claim wider than the measurement.
+          echo "lhr reports collected: $(ls .lighthouseci/lhr-*.json 2>/dev/null | wc -l)  (expect 10 = 5 pages x 2 profiles)"
 
       # The connect-src diagnostic that lived here has been REMOVED.
       # It proved its point (see D-40 and DECISIONS): with connect-src 'self'
