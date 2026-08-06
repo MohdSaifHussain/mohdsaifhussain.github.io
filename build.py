@@ -379,6 +379,7 @@ def build() -> int:
                     if measured_path.exists() else {})
     measured = measured_doc.get("measured", {})
     measured_as_of = measured_doc.get("as_of_display", "")
+    measured_against = measured_doc.get("measured_against", "")
 
     problems += gate_anchors(projects, snapshot)
     if problems:
@@ -424,6 +425,7 @@ def build() -> int:
         # absence is this pipeline's negative control (C-30, C-35).
         "measured": measured,
         "measured_as_of": measured_as_of,
+        "measured_against": measured_against,
         "nav": NAV,
         "colophon": COLOPHON,
         "visits": VISITS,
