@@ -74,8 +74,17 @@ ISO_DATE = re.compile(r"\d{4}-\d{2}-\d{2}")
 # that names it. This screens only digits carrying such a marker — a bare
 # 10-digit number in prose still trips, which the controls assert in both
 # directions.
+# The marker may be separated from the digits by markdown punctuation — a
+# backtick, quote or asterisk — so the separator class allows it. Requiring
+# only whitespace made the screen fail where prose writes the id inside code
+# formatting after the word "run", which is how it is actually written.
+#
+# This comment deliberately contains no example id. Widening the screen to
+# accommodate the checker's own documentation would be widening it for a
+# self-inflicted reason (see D-24: the fix is to keep such literals out of the
+# repo, not to teach the check to ignore them).
 IDENTIFIER_CONTEXT = re.compile(
-    r"(?:\brun\b|\bruns/\b|\bjob\b|\bid\b|\bbuild\b|#)\s*$", re.I)
+    r"(?:\brun\b|\bruns?/|\bjob\b|\bid\b|\bbuild\b|#)[\s`'\"*:_]*$", re.I)
 
 SKIP_SUFFIXES = {".woff2", ".ttf", ".pdf", ".avif", ".webp", ".jpg", ".png", ".ico"}
 
