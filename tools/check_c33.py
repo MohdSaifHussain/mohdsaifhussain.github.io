@@ -66,6 +66,17 @@ PHONE_GROUPED = re.compile(r"(?<![\w.:-])\d{2,5}(?:[\s.\-()]+\d{2,5}){2,}(?![\w-
 PHONE_BARE = re.compile(r"(?<![\w.:+-])\d{10,12}(?![\w.-])")
 ISO_DATE = re.compile(r"\d{4}-\d{2}-\d{2}")
 
+# Defect D-38: a GitHub Actions run id is an 11-digit bare number, and quoting
+# one as EVIDENCE in a phase record tripped the phone check. Recording machine
+# evidence collided with detecting contact details.
+#
+# The discriminator is context, not shape: an identifier is introduced by a word
+# that names it. This screens only digits carrying such a marker — a bare
+# 10-digit number in prose still trips, which the controls assert in both
+# directions.
+IDENTIFIER_CONTEXT = re.compile(
+    r"(?:\brun\b|\bruns/\b|\bjob\b|\bid\b|\bbuild\b|#)\s*$", re.I)
+
 SKIP_SUFFIXES = {".woff2", ".ttf", ".pdf", ".avif", ".webp", ".jpg", ".png", ".ico"}
 
 
@@ -87,6 +98,9 @@ def phone_hits(text: str) -> list[str]:
                 continue                      # defect D-11: dates and timestamps
             if "," in raw:
                 continue                      # grouped byte counts: 129,380
+            # D-38: "run 31058175791" is an identifier, not a number to call.
+            if IDENTIFIER_CONTEXT.search(text[max(0, m.start() - 12):m.start()]):
+                continue
             digits = re.sub(r"\D", "", raw)
             if rx is PHONE_INTL and not 8 <= len(digits) <= 15:
                 continue
@@ -209,6 +223,16 @@ def selftest() -> int:
          'd="M1.6 6.3 4.5 9.2 10.4 3.3"', "PHONE_FOUND", False),
         ("contrast ratios MUST NOT trip",
          "#cfccc3 = 10.6:1 and #8f8c83 = 5.1:1", "PHONE_FOUND", False),
+
+        # D-38, both directions. Quoting machine evidence must not trip the
+        # check, and removing that false positive must not blind it to a real
+        # bare number sitting in prose.
+        ("a CI run id MUST NOT trip",
+         "CI run 31057605043 shows the controls passing", "PHONE_FOUND", False),
+        ("a job id MUST NOT trip",
+         "see job 31058175791 for the log", "PHONE_FOUND", False),
+        ("a bare number in prose MUST still trip",
+         f"reach me on {PHONE_BARE_REAL} any time", "PHONE_FOUND", True),
     ]
 
     for label, text, reason, must_trip in cases:
