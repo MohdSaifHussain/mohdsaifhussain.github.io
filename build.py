@@ -446,6 +446,9 @@ def build() -> int:
     measured = measured_doc.get("measured", {})
     measured_as_of = measured_doc.get("as_of_display", "")
     measured_against = measured_doc.get("measured_against", "")
+    _lh = (measured_doc.get("detail") or {}).get("lighthouse") or {}
+    measurement_protocol = _lh.get(
+        "protocol", "not yet measured under a stated protocol")
 
     problems += gate_anchors(projects, snapshot)
     if problems:
@@ -492,6 +495,7 @@ def build() -> int:
         "measured": measured,
         "measured_as_of": measured_as_of,
         "measured_against": measured_against,
+        "measurement_protocol": measurement_protocol,
         "nav": NAV,
         "colophon": COLOPHON,
         "visits": VISITS,

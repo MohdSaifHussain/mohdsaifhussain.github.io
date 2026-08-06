@@ -77,6 +77,14 @@
     {% endfor %}
   </div>
 
+  {# The protocol is published beside the scores it produced. A number whose
+     method is unstated cannot be checked or repeated — and single-run figures
+     were retired here after two consecutive runs of the same site differed by
+     39 points. #}
+  <p class="mono-meta audit-note">
+    MEASUREMENT PROTOCOL — {{ measurement_protocol }}
+  </p>
+
   <p class="mono-meta audit-note">
     {{ '%02d' % (audit_spec.a3_animations | length) }} ANIMATIONS SHIP. THE LIST CHANGES ONLY BY RECORDED RULING, NEVER SILENTLY — ANY UNDECLARED MOTION IS A DEFECT (C-12).
     SCORES MARKED “— AT DEPLOY” ARE MEASURED BY CI AT PUBLISH TIME AND NEVER HAND-ENTERED (C-35).
