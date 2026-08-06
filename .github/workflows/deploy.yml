@@ -154,37 +154,16 @@ jobs:
             --settings.formFactor=desktop --settings.screenEmulation.disabled=true \
             --settings.preset=desktop --numberOfRuns=1 || true
 
-      # DIAGNOSTIC ONLY — measures a COPY, never what ships.
-      # The robots-txt audit fails while curl gets HTTP 200, so the block is
-      # in-page. The hypothesis is our own connect-src 'none' refusing
-      # Lighthouse's probe. This tests that as a single variable on a throwaway
-      # copy, so the deployed site's CSP is never weakened to obtain a number.
-      - name: Diagnostic — is the SEO deduction caused by connect-src 'none'?
-        run: |
-          rm -rf _site-diag && cp -r _site _site-diag
-          grep -rl "connect-src 'none'" _site-diag --include="*.html" \
-            | xargs sed -i "s/connect-src 'none'/connect-src 'self'/g"
-          echo "diagnostic copy CSP:"; grep -o "connect-src '[a-z]*'" _site-diag/index.html | head -1
-          python -m http.server 8766 --directory _site-diag &
-          sleep 2
-          npx --yes @lhci/cli@0.15.1 collect --url=http://127.0.0.1:8766/ \
-            --settings.formFactor=mobile --settings.screenEmulation.mobile=true \
-            --numberOfRuns=1 --settings.onlyCategories=seo || true
-          python - <<'PY'
-          import json, pathlib
-          runs = sorted(pathlib.Path('.lighthouseci').glob('lhr-*.json'))
-          diag = [f for f in runs if '8766' in f.read_text(encoding='utf-8')[:4000]]
-          if not diag:
-              print("  DIAGNOSTIC INCONCLUSIVE: no run captured for the copy")
-          else:
-              lhr = json.loads(diag[-1].read_text(encoding='utf-8'))
-              seo = lhr['categories']['seo']['score']
-              rt = lhr['audits'].get('robots-txt', {})
-              print(f"  with connect-src 'self': SEO = {round(seo*100)}, "
-                    f"robots-txt score = {rt.get('score')}")
-              print(f"  explanation: {rt.get('explanation', '(none)')}")
-          PY
-          rm -rf _site-diag
+      # The connect-src diagnostic that lived here has been REMOVED.
+      # It proved its point (see D-40 and DECISIONS): with connect-src 'self'
+      # on a throwaway copy, SEO measured 100 and robots-txt scored 1; with the
+      # shipped 'none' it is 92. Causation established, experiment retired.
+      #
+      # It is removed rather than kept because `lhci collect` WIPES
+      # .lighthouseci on every invocation, so the second collect destroyed the
+      # real measurements and a false "? / ? / ? / 100" reached the live /audit.
+      # A diagnostic that can corrupt the published measurement does not stay in
+      # the pipeline once it has answered its question.
 
       # Scores publish EXACTLY as measured (requirement 3.2). No re-run for a
       # better number: `|| true` above exists so a low score still reaches
