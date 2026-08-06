@@ -69,6 +69,23 @@ def lighthouse_scores(lhci_dir: pathlib.Path) -> dict:
             a = audits.get(aid, {})
             if a.get("numericValue") is not None:
                 row[metric] = a["numericValue"]
+
+        # WHY a category missed, not just that it did. A published "92" that
+        # does not say what cost the 8 points is a number nobody can act on,
+        # and /audit exists to be actionable rather than decorative.
+        failed = []
+        for key, cat in lhr.get("categories", {}).items():
+            if cat.get("score") is None or cat["score"] >= 1:
+                continue
+            for ref in cat.get("auditRefs", []):
+                a = audits.get(ref.get("id"), {})
+                if a.get("score") is not None and a["score"] < 1 and \
+                        a.get("scoreDisplayMode") not in ("notApplicable", "informative"):
+                    failed.append({"category": key, "id": ref["id"],
+                                   "title": a.get("title", ""),
+                                   "score": a["score"]})
+        if failed:
+            row["failed_audits"] = failed
         per_page.append(row)
 
     return {"worst": worst, "runs": per_page, "run_count": len(runs)}
@@ -149,6 +166,17 @@ def main() -> int:
         print("  NO MEASURED VALUES — every /audit cell will read '— AT DEPLOY'")
     for k, v in sorted(measured.items()):
         print(f"  {k:<12} {v}")
+
+    # Print every audit that cost points, so a missed condition is diagnosable
+    # from the CI log rather than requiring a re-run to investigate.
+    seen = set()
+    for row in lh.get("runs", []):
+        for f in row.get("failed_audits", []):
+            key = (f["category"], f["id"])
+            if key in seen:
+                continue
+            seen.add(key)
+            print(f"  WHY {f['category']:<16} {f['id']:<34} {f['title'][:60]}")
     absent = {"lighthouse", "axe", "validator", "contrast"} - set(measured)
     if absent:
         print(f"  absent (renders '— AT DEPLOY'): {', '.join(sorted(absent))}")
