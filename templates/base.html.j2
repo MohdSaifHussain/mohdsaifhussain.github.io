@@ -40,7 +40,9 @@
 <link rel="preload" href="/assets/fonts/InstrumentSerif-Regular.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/assets/fonts/IBMPlexMono-Regular.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/assets/fonts/IBMPlexMono-Medium.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/css/tokens.css">
+{# One stylesheet: tokens + site concatenated at build time, so first
+   paint waits on one round trip rather than two (O-8, LCP path). The
+   sources remain two commented files. #}
 <link rel="stylesheet" href="/css/site.css">
 {# C-26. application/ld+json is data, not executable script: it carries no
    `src` and runs nothing, so it does not breach C-18's no-inline-script rule.

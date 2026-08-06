@@ -240,6 +240,38 @@ def load_data(data_dir: pathlib.Path | None = None) -> dict:
     return data
 
 
+ASSET_REF = re.compile(r'(?:href|src)="(/[^"]*)"')
+
+
+def gate_asset_refs(pages: dict[str, str], present: set[str]) -> list[tuple[str, str]]:
+    """Every same-origin reference must resolve to something that exists.
+
+    Defect D-43: the site shipped with NO STYLESHEET and every test passed.
+    `build_css()` was written but never called, so `/css/site.css` was
+    referenced by all five pages and present in none.
+
+    Defect D-44: the test written to catch that COULD NOT FAIL. It ran against
+    the `site` fixture, which rebuilds — so deleting the file simply regenerated
+    it before the assertion. Only the negative control exposed that; it had
+    passed and looked like proof.
+
+    So this is a pure function over (pages, present) and a BUILD GATE rather
+    than a test: the build refuses to publish HTML pointing at something that
+    is not there, and the check can be poisoned directly.
+    """
+    problems = []
+    for name, html in sorted(pages.items()):
+        for m in ASSET_REF.finditer(html):
+            ref = m.group(1).split("#")[0].split("?")[0]
+            if not ref or ref.endswith("/"):
+                target = ref.lstrip("/") + "index.html"
+            else:
+                target = ref.lstrip("/")
+            if target not in present:
+                problems.append(("ASSET_REF_MISSING", f"{name} -> {ref}"))
+    return problems
+
+
 def gate_anchors(projects: list[dict], snapshot: dict) -> list[tuple[str, str]]:
     """Contract 3.3 — every project's figures must be able to render BOTH a
     version anchor and an evidence link. A bare number is a claim without a
@@ -309,8 +341,42 @@ def gate_assets(pairs: list[tuple[pathlib.Path, pathlib.Path]]) -> list[tuple[st
     return out
 
 
+CSS_COMMENT = re.compile(r"/\*.*?\*/", re.S)
+
+
+def build_css() -> tuple[int, int]:
+    """One stylesheet, comments stripped.  O-8 / P3.5.
+
+    Two identified LCP causes, both addressed here:
+      - `render-blocking-resources`: tokens.css and site.css were two blocking
+        round trips before first paint. They are concatenated into one.
+      - `unminified-css`: the sources carry extensive comments — deliberately,
+        they are the design rationale — but shipping them costs transfer and
+        parse time on the critical path.
+
+    The SOURCES keep every comment and stay two files, so `tokens.css` remains
+    the single source of truth a human reads and `check_contrast.py` parses.
+    Only the served artefact is combined and stripped. Conservative by design:
+    comments and redundant whitespace only, no selector or property rewriting.
+    Verified safe here — the only `content:` matches are `justify-content:`, so
+    no string literal can be damaged.
+    """
+    tokens = (STATIC / "css" / "tokens.css").read_text(encoding="utf-8")
+    site = (STATIC / "css" / "site.css").read_text(encoding="utf-8")
+    raw = tokens + "\n" + site
+    out = CSS_COMMENT.sub("", raw)
+    out = re.sub(r"\s*\n\s*", "\n", out)
+    out = re.sub(r"\n{2,}", "\n", out).strip() + "\n"
+    dest = OUT / "css" / "site.css"
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    dest.write_text(out, encoding="utf-8", newline="\n")
+    return len(raw.encode()), len(out.encode())
+
+
 def copy_static() -> None:
     for src, dest in asset_sources():
+        if src.name == "css":
+            continue          # the stylesheet is BUILT, not copied
         shutil.copytree(src, dest)
     shutil.copy2(STATIC / "site.webmanifest", OUT / "site.webmanifest")
 
@@ -495,6 +561,7 @@ def build() -> int:
         shutil.rmtree(OUT)
     OUT.mkdir(parents=True)
     copy_static()
+    css_before, css_after = build_css()
 
     write_sitemap_and_robots()
 
@@ -504,6 +571,13 @@ def build() -> int:
         dest.parent.mkdir(parents=True, exist_ok=True)
         dest.write_text(html, encoding="utf-8", newline="\n")
         written.append((out_rel, len(html.encode("utf-8"))))
+
+    # Every reference must resolve, checked AFTER everything is written.
+    present = {f.relative_to(OUT).as_posix() for f in OUT.rglob("*") if f.is_file()}
+    ref_problems = gate_asset_refs({rel: html for rel, html in rendered}, present)
+    if ref_problems:
+        shutil.rmtree(OUT)          # never leave a broken site on disk
+        return refuse(ref_problems)
 
     total = sum(f.stat().st_size for f in OUT.rglob("*") if f.is_file())
     print("Built:")
@@ -561,6 +635,10 @@ def selftest() -> int:
         ("MARK_SOURCE",   lambda: gate_mark_source(
             '<svg class="mark"></svg>', {"rogue.j2": '<svg class="mark--check mark"></svg>'})),
         ("ASSET_MISSING", lambda: gate_assets([(ROOT / "no-such-dir", OUT / "x")])),
+        ("ASSET_REF_MISSING", lambda: gate_asset_refs(
+            {"index.html": '<link rel="stylesheet" href="/css/site.css">'}, set())),
+        ("ASSET_REF_MISSING", lambda: gate_asset_refs(
+            {"index.html": '<a href="/projects/">x</a>'}, {"css/site.css"})),
     ]
     ok = True
     for expected, fn in checks:
@@ -621,6 +699,9 @@ def selftest() -> int:
         ("_macros colour literals", gate_color_literal(macros_src, "_macros.html.j2")),
         ("mark single source", gate_mark_source(macros_src, others)),
         ("real asset trees present", gate_assets(asset_sources())),
+        ("asset refs resolve", gate_asset_refs(
+            {"index.html": '<link href="/css/site.css"><a href="/projects/">x</a>'},
+            {"css/site.css", "projects/index.html"})),
         ("ld+json data block accepted (HTML spec step 13, not step 21)",
          gate_inline('<script type="application/ld+json">{"a":1}</script>', "ld")),
     ]

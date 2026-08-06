@@ -485,6 +485,37 @@ def test_no_limitation_contradicts_the_data(site):
                 f"them unverified")
 
 
+def test_asset_ref_gate_refuses_a_missing_reference():
+    """Defect D-44: the FIRST version of this test could not fail.
+
+    It ran against the `site` fixture, which rebuilds — so deleting the
+    stylesheet simply regenerated it before the assertion. It passed with the
+    file deleted and looked like proof. Only running the negative control
+    exposed it.
+
+    It is now a pure function over (pages, present), poisonable directly, and
+    the real enforcement is a BUILD GATE that refuses to publish.
+    """
+    assert "ASSET_REF_MISSING" in reasons(build.gate_asset_refs(
+        {"index.html": '<link rel="stylesheet" href="/css/site.css">'}, set()))
+    assert "ASSET_REF_MISSING" in reasons(build.gate_asset_refs(
+        {"index.html": '<a href="/projects/">x</a>'}, {"css/site.css"}))
+
+
+def test_asset_ref_gate_accepts_resolvable_references():
+    assert build.gate_asset_refs(
+        {"index.html": '<link href="/css/site.css"><a href="/projects/">x</a>'},
+        {"css/site.css", "projects/index.html"}) == []
+
+
+def test_real_output_has_no_dangling_references(site):
+    """Positive control on the real build."""
+    present = {f.relative_to(site).as_posix() for f in site.rglob("*") if f.is_file()}
+    pages = {str(p.relative_to(site)): p.read_text(encoding="utf-8")
+             for p in site.rglob("*.html")}
+    assert build.gate_asset_refs(pages, present) == []
+
+
 def test_every_page_has_exactly_one_h1(site):
     """C-24."""
     for page in sorted(site.rglob("*.html")):

@@ -8,32 +8,40 @@
    ships, so the P3.4 CSP refactor is a no-op rather than a rewrite.
    ========================================================================= */
 
-/* --- Self-hosted faces (C-04). O-8: font-display retained provisionally,
-       measured against Lighthouse at P3.5 before it is kept or dropped. --- */
+/* --- Self-hosted faces (C-04).
+   O-8 DISCHARGED, P3.5. The P3.1 ruling retained `font-display: swap`
+   provisionally because its cost was unmeasurable then. It is measurable now:
+   swap renders a fallback face first and re-lays out when the webfont arrives,
+   which is a layout shift by construction — measured CLS 0.024 against C-02's
+   required 0.00. Handoff §6 said swap is banned if it costs a point. It does.
+   `optional` gives the browser a ~100ms window; with these fonts preloaded and
+   subset to 20-32 KB they normally arrive inside it, and when they do not the
+   page keeps the fallback for that load rather than shifting under the reader.
+   No layout shift either way — which is what C-02 actually asks for. --- */
 @font-face {
   font-family: 'Instrument Serif';
   src: url('/assets/fonts/InstrumentSerif-Regular.woff2') format('woff2');
-  font-weight: 400; font-style: normal; font-display: swap;
+  font-weight: 400; font-style: normal; font-display: optional;
 }
 @font-face {
   font-family: 'Instrument Serif';
   src: url('/assets/fonts/InstrumentSerif-Italic.woff2') format('woff2');
-  font-weight: 400; font-style: italic; font-display: swap;
+  font-weight: 400; font-style: italic; font-display: optional;
 }
 @font-face {
   font-family: 'IBM Plex Mono';
   src: url('/assets/fonts/IBMPlexMono-Regular.woff2') format('woff2');
-  font-weight: 400; font-style: normal; font-display: swap;
+  font-weight: 400; font-style: normal; font-display: optional;
 }
 @font-face {
   font-family: 'IBM Plex Mono';
   src: url('/assets/fonts/IBMPlexMono-Medium.woff2') format('woff2');
-  font-weight: 500; font-style: normal; font-display: swap;
+  font-weight: 500; font-style: normal; font-display: optional;
 }
 @font-face {
   font-family: 'IBM Plex Mono';
   src: url('/assets/fonts/IBMPlexMono-SemiBold.woff2') format('woff2');
-  font-weight: 600; font-style: normal; font-display: swap;
+  font-weight: 600; font-style: normal; font-display: optional;
 }
 
 /* --- Reset ------------------------------------------------------------- */

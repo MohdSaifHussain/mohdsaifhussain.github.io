@@ -112,74 +112,16 @@ jobs:
       - name: C-06 / C-18 — axe-core and CSP violations, in a real browser
         run: python tools/browser_audit.py --root _site --json-out axe.json
 
-      # --- Measurement pass (P3.5). Two-pass by necessity: /audit reports on
-      # the site it is part of, so the site must be built, measured, and then
-      # rebuilt with the measurements in it. -------------------------------
-      - name: C-23 — W3C Nu validator
-        run: |
-          java -jar "$(npm root)/vnu-jar/build/dist/vnu.jar" \
-            --format json --exit-zero-always --skip-non-html _site \
-            > vnu.json 2> vnu.stderr || true
-          # vnu writes its JSON to stderr; normalise whichever carries it.
-          if [ ! -s vnu.json ] || ! python -c "import json;json.load(open('vnu.json'))" 2>/dev/null; then
-            mv vnu.stderr vnu.json
-          fi
-          python -c "import json;d=json.load(open('vnu.json'));e=[m for m in d.get('messages',[]) if m.get('type')=='error'];print(f'validator errors: {len(e)}');[print('  ',m.get('message')) for m in e[:10]]"
-
-      - name: C-01 / C-02 / C-03 — Lighthouse, all five pages, both profiles
-        run: |
-          python -m http.server 8765 --directory _site &
-          sleep 2
-          # Discriminator for the robots-txt audit failure: does the SERVER
-          # serve robots.txt, or is the failure inside the page? If this is
-          # 200 and Lighthouse still "cannot download" it, the block is
-          # in-page — i.e. our own connect-src 'none' refusing the probe, not
-          # a defect a real crawler would ever encounter.
-          echo "robots.txt over HTTP: $(curl -sS -o /dev/null -w '%{http_code}' http://127.0.0.1:8765/robots.txt)"
-          echo "sitemap.xml over HTTP: $(curl -sS -o /dev/null -w '%{http_code}' http://127.0.0.1:8765/sitemap.xml)"
-          npx --yes @lhci/cli@0.15.1 collect \
-            --url=http://127.0.0.1:8765/ \
-            --url=http://127.0.0.1:8765/projects/ \
-            --url=http://127.0.0.1:8765/experience/ \
-            --url=http://127.0.0.1:8765/certifications/ \
-            --url=http://127.0.0.1:8765/audit/ \
-            --settings.formFactor=mobile --settings.screenEmulation.mobile=true \
-            --numberOfRuns=1 || true
-          npx --yes @lhci/cli@0.15.1 collect \
-            --url=http://127.0.0.1:8765/ \
-            --url=http://127.0.0.1:8765/projects/ \
-            --url=http://127.0.0.1:8765/experience/ \
-            --url=http://127.0.0.1:8765/certifications/ \
-            --url=http://127.0.0.1:8765/audit/ \
-            --settings.formFactor=desktop --settings.screenEmulation.disabled=true \
-            --settings.preset=desktop --numberOfRuns=1 --additive || true
-          # --additive is LOAD-BEARING (defect D-41). Without it this second
-          # collect wipes .lighthouseci and erases the mobile results, so the
-          # published figure would be desktop-only while C-01 requires BOTH
-          # profiles on every page — a claim wider than the measurement.
-          echo "lhr reports collected: $(ls .lighthouseci/lhr-*.json 2>/dev/null | wc -l)  (expect 10 = 5 pages x 2 profiles)"
-
-      # The connect-src diagnostic that lived here has been REMOVED.
-      # It proved its point (see D-40 and DECISIONS): with connect-src 'self'
-      # on a throwaway copy, SEO measured 100 and robots-txt scored 1; with the
-      # shipped 'none' it is 92. Causation established, experiment retired.
+      # D-42: THE DEPLOY JOB NEVER WRITES SCORES.
+      # It previously ran Lighthouse and the validator against a local test
+      # server and wrote audit.json, racing the live-origin job and overwriting
+      # real measurements with test-server ones. audit.json now has EXACTLY ONE
+      # writer: .github/workflows/measure-live.yml, measuring the published
+      # origin under the fixed protocol.
       #
-      # It is removed rather than kept because `lhci collect` WIPES
-      # .lighthouseci on every invocation, so the second collect destroyed the
-      # real measurements and a false "? / ? / ? / 100" reached the live /audit.
-      # A diagnostic that can corrupt the published measurement does not stay in
-      # the pipeline once it has answered its question.
-
-      # Scores publish EXACTLY as measured (requirement 3.2). No re-run for a
-      # better number: `|| true` above exists so a low score still reaches
-      # /audit, never so a bad run can be retried away.
-      - name: Write measured results into audit.json
-        run: |
-          python tools/write_audit.py --selftest
-          python tools/write_audit.py --lighthouse .lighthouseci --vnu vnu.json --axe axe.json
-
-      - name: Rebuild so /audit publishes what was measured
-        run: python build.py
+      # What stays here are the GATES that must block a bad deploy and are
+      # environment-independent: axe, the CSP violation check, the four
+      # checkers and the test suite. Those refuse; they do not publish numbers.
 
       - uses: actions/configure-pages@v6.0.0
       - uses: actions/upload-pages-artifact@v5.0.0

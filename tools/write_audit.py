@@ -49,18 +49,27 @@ def lighthouse_scores(lhci_dir: pathlib.Path) -> dict:
 
     worst: dict[str, float] = {}
     per_page: list[dict] = []
+    raw: dict[tuple, dict[str, list]] = {}
     for f in runs:
         lhr = json.loads(f.read_text(encoding="utf-8"))
         url = lhr.get("finalDisplayedUrl") or lhr.get("finalUrl", "?")
         profile = lhr.get("configSettings", {}).get("formFactor", "?")
         row = {"url": url, "profile": profile}
+        # THE PROTOCOL (director's ruling, 2026-08-06): median of 3 runs per
+        # page per profile. Single-run figures are retired as non-evidence —
+        # two consecutive CI runs of the same site gave 98 and 59, a 39-point
+        # swing, so a single run measures the runner's mood, not the site.
+        # The median is taken per (page, profile, category), then the WORST
+        # median across pages and profiles is published, because C-01 asks for
+        # every page on both profiles rather than a flattering average.
+        bucket = raw.setdefault((url, profile), {})
         for key in ("performance", "accessibility", "best-practices", "seo"):
             cat = lhr.get("categories", {}).get(key)
             if cat is None or cat.get("score") is None:
                 continue
             score = round(cat["score"] * 100)
             row[key] = score
-            worst[key] = min(worst.get(key, 101), score)
+            bucket.setdefault(key, []).append(score)
         audits = lhr.get("audits", {})
         for metric, aid in (("lcp_ms", "largest-contentful-paint"),
                             ("cls", "cumulative-layout-shift"),
@@ -103,7 +112,24 @@ def lighthouse_scores(lhci_dir: pathlib.Path) -> dict:
             row["failed_audits"] = failed
         per_page.append(row)
 
-    return {"worst": worst, "runs": per_page, "run_count": len(runs)}
+    # Median per (page, profile, category); then the worst median published.
+    import statistics
+    medians = []
+    for (url, profile), cats in sorted(raw.items()):
+        row = {"url": url, "profile": profile, "samples": {}}
+        for key, scores in cats.items():
+            med = round(statistics.median(scores))
+            row["samples"][key] = {"runs": scores, "median": med}
+            worst[key] = min(worst.get(key, 101), med)
+        medians.append(row)
+
+    samples_per_cell = sorted({len(s) for r in medians for s in
+                               (v["runs"] for v in r["samples"].values())})
+    return {"worst": worst, "runs": per_page, "run_count": len(runs),
+            "medians": medians, "samples_per_cell": samples_per_cell,
+            "protocol": ("median of 3 runs per page per profile, mobile and "
+                         "desktop, against the published origin; the WORST "
+                         "median across all pages and profiles is published")}
 
 
 def main() -> int:
@@ -252,6 +278,21 @@ def selftest() -> int:
         ok = ok and good
         print(f"  [{'PASS' if good else 'FAIL'}] the WORST page wins, not the average "
               f"(seo={w.get('seo')}, pages were 100 and 62)")
+
+        # The protocol's own control: three runs of one page must publish the
+        # MEDIAN, not the best and not the worst sample.
+        for f in empty.glob("lhr-*.json"):
+            f.unlink()
+        for i, score in enumerate((0.59, 0.98, 0.83)):
+            (empty / f"lhr-{i}.json").write_text(json.dumps({
+                "finalDisplayedUrl": "http://z/",
+                "configSettings": {"formFactor": "mobile"},
+                "categories": {"performance": {"score": score}}}), encoding="utf-8")
+        w = lighthouse_scores(empty).get("worst", {})
+        good = w.get("performance") == 83
+        ok = ok and good
+        print(f"  [{'PASS' if good else 'FAIL'}] median of 3 published, not best "
+              f"or worst (runs 59/98/83 -> {w.get('performance')}, expect 83)")
 
     return 0 if ok else 1
 
