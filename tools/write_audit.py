@@ -86,9 +86,16 @@ def lighthouse_scores(lhci_dir: pathlib.Path) -> dict:
                              "score": a["score"]}
                     # The audit's own detail rows say WHICH rule failed and
                     # where. Without them a failing audit id is still a guess.
-                    items = (a.get("details") or {}).get("items") or []
-                    if items:
+                    # details.items is USUALLY a list, but not always — some
+                    # audits carry a dict there, and slicing it raised
+                    # KeyError: slice(None, 5, None). Type-check rather than
+                    # assume the shape of another tool's output.
+                    details = a.get("details")
+                    items = details.get("items") if isinstance(details, dict) else None
+                    if isinstance(items, list) and items:
                         entry["items"] = items[:5]
+                    elif items:
+                        entry["items"] = [items]
                     if a.get("explanation"):
                         entry["explanation"] = a["explanation"]
                     failed.append(entry)
