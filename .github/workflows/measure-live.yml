@@ -60,13 +60,13 @@ jobs:
             --url=$BASE/ --url=$BASE/projects/ --url=$BASE/experience/ \
             --url=$BASE/certifications/ --url=$BASE/audit/ \
             --settings.formFactor=mobile --settings.screenEmulation.mobile=true \
-            --numberOfRuns=1 || true
+            --numberOfRuns=3 || true
           npx --yes @lhci/cli@0.15.1 collect \
             --url=$BASE/ --url=$BASE/projects/ --url=$BASE/experience/ \
             --url=$BASE/certifications/ --url=$BASE/audit/ \
             --settings.formFactor=desktop --settings.screenEmulation.disabled=true \
-            --settings.preset=desktop --numberOfRuns=1 --additive || true
-          echo "lhr reports: $(ls .lighthouseci/lhr-*.json 2>/dev/null | wc -l)  (expect 10)"
+            --settings.preset=desktop --numberOfRuns=3 --additive || true
+          echo "lhr reports: $(ls .lighthouseci/lhr-*.json 2>/dev/null | wc -l)  (expect 30 = 5 pages x 2 profiles x 3 runs)"
 
       - name: Validator against the live origin
         run: |
