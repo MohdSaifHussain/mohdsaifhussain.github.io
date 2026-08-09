@@ -2,13 +2,20 @@
 {% import '_macros.html.j2' as m %}
 {% block content %}
 
-{# Handoff §3 (3d), charter C-30. Row LABELS and TARGETS come from
-   data/audit-spec.json. MEASURED values and STATUSES come from
-   data/generated/audit.json, which CI writes from Lighthouse, axe and the Nu
-   validator — never hand-entered (C-35). When that file is absent, as on any
-   first deploy, the measured column reads "— AT DEPLOY". That absence is the
-   negative control for this whole pipeline, and it is currently the live
-   state: it is being demonstrated, not asserted. #}
+{# Handoff §3 (3d), charter C-30. Row LABELS, TARGETS and the declared basis of
+   observation-backed rows come from data/audit-spec.json. Everything else comes
+   from data/generated/audit.json, which CI writes and no one hand-edits (C-35):
+
+     measured{}  Lighthouse, the Nu validator and axe — measured against the
+                 PUBLISHED ORIGIN (tools/write_audit.py)
+     gates{}     the exit codes of the real gates, run against the COMMIT under
+                 test (tools/gate_status.py, added for defect D-48)
+
+   Two different subjects, so they are labelled separately rather than merged.
+   When a value is absent the cell reads "— AT DEPLOY", which is the negative
+   control for this whole pipeline: absence has to be visible, or a pipeline
+   that has quietly stopped producing looks exactly like one that is working.
+   D-48 was precisely that — eight A2 keys no writer had ever produced. #}
 
 <section class="section section--head">
   <div class="section-head">
@@ -46,13 +53,35 @@
       <span class="mono-label">A2</span><span class="mono-label">CHARTER CHECKS</span>
       <span class="mono-label">CONDITIONS</span><span class="mono-label">STATUS</span>
     </div>
+    {# Defect D-48. Three distinct kinds of row, and they must not look alike:
+
+       1. a GATE ran and its exit code is the verdict -> the mark and the gate's
+          own name, so a reader can go run the same thing;
+       2. no machine decides it — the claim rests on a person having looked ->
+          the dated observation and a link to the record. NEVER a check mark:
+          a verification mark next to an unverified claim is exactly what C-27
+          exists to prevent;
+       3. nothing has produced it yet -> "— AT DEPLOY", the honest absence.
+
+       The old template had only branches 1 and 3, and branch 1's key was never
+       written by anything, so all eight rows sat in branch 3 permanently. #}
     {% for row in audit_spec.a2_charter_checks %}
+    {% set gate = gates.get(row.key) %}
     <div class="audit-row audit-row--a2">
       <span class="mono-meta dim">{{ row.id }}</span>
       <span>{{ row.check }}</span>
       <span class="mono-meta dim">{{ row.conditions }}</span>
-      {% if measured.get(row.key) %}
-      <span>{{ m.mark_check() }}{{ measured[row.key] }}</span>
+      {% if gate and gate.status == 'PASS' %}
+      {# .get(), not .skipped: the checker-backed gates carry no skip count at
+         all, and Jinja raises UndefinedError on a missing attribute. #}
+      <span>{{ m.mark_check() }}{{ gate.producer }}{% if gate.get('skipped') %} · {{ gate.get('skipped') }} SKIPPED{% endif %}</span>
+      {% elif gate %}
+      <span>{{ m.mark_cross() }}FAILED — {{ gate.producer }}</span>
+      {# .get() again: the build runs Jinja with StrictUndefined, so a missing
+         key raises rather than reading as falsy. Only the observation-backed
+         rows carry `basis`. #}
+      {% elif row.get('basis') %}
+      <span class="mono-meta">{{ row.get('basis') }} · <a class="mono-link" href="{{ row.get('evidence_url') }}" target="_blank" rel="noopener noreferrer">{{ row.get('evidence_label') }}</a></span>
       {% else %}
       <span class="mono-meta dim">— AT DEPLOY</span>
       {% endif %}
@@ -85,9 +114,15 @@
     MEASUREMENT PROTOCOL — {{ measurement_protocol }}
   </p>
 
+  {# Defect D-48 rewrote this note. It previously said, of every empty cell,
+     that such scores "ARE MEASURED BY CI AT PUBLISH TIME" — which was not true
+     of nine of the fourteen cells above, because nothing produced them and
+     nothing ever had. It now describes what actually happens, and no more. #}
   <p class="mono-meta audit-note">
     {{ '%02d' % (audit_spec.a3_animations | length) }} ANIMATIONS SHIP. THE LIST CHANGES ONLY BY RECORDED RULING, NEVER SILENTLY — ANY UNDECLARED MOTION IS A DEFECT (C-12).
-    SCORES MARKED “— AT DEPLOY” ARE MEASURED BY CI AT PUBLISH TIME AND NEVER HAND-ENTERED (C-35).
+    A1 IS MEASURED AGAINST THE PUBLISHED ORIGIN. A2 IS THE RECORDED EXIT CODE OF THE NAMED GATE, RUN AGAINST {% if gates_commit %}COMMIT {{ gates_commit[:7] | upper }}{% else %}THE COMMIT UNDER TEST{% endif %}.
+    ROWS THAT REST ON A PERSON HAVING LOOKED SAY SO, WITH THE DATE AND THE RECORD, AND CARRY NO VERIFICATION MARK.
+    NOTHING ON THIS PAGE IS HAND-ENTERED (C-35); “— AT DEPLOY” MEANS NOTHING HAS PRODUCED THAT CELL YET.
     {% if not measured %}NO CI MEASUREMENT HAS RUN YET: THE MEASURED COLUMNS BELOW ARE HONESTLY EMPTY RATHER THAN OPTIMISTIC.{% endif %}
   </p>
 

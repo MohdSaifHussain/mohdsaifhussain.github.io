@@ -24,10 +24,28 @@ desktop.ini
 # Logs
 *.log
 
-# CI-written measurement output. Deliberately NOT committed: it is
-# produced by the publishing environment on every deploy, and a copy in
-# git could drift from what was actually measured (C-30, C-35).
+# CI-written measurement output.
+#
+# data/generated/audit.json is IGNORED BUT COMMITTED, deliberately, and the two
+# facts have to be read together. It is ignored so that a local build never
+# accidentally commits locally-measured numbers over CI's — the builder has no
+# browser and no published origin, so any figure produced here is exactly what
+# the standing principle says is not evidence. It is then force-added by the
+# ONE workflow allowed to write it (.github/workflows/measure-live.yml, via
+# `git add -f`), because /audit renders from the committed file: if it were
+# genuinely absent from the repository, every measured cell would read
+# "— AT DEPLOY" on every deploy.
+#
+# The earlier comment here said only "Deliberately NOT committed", which stopped
+# being true when D-42 made measure-live.yml the single writer. Corrected as
+# finding 9b of the post-release deviation audit.
 data/generated/audit.json
+
+# Intermediate tool output, genuinely never committed. These exist only inside
+# a CI run. They are listed so the scheduled jobs' single-path guard — which
+# fails on ANY unexpected working-tree change — does not trip over the tooling's
+# own by-products.
 vnu.json
 axe.json
+gates.json
 .lighthouseci/

@@ -137,6 +137,9 @@ def main() -> int:
     ap.add_argument("--lighthouse", type=pathlib.Path)
     ap.add_argument("--vnu", type=pathlib.Path)
     ap.add_argument("--axe", type=pathlib.Path)
+    ap.add_argument("--gates", type=pathlib.Path,
+                    help="tools/gate_status.py output — the A2 charter-check "
+                         "verdicts (defect D-48)")
     ap.add_argument("--measured-against", default="CI test server "
                     "(python http.server: no gzip, no cache headers)",
                     help="the environment these figures describe")
@@ -189,6 +192,16 @@ def main() -> int:
     if r.returncode == 0:
         measured["contrast"] = "AA met; 7:1 met except --dim (5.78:1)"
 
+    # --- charter-check gates (defect D-48) --------------------------------
+    # These are NOT measurements of the published origin. They are the exit
+    # codes of the gates run against the checked-out commit, recorded with the
+    # SHA they ran against so the page can say which tree they describe. Absent
+    # here means absent on the page: a row with no producer renders its
+    # declared basis, never a verification mark.
+    gates: dict = {}
+    if args.gates and args.gates.exists():
+        gates = json.loads(args.gates.read_text(encoding="utf-8"))
+
     now = dt.datetime.now(dt.timezone.utc)
     payload = {
         "_generated": ("Machine-written by tools/write_audit.py in CI from tool "
@@ -204,6 +217,7 @@ def main() -> int:
         # gzip and no cache headers, the published origin sends both.
         "measured_against": args.measured_against,
         "detail": detail,
+        "gates": gates,
     }
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n",
@@ -236,6 +250,11 @@ def main() -> int:
                 print(f"      explanation: {f['explanation'][:200]}")
             for item in f.get("items", []):
                 print(f"      item: {json.dumps(item)[:220]}")
+    for key, res in sorted(gates.get("results", {}).items()):
+        print(f"  gate {key:<16} {res['status']:<4} {res['detail']}")
+    if gates.get("commit"):
+        print(f"  gates ran against commit {gates['commit'][:7]}")
+
     absent = {"lighthouse", "axe", "validator", "contrast"} - set(measured)
     if absent:
         print(f"  absent (renders '— AT DEPLOY'): {', '.join(sorted(absent))}")

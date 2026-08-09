@@ -27,6 +27,12 @@ on:
 # job. Declaring a permissions block sets every scope not listed here to `none`,
 # so omitting it makes `gh workflow run` fail with 403 (D-47, the same mistake
 # found in measure-live.yml).
+#
+# Sources, checked 2026-08-09 rather than recalled (doctrine rule 3):
+#   permissions — unspecified scopes are set to no access:
+#   https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#permissions
+#   workflow dispatch REST endpoint requires actions:write:
+#   https://docs.github.com/en/rest/actions/workflows#create-a-workflow-dispatch-event
 permissions:
   contents: write
   actions: write
@@ -83,7 +89,9 @@ jobs:
 
       # D-46: this job had the D-45 defect and nobody looked. D-45 was found in
       # measure-live.yml — a push made with the default GITHUB_TOKEN does not
-      # trigger other workflows — and the fix was applied THERE and only there.
+      # trigger other workflows, per "Triggering a workflow from a workflow":
+      # https://docs.github.com/en/actions/how-tos/write-workflows/choose-when-workflows-run/trigger-a-workflow#triggering-a-workflow-from-a-workflow
+      # — and the fix was applied THERE and only there.
       # This job pushes with the same token in the same way, so every weekly
       # snapshot would have landed in the repository and never reached the site.
       #

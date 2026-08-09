@@ -450,6 +450,17 @@ def build() -> int:
     measurement_protocol = _lh.get(
         "protocol", "not yet measured under a stated protocol")
 
+    # Defect D-48. The A2 charter-check rows had no producer at all: nothing
+    # ever wrote their keys, so every one of them rendered "— AT DEPLOY"
+    # permanently under a footnote promising CI measured them. They are now the
+    # recorded exit codes of the real gates (tools/gate_status.py), and they
+    # describe the COMMIT they ran against, not the published origin — which is
+    # a different subject from the Lighthouse figures above, so it is carried
+    # and displayed separately rather than folded into `measured`.
+    gates_doc = measured_doc.get("gates") or {}
+    gates = gates_doc.get("results", {})
+    gates_commit = gates_doc.get("commit", "")
+
     problems += gate_anchors(projects, snapshot)
     if problems:
         return refuse(problems)
@@ -496,6 +507,8 @@ def build() -> int:
         "measured_as_of": measured_as_of,
         "measured_against": measured_against,
         "measurement_protocol": measurement_protocol,
+        "gates": gates,
+        "gates_commit": gates_commit,
         "nav": NAV,
         "colophon": COLOPHON,
         "visits": VISITS,

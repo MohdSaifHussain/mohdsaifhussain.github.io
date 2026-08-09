@@ -532,7 +532,13 @@ def test_every_page_declares_lang_and_landmarks(site):
             assert tag in html, f"{page.name} missing {tag}"
 
 
-@pytest.mark.parametrize("tool", ["check_c33.py", "check_content.py"])
+# check_animations.py joined this list with defect D-48. Its selftest carries
+# the only controls for C-10 and C-14 — including the brace-counter control
+# proving the @media body is read rather than stopped at the first inner '}' —
+# and the deploy job runs the checker but never its selftest, so those controls
+# had no scheduled execution at all. A control that never runs is a decoration.
+@pytest.mark.parametrize("tool",
+                         ["check_c33.py", "check_content.py", "check_animations.py"])
 def test_checker_selftests_pass(tool, site):
     """Each checker proves its own controls. Their detailed control output is
     printed by the tools themselves and run in CI; these two tests assert the
@@ -547,7 +553,8 @@ def test_checker_selftests_pass(tool, site):
     assert r.returncode == 0, r.stdout + r.stderr
 
 
-@pytest.mark.parametrize("tool", ["check_c33.py", "check_content.py"])
+@pytest.mark.parametrize("tool",
+                         ["check_c33.py", "check_content.py", "check_animations.py"])
 def test_checkers_accept_the_real_repo(tool, site):
     """Positive control at the repo level: the checkers must not refuse the
     real thing, or they would be gates that refuse everything."""
@@ -563,3 +570,105 @@ def test_external_links_carry_noopener(site):
         html = page.read_text(encoding="utf-8")
         for m in re.finditer(r'<a\b[^>]*href="https?://[^"]+"[^>]*>', html):
             assert 'rel="noopener noreferrer"' in m.group(), f"{page.name}: {m.group()}"
+
+
+# --- Defect D-48: /audit must not promise a measurement nothing produces ----
+#
+# Nine of the fourteen A1/A2 cells rendered "— AT DEPLOY" for the whole of
+# v1.0.0, under a footnote stating such cells "ARE MEASURED BY CI AT PUBLISH
+# TIME". Eight of them had no writer anywhere in the repository, and the ninth
+# (axe) had a writer flag that no workflow ever passed. Same class as D-37 — a
+# published statement that was not true — pointed the other way: the page
+# under-reported a posture that the gates genuinely enforced.
+#
+# These are the controls that would have caught it.
+
+def test_every_a2_row_has_a_producer_or_a_declared_basis():
+    """Every /audit charter-check row must be decided by something.
+
+    Either a gate in tools/gate_status.py runs it, or the row declares the
+    dated human observation it rests on. A row with neither renders
+    "— AT DEPLOY" forever, which is what D-48 was.
+    """
+    import gate_status
+
+    spec = json.loads((ROOT / "data/audit-spec.json").read_text(encoding="utf-8"))
+    produced = {g.key for g in gate_status.GATES}
+
+    for row in spec["a2_charter_checks"]:
+        key = row["key"]
+        gated = key in produced
+        observed = bool(row.get("basis") and row.get("evidence_url"))
+        assert gated or observed, (
+            f"{row['id']} ({key}) has no gate in gate_status.GATES and declares "
+            f"no observed basis, so its cell can only ever read '— AT DEPLOY'")
+        assert not (gated and observed), (
+            f"{row['id']} ({key}) claims both a machine gate and a human "
+            f"observation; the page can only render one, so the other is a "
+            f"claim nothing checks")
+
+
+def test_a1_axe_cell_has_a_writer_that_is_actually_invoked():
+    """--axe existed and was never passed. A flag no caller uses is not a writer.
+
+    tools/write_audit.py has accepted --axe since P3.5, and its own docstring
+    showed it. No workflow ever passed it, so A1.2 could not fill. Asserting the
+    flag exists would have passed throughout the defect; the call site is the
+    thing that has to be checked.
+    """
+    workflow = (ROOT / ".github/workflows/measure-live.yml").read_text(encoding="utf-8")
+    for flag in ("--lighthouse", "--vnu", "--axe", "--gates"):
+        assert flag in workflow, (
+            f"write_audit.py accepts {flag} but measure-live.yml never passes "
+            f"it, so the cell it fills stays empty forever (D-48)")
+
+
+def test_a2_observation_rows_never_render_a_verification_mark(site):
+    """C-27: a check mark means a machine verified it.
+
+    Rows resting on a person having looked publish the observation and its
+    date. Rendering the same mark for both would make the page unable to say
+    which of its own claims were machine-checked.
+    """
+    html = (site / "audit/index.html").read_text(encoding="utf-8")
+    spec = json.loads((ROOT / "data/audit-spec.json").read_text(encoding="utf-8"))
+
+    rows = {}
+    for chunk in html.split('<div class="audit-row audit-row--a2">')[1:]:
+        cell = chunk.split("</div>")[0]
+        found = re.search(r">(A2\.\d)<", cell)
+        if found:
+            rows[found.group(1)] = cell
+
+    for row in spec["a2_charter_checks"]:
+        if not row.get("basis"):
+            continue
+        cell = rows[row["id"]]
+        assert "mark--check" not in cell, (
+            f"{row['id']} rests on observation but renders a verification mark")
+        assert row["evidence_label"] in cell, (
+            f"{row['id']} must link the record its claim rests on")
+
+
+def test_scheduled_workflows_publish_what_they_commit():
+    """D-45, D-46, D-47: a bot commit that never deploys is a silent no-op.
+
+    A push made with the default GITHUB_TOKEN does not trigger other workflows
+    — GitHub's guard against recursive runs — so a scheduled job that commits
+    must dispatch the deploy explicitly. Dispatching needs `actions: write`,
+    and declaring a permissions block sets every scope NOT listed to `none`,
+    so the two have to be asserted together: D-47 was the dispatch step being
+    present and unable to work.
+
+    Ref: GitHub Actions docs, "Triggering a workflow from a workflow" and
+    "Assigning permissions to jobs".
+    """
+    for name in ("measure-live.yml", "refresh-stats.yml"):
+        text = (ROOT / ".github/workflows" / name).read_text(encoding="utf-8")
+        assert "gh workflow run deploy.yml" in text, (
+            f"{name} commits and pushes but never dispatches a deploy, so its "
+            f"output would never reach the site (D-45/D-46)")
+        assert re.search(r"^permissions:(?:\n\s+\w[\w-]*:\s*\w+)*\n\s+actions:\s*write",
+                         text, re.M) or "actions: write" in text, (
+            f"{name} dispatches a workflow but does not declare actions: write, "
+            f"so the dispatch returns 403 (D-47)")

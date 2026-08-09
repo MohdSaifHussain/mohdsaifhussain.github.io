@@ -30,9 +30,16 @@ on:
 # D-47: `actions: write` is REQUIRED, not decorative. Declaring a permissions
 # block at all sets every scope NOT listed here to `none` — so with only
 # `contents: write`, the D-45 fix below (`gh workflow run`, which is
-# POST /actions/workflows/{id}/dispatches) would have returned 403 the first
-# time it ran. The D-45 fix landed 10 minutes after the last measurement and
-# had never once executed, so nothing had exercised it.
+# POST /repos/{owner}/{repo}/actions/workflows/{id}/dispatches) would have
+# returned 403 the first time it ran. The D-45 fix landed 10 minutes after the
+# last measurement and had never once executed, so nothing had exercised it.
+#
+# Sources, checked 2026-08-09 rather than recalled (doctrine rule 3):
+#   "Assigning permissions to jobs" — if you specify the permissions key, all
+#   unspecified scopes are set to no access.
+#   https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#permissions
+#   "Create a workflow dispatch event" — requires the actions:write permission.
+#   https://docs.github.com/en/rest/actions/workflows#create-a-workflow-dispatch-event
 permissions:
   contents: write
   actions: write
@@ -59,6 +66,11 @@ jobs:
         run: |
           npm ci
           python -m pip install -r requirements.txt
+          # Defect D-48: axe now has to run here too, so the browser tooling
+          # this job needs is installed here as well. Same pinned file the
+          # deploy job uses, so both run the same version (D-23's lesson).
+          python -m pip install -r requirements-audit.txt
+          python -m playwright install --with-deps chromium
 
       - name: Lighthouse against the LIVE origin, both profiles
         run: |
@@ -85,10 +97,40 @@ jobs:
             mv vnu.stderr vnu.json
           fi
 
+      # --- Defect D-48 -----------------------------------------------------
+      # A1.2 (axe) and the eight A2 charter-check rows rendered "— AT DEPLOY"
+      # for the whole of v1.0.0. Nothing produced them: write_audit.py accepted
+      # --axe but no workflow passed it, and the eight A2 keys had no writer
+      # anywhere. The page meanwhile stated that such cells are "MEASURED BY CI
+      # AT PUBLISH TIME".
+      #
+      # They are produced HERE, not in the deploy job, because audit.json has
+      # exactly one writer (D-42: two writers raced and a test-server figure
+      # overwrote a real one). The deploy job still runs these same gates as
+      # BLOCKING gates; this job runs them again to record what they said.
+      #
+      # These describe the CHECKED-OUT COMMIT, not the published origin — a
+      # different subject from the Lighthouse figures above, which is why
+      # gate_status.py records the SHA and /audit labels the two separately.
+      - name: Build the site the gates and axe run against
+        run: python build.py
+
+      - name: Prove the browser audit can fail
+        run: python tools/browser_audit.py --root _site --selftest
+
+      - name: C-06 — axe-core against the built site
+        run: python tools/browser_audit.py --root _site --json-out axe.json
+
+      - name: Charter-check gates — record what each one actually said
+        run: |
+          python tools/gate_status.py --selftest
+          python tools/gate_status.py --json-out gates.json
+
       - name: Write measured results
         run: |
           python tools/write_audit.py --selftest
           python tools/write_audit.py --lighthouse .lighthouseci --vnu vnu.json \
+            --axe axe.json --gates gates.json \
             --measured-against "https://mohdsaifhussain.github.io (published origin)"
 
       # Same single-path guard as the stats refresh: the unreviewed surface is

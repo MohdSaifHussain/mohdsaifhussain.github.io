@@ -7,7 +7,7 @@
   "location": "Hyderabad, India",
   "years_experience": "9+",
   "headline_employers": ["Microsoft", "Apple", "Amazon", "GlobalLogic"],
-  "_headline_employers_note": "NEW FIELD under reading R-05, pending owner re-verification (O-3). Mirrors the resume's own summary sentence, so the curation is owner authorship rather than a silent code-side omission. The identity strip renders this field verbatim; the Experience page derives all five roles uncurated from experience.json.",
+  "_headline_employers_note": "Added under reading R-05; owner re-verification recorded 2026-08-06, discharging O-3 (STEP-04 close: five items signed; STEP-05 lists O-3 among those discharged before that phase). This note previously still read 'pending owner re-verification', which stopped being true on that date — the same class as D-37, corrected as finding 9a of the post-release deviation audit. Mirrors the resume's own summary sentence, so the curation is owner authorship rather than a silent code-side omission. The identity strip renders this field verbatim; the Experience page derives all five roles uncurated from experience.json.",
   "summary": "Operations and systems professional with 9+ years across product support, technical escalation, data quality, process governance, and AI operations at Microsoft, Apple, Amazon, and GlobalLogic. Hands-on experience directing AI-assisted technical workflows with human-in-the-loop verification to mitigate sycophancy, context drift, hallucinations, and unverified outputs.",
   "links": {
     "linkedin": "https://www.linkedin.com/in/mohdsaifhussain/",
