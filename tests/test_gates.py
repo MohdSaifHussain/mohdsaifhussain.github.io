@@ -672,3 +672,71 @@ def test_scheduled_workflows_publish_what_they_commit():
                          text, re.M) or "actions: write" in text, (
             f"{name} dispatches a workflow but does not declare actions: write, "
             f"so the dispatch returns 403 (D-47)")
+
+
+# --- P4.1: the v1.1 motion amendment ----------------------------------------
+
+def test_exactly_one_reduced_motion_block_ships():
+    """C-10 says ONE lever. Two blocks is two levers.
+
+    Structural as well as contractual: check_animations.reduced_motion_body()
+    locates the block with .search() and reads the FIRST match only, so a
+    second block anywhere in the served CSS would be invisible to the gate that
+    polices this very condition.
+    """
+    css = (ROOT / "_site/css/site.css").read_text(encoding="utf-8")
+    assert css.count("prefers-reduced-motion") == 1, (
+        f"{css.count('prefers-reduced-motion')} reduced-motion blocks ship; "
+        f"C-10's lever must be singular (STEP-08 requirement 3.5)")
+
+
+def test_scrubbed_animation_never_publishes_a_millisecond_value():
+    """Requirement 3.3: no invented millisecond value anywhere.
+
+    A3.6 is bound to scroll position, not to a clock. Publishing any ms figure
+    for it would be a fabricated measurement on the page whose entire purpose
+    is that it does not fabricate measurements (C-27, C-35).
+    """
+    spec = json.loads((ROOT / "data/audit-spec.json").read_text(encoding="utf-8"))
+    scrubbed = [r for r in spec["a3_animations"] if r["duration_type"] == "scrubbed"]
+    assert scrubbed, "no scrubbed entry declared; this guard would pass vacuously"
+
+    html = (ROOT / "_site/audit/index.html").read_text(encoding="utf-8")
+    for row in scrubbed:
+        assert not re.search(r"\d\s*ms\b", row["duration"]), (
+            f"{row['id']} declares duration {row['duration']!r}, which carries a "
+            f"millisecond value for an animation that has no duration")
+        assert row["duration"] in html, (
+            f"{row['id']}'s duration is not rendered on /audit")
+
+
+def test_every_declared_animation_reaches_the_published_page():
+    """C-12: the ledger on /audit IS the declaration. A declared animation that
+    never renders would be a list nobody can check against the site."""
+    spec = json.loads((ROOT / "data/audit-spec.json").read_text(encoding="utf-8"))
+    html = (ROOT / "_site/audit/index.html").read_text(encoding="utf-8")
+    for row in spec["a3_animations"]:
+        assert f">{row['id']}<" in html, f"{row['id']} is declared but not published"
+    assert f"{len(spec['a3_animations']):02d} ANIMATIONS SHIP" in html.upper(), (
+        "the published count is not derived from the declared list")
+
+
+@pytest.mark.parametrize("duration_type", ["ms", "scrubbed", "none"])
+def test_duration_type_enum_is_closed(duration_type):
+    """The schema admits exactly three kinds of duration, each meaning what it
+    says: a clock time, scrubbed to scroll, or none because the entry is not a
+    timed animation at all (A3.2 is native scrolling).
+
+    Ruling condition (1) named `ms | scrubbed`; `none` was confirmed by the
+    director at the P4.1 review stop, because forcing a millisecond type onto
+    native scroll would be exactly the invented value that condition forbids.
+    """
+    spec = json.loads((ROOT / "data/audit-spec.json").read_text(encoding="utf-8"))
+    allowed = {"ms", "scrubbed", "none"}
+    for row in spec["a3_animations"]:
+        assert row["duration_type"] in allowed, (
+            f"{row['id']} declares duration_type {row['duration_type']!r}, "
+            f"outside the closed enum {sorted(allowed)}")
+    assert any(r["duration_type"] == duration_type for r in spec["a3_animations"]), (
+        f"no entry uses duration_type {duration_type!r}; if that is intended, "
+        f"remove it from the enum rather than leaving an unused value")

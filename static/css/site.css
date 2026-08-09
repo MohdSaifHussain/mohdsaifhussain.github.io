@@ -534,3 +534,53 @@ main   { view-transition-name: page-content; }
 
 @keyframes vt-turn-out { to   { opacity: 0; transform: translateY(-16px); } }
 @keyframes vt-turn-in  { from { opacity: 0; transform: translateY(22px);  } }
+
+/* ===========================================================================
+   @ships A3.6 — Experience register, scroll-driven reveal.
+   MOTION_SPEC_v1_1.md §A3.6 (M-2), owner ruling 2026-08-10. Answers WHERE AM I:
+   rows and their rules surface in step with their arrival at the reading edge
+   and scrub back on upward scroll, so the reveal frontier IS the reader's
+   position in the six-role register.
+
+   Sources, fetched 2026-08-10 rather than recalled (doctrine rule 3):
+     animation-timeline: view()  https://developer.mozilla.org/en-US/docs/Web/CSS/animation-timeline/view
+     animation-range             https://developer.mozilla.org/en-US/docs/Web/CSS/animation-range
+
+   SCOPE IS DELIBERATELY NARROW. /experience/ only. Home and Projects were
+   excluded at the ruling as decoration: neither passed the one-sentence
+   orientation test, and motion that fails that test is decoration whatever it
+   looks like.
+
+   C-19 / C-14: CSS only. No JS, no scroll listeners, nothing that drives the
+   viewport — the browser scrolls, and this reads the scroll it already did.
+   C-15: transform and opacity only. Duration is SCRUBBED rather than timed, so
+   the time caps do not bind: no frame can outrun the reader's own scroll, and
+   no millisecond value is invented for a thing that has none.
+
+   ABOVE THE FOLD (C-02, which has zero headroom at LCP 1.65s): an element
+   already fully visible at first paint is past its `entry` range, and
+   fill-mode `both` therefore holds the animation's FINAL keyframe — the normal,
+   visible state. Nothing above the fold starts hidden. Asserted by execution in
+   tools/browser_audit.py --above-fold rather than trusted from this comment.
+
+   DEGRADES TO VISIBLE, NEVER TO HIDDEN. The @supports wrapper is load-bearing:
+   the feature is Limited availability / not Baseline (MDN, checked 2026-08-10),
+   and without the wrapper a non-supporting browser would apply the `from`
+   state and never animate away from it — every row invisible, permanently.
+   =========================================================================== */
+@supports (animation-timeline: view()) {
+  .xp-row {
+    animation: xp-surface auto linear both;
+    animation-timeline: view();
+    animation-range: entry 10% entry 55%;
+  }
+  .receipt-rule {
+    animation: xp-rule auto linear both;
+    animation-timeline: view();
+    animation-range: entry 15% entry 70%;
+    transform-origin: left center;
+  }
+}
+
+@keyframes xp-surface { from { opacity: 0; transform: translateY(12px); } }
+@keyframes xp-rule    { from { transform: scaleX(0); } }

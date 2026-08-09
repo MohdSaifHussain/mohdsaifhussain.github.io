@@ -188,12 +188,132 @@ def selftest(base: str) -> int:
     return 0 if ok else 1
 
 
+
+# --- Above-fold protection (P4.1 / D5, ruling condition 4) -------------------
+#
+# A3.6 reveals the Experience register on scroll. Every scroll-driven reveal
+# carries the same risk: an element that starts at its `from` state and never
+# reaches its `to` state is content that is permanently invisible. Above the
+# fold that is also an LCP regression, and C-02 has ZERO headroom at 1.65s.
+#
+# The spec argues this is safe — an element already visible at first paint is
+# past its `entry` range, so fill-mode `both` holds the FINAL keyframe. That
+# argument is correct and it is still an argument. The ruling requires proof,
+# so this measures the rendered page instead: every element with a real box
+# intersecting the first-paint viewport must be fully opaque, BEFORE any
+# scrolling happens.
+#
+# Ref, checked 2026-08-10: animation-range / fill-mode semantics —
+# https://developer.mozilla.org/en-US/docs/Web/CSS/animation-range
+
+ABOVE_FOLD_JS = """() => {
+  const vh = window.innerHeight, vw = window.innerWidth;
+  const out = [];
+  for (const el of document.querySelectorAll('main *')) {
+    const r = el.getBoundingClientRect();
+    if (r.width === 0 || r.height === 0) continue;      // no box: not rendered
+    if (r.top >= vh || r.bottom <= 0) continue;          // below or above fold
+    if (r.left >= vw || r.right <= 0) continue;
+    const cs = getComputedStyle(el);
+    if (cs.display === 'none') continue;
+    const op = parseFloat(cs.opacity);
+    if (op < 0.99 || cs.visibility === 'hidden') {
+      out.push({
+        tag: el.tagName.toLowerCase(),
+        cls: (el.className && el.className.toString().slice(0, 60)) || '',
+        opacity: op, visibility: cs.visibility,
+        top: Math.round(r.top)
+      });
+    }
+  }
+  return out;
+}"""
+
+
+def above_fold(base: str, path: str, viewports, poison_selector: str = ""):
+    """Elements inside the first-paint viewport that render hidden.
+
+    The poison is applied through the CSSOM rather than by injecting a <style>
+    element. The site ships `style-src 'self'`, so an injected stylesheet would
+    be BLOCKED by its own CSP — the poison would never apply, the check would
+    correctly find nothing, and the control would report a failure that means
+    "CSP works", not "the check is broken". Writing el.style from script is not
+    restricted by CSP, so the poison lands and the control tests what it claims
+    to test.
+    """
+    from playwright.sync_api import sync_playwright
+
+    findings = []
+    with sync_playwright() as p:
+        browser = p.chromium.launch()
+        for label, w, h in viewports:
+            page = browser.new_page(viewport={"width": w, "height": h})
+            page.goto(base + path, wait_until="load")
+            if poison_selector:
+                applied = page.evaluate(
+                    "sel => { const n = document.querySelectorAll(sel);"
+                    " n.forEach(e => e.style.setProperty("
+                    "'opacity', '0', 'important')); return n.length; }",
+                    poison_selector)
+                if not applied:
+                    raise SystemExit(
+                        f"REASON=POISON_INEFFECTIVE  '{poison_selector}' matched "
+                        f"nothing on {path}; the control would have proved nothing")
+            for hit in page.evaluate(ABOVE_FOLD_JS):
+                findings.append((label, hit))
+            page.close()
+        browser.close()
+    return findings
+
+
+def run_above_fold(base: str, poison_selector: str = "") -> int:
+    viewports = [("mobile", 375, 667), ("desktop", 1280, 800)]
+    path = "/experience/"
+    findings = above_fold(base, path, viewports, poison_selector)
+
+    print(f"Above-fold protection — {path}, before any scrolling")
+    for label, w, h in viewports:
+        print(f"  viewport {label:<8} {w}x{h}")
+    if findings:
+        print("\nABOVE-FOLD CHECK FAILED")
+        for label, hit in findings:
+            print(f"  REASON=ABOVE_FOLD_HIDDEN  [{label}] <{hit['tag']} "
+                  f"class=\"{hit['cls']}\"> opacity={hit['opacity']} "
+                  f"visibility={hit['visibility']} top={hit['top']}px")
+        return 1
+    print("\nABOVE-FOLD OK — every element with a box inside the first-paint "
+          "viewport renders fully opaque, on both viewports")
+    return 0
+
+
+def selftest_above_fold(base: str) -> int:
+    """Prove the check can fail. D-44: a guard only ever seen to pass is a
+    decoration. The poison is the exact defect being guarded against — an
+    above-fold element left at a reveal's `from` state."""
+    print("SELFTEST — the above-fold check must refuse a hidden above-fold "
+          "element\n")
+    poisoned = run_above_fold(base, ".xp-row")
+    good = poisoned != 0
+    print(f"\n  [{'PASS' if good else 'FAIL'}] poisoned page refused "
+          f"(exit {poisoned}, expected non-zero)\n")
+    clean = run_above_fold(base)
+    good2 = clean == 0
+    print(f"\n  [{'PASS' if good2 else 'FAIL'}] real page accepted "
+          f"(exit {clean}, expected 0)")
+    return 0 if (good and good2) else 1
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--root", default="_site")
     ap.add_argument("--port", type=int, default=8765)
     ap.add_argument("--selftest", action="store_true",
                     help="prove axe and the CSP can both fail")
+    ap.add_argument("--above-fold", action="store_true",
+                    help="P4.1 D5: no element in the first-paint viewport of "
+                         "/experience/ may render hidden (ruling condition 4)")
+    ap.add_argument("--selftest-above-fold", action="store_true",
+                    help="prove the above-fold check can refuse")
     ap.add_argument("--json-out", type=pathlib.Path,
                     help="write the axe result for tools/write_audit.py")
     args = ap.parse_args()
@@ -205,6 +325,13 @@ def main() -> int:
     httpd = serve(root, args.port)
     base = f"http://127.0.0.1:{args.port}"
     try:
+        # P4.1 / D5. Checked before the axe paths: the above-fold check needs a
+        # browser but not axe-core, and coupling it to axe would make a C-02
+        # protection depend on a node_modules install it does not use.
+        if args.selftest_above_fold:
+            return selftest_above_fold(base)
+        if args.above_fold:
+            return run_above_fold(base)
         if args.selftest:
             print("SELFTEST — both detectors must be able to fail\n")
             return selftest(base)

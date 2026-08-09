@@ -189,4 +189,11 @@
     --motion-reveal: 0ms;
     --motion-vt:     0ms;
   }
+
+  /* A3.6 is scrubbed to scroll position, not to a clock, so it has no duration
+     token to zero. It is switched off by rule instead — which is why the gate
+     accepts EITHER a zeroed token OR an animation: none for the selector, and
+     insists on one of the two. */
+  .xp-row,
+  .receipt-rule { animation: none; }
 }

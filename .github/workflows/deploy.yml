@@ -112,6 +112,23 @@ jobs:
       - name: C-06 / C-18 — axe-core and CSP violations, in a real browser
         run: python tools/browser_audit.py --root _site --json-out axe.json
 
+      # P4.1 / D5, ruling condition (4): above-fold protection is VERIFIED, not
+      # assumed. A3.6 reveals the Experience register on scroll, and the failure
+      # mode of any scroll-driven reveal is content stuck at its `from` state —
+      # invisible, and above the fold that is also an LCP regression on a
+      # condition (C-02) with zero headroom at 1.65s.
+      #
+      # The spec argues it is safe because an element already visible at first
+      # paint is past its `entry` range and fill-mode `both` holds the final
+      # keyframe. That argument is correct and it is still an argument, so this
+      # measures the rendered page instead. Selftest first, same as axe above:
+      # "nothing was hidden" and "the check never looked" print the same.
+      - name: Prove the above-fold check can fail
+        run: python tools/browser_audit.py --root _site --selftest-above-fold
+
+      - name: C-02 — nothing above the fold starts hidden
+        run: python tools/browser_audit.py --root _site --above-fold
+
       # D-42: THE DEPLOY JOB NEVER WRITES SCORES.
       # It previously ran Lighthouse and the validator against a local test
       # server and wrote audit.json, racing the live-origin job and overwriting

@@ -124,6 +124,41 @@ def reduced_motion_body(css: str) -> str | None:
     return None if m is None else _block_after(css, m.end())
 
 
+def _strip_comments(css: str) -> str:
+    return re.sub(r"/\*.*?\*/", " ", css, flags=re.S)
+
+
+def _without_keyframes(css: str) -> str:
+    """Keyframe BODIES are not rules that can be neutralised; the animation
+    declarations that reference them are. Removing the bodies keeps `from`/`to`
+    out of the selector scan below."""
+    out, i = [], 0
+    for m in KEYFRAMES.finditer(css):
+        brace = css.find("{", m.end())
+        if brace == -1:
+            continue
+        out.append(css[i:m.start()])
+        i = brace + len(_block_after(css, brace + 1)) + 2
+    out.append(css[i:])
+    return "".join(out)
+
+
+def _innermost_rules(css: str) -> list[tuple[str, str]]:
+    """(selector prelude, declaration body) for every rule with no nested rule.
+
+    Innermost only, which is what makes this work through `@supports` and
+    `@media` wrappers without parsing them: the wrapper's prelude contains no
+    braces, so the match starts after its opening brace and the prelude picked
+    up is the real selector.
+    """
+    return [(m.group(1).strip(), m.group(2))
+            for m in re.finditer(r"([^{}]+)\{([^{}]*)\}", css)]
+
+
+def _selectors(prelude: str) -> set[str]:
+    return {s.strip() for s in prelude.split(",") if s.strip()}
+
+
 def check_reduced_motion(css: str) -> list[tuple[str, str]]:
     """C-10: every timed transition must be switchable off.
 
@@ -137,6 +172,8 @@ def check_reduced_motion(css: str) -> list[tuple[str, str]]:
     set to 0ms, which is meaningless. Requiring at least one is the honest
     guarantee available from the shorthand without resolving the cascade.
     """
+    css = _strip_comments(css)
+
     timed = []
     for m in TRANSITION.finditer(css):
         decl = m.group(1).strip()
@@ -144,13 +181,42 @@ def check_reduced_motion(css: str) -> list[tuple[str, str]]:
         tokens = CUSTOM_PROP.findall(decl)
         if any(d > 0 for d in literal) or tokens:
             timed.append((decl, tokens))
-    if not timed:
+
+    # KEYFRAME ANIMATIONS, added by the director's ruling on P4.1 review-stop
+    # finding 1. Until then this function scanned `transition:` declarations
+    # ONLY, so both v1.1 animations were invisible to it: deleting the lever's
+    # `--motion-vt: 0ms` left A3.5 running at full 250ms for a visitor who had
+    # asked for reduced motion, and this checker printed "motion is switchable
+    # off (C-10)" and exited 0. The gate was blind exactly where the new motion
+    # lived. That demonstration is now the permanent negative control below.
+    scan = _without_keyframes(css)
+    body = reduced_motion_body(scan)
+    reduce_rules = _innermost_rules(body) if body else []
+
+    # A selector whose animation is switched off inside the lever block.
+    killed: set[str] = set()
+    for prelude, decls in reduce_rules:
+        if re.search(r"animation(?:-duration)?\s*:\s*(none|0m?s)\b", decls, re.I):
+            killed |= _selectors(prelude)
+
+    animated = []
+    if body is not None:
+        outside = scan.replace(body, " ")
+    else:
+        outside = scan
+    for prelude, decls in _innermost_rules(outside):
+        for m in re.finditer(r"animation(?:-duration)?\s*:\s*([^;}]+)", decls, re.I):
+            decl = m.group(1).strip()
+            if decl.lower().startswith("none"):
+                continue
+            animated.append((prelude, decl, CUSTOM_PROP.findall(decl)))
+
+    if not timed and not animated:
         return []
 
-    body = reduced_motion_body(css)
     if body is None:
         return [("MOTION_NOT_REDUCED",
-                 "timed motion ships but there is no @media "
+                 "motion ships but there is no @media "
                  "(prefers-reduced-motion: reduce) block at all (C-10)")]
 
     zeroed = {name for name, value in
@@ -170,6 +236,20 @@ def check_reduced_motion(css: str) -> list[tuple[str, str]]:
                 "MOTION_NOT_REDUCED",
                 f"'{decl}' hard-codes its duration, so reduced motion cannot "
                 f"switch it off (C-10)"))
+
+    # An animation is neutralised either by a token the lever zeroes, or by its
+    # own selector being switched off inside the lever block. A3.5 uses the
+    # first (--motion-vt); A3.6 must use the second, because a scroll-scrubbed
+    # animation has no duration token to zero.
+    for prelude, decl, tokens in animated:
+        if set(tokens) & zeroed:
+            continue
+        if _selectors(prelude) & killed:
+            continue
+        problems.append((
+            "MOTION_NOT_REDUCED",
+            f"'{prelude}' animates ('{decl}') but reduced motion neither "
+            f"zeroes a token it reads nor sets animation: none for it (C-10)"))
     return problems
 
 
@@ -430,6 +510,43 @@ def selftest() -> int:
          "MOTION_NOT_REDUCED", False),
         ("instant-only CSS MUST NOT trip — there is nothing to reduce",
          lambda: check_reduced_motion(".x{color:red}"),
+         "MOTION_NOT_REDUCED", False),
+
+        # THE POISONED FIXTURE (director's condition, P4.1 review stop).
+        # This is not a hypothetical: it is the exact shape of the repository
+        # at the moment the gate was proved blind. A3.5 shipped reading
+        # --motion-vt, the lever zeroed --motion-reveal and NOT --motion-vt,
+        # and the checker reported "motion is switchable off (C-10)" and exited
+        # 0 while a reduced-motion visitor got the full 250ms turn. The gate's
+        # negative control IS the failure that exposed it, so it can never go
+        # blind that way again without this failing first.
+        ("POISONED FIXTURE — an animation reading an UNZEROED token MUST trip",
+         lambda: check_reduced_motion(
+             "::view-transition-old(page-content){"
+             "animation: vt-turn-out var(--motion-vt) ease both}"
+             "@media (prefers-reduced-motion: reduce){:root{--motion-reveal:0ms}}"),
+         "MOTION_NOT_REDUCED", True),
+        ("the SAME fixture with the token zeroed MUST NOT trip",
+         lambda: check_reduced_motion(
+             "::view-transition-old(page-content){"
+             "animation: vt-turn-out var(--motion-vt) ease both}"
+             "@media (prefers-reduced-motion: reduce){"
+             ":root{--motion-reveal:0ms;--motion-vt:0ms}}"),
+         "MOTION_NOT_REDUCED", False),
+        ("a scrubbed animation with NO kill rule MUST trip (A3.6's shape)",
+         lambda: check_reduced_motion(
+             "@supports (animation-timeline: view()){"
+             ".xp-row{animation: xp-surface auto linear both;"
+             "animation-timeline: view()}}"
+             "@media (prefers-reduced-motion: reduce){:root{--motion-reveal:0ms}}"),
+         "MOTION_NOT_REDUCED", True),
+        ("the same scrubbed animation WITH animation:none MUST NOT trip",
+         lambda: check_reduced_motion(
+             "@supports (animation-timeline: view()){"
+             ".xp-row{animation: xp-surface auto linear both;"
+             "animation-timeline: view()}}"
+             "@media (prefers-reduced-motion: reduce){"
+             ":root{--motion-reveal:0ms}.xp-row{animation:none}}"),
          "MOTION_NOT_REDUCED", False),
 
         # C-14, both directions (defect D-48).
