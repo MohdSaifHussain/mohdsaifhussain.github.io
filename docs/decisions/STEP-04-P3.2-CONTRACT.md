@@ -185,6 +185,23 @@ This is why anchor and count are separate fields: TS-Sentry has a real, citable 
 ### Readings and deviations, recorded
 
 - **R-05** — identity strip renders owner-authored `headline_employers`; Experience derives all five roles uncurated. Curation is authorship, not code-side omission.
+
+  > **Correction, filed 2026-08-10 (P4.1).** This reading says "all five roles."
+  > `experience.json` holds **six**, and always has: the file has one commit
+  > (`4e8a169`) and already held six at `8d2f9e0`, this phase's close. The live
+  > page renders `06 ROLES, RECEIPTED`. The count was never five.
+  >
+  > R-05's substance is unaffected — it is about curation, and the identity
+  > strip does render four owner-authored employers against six uncurated roles.
+  > Only the number was wrong.
+  >
+  > Found by re-deriving the count from the data file rather than quoting this
+  > sentence, while grounding `MOTION_SPEC_v1_1.md` in P4.1. It survived the
+  > v1.0.0 release and the 2026-08-09 deviation audit, which checked displayed
+  > values against data but not documentation prose against data. The original
+  > text is left intact: this is an erratum against the record of a phase that
+  > met its exit criterion, not a defect against the phase. Full entry in
+  > `STEP-08-P4.1-M3-STRUCK.md`.
 - **R-06** — the scroll-snap slider is built as page layout in P3.2; P3.3 owns its C-14/C-15 verification and the audit-list entry. Director-endorsed.
 - **R-07** — every page h1 matches its nav label. **One exception, flagged:** Home's h1 is the identity line, per the frozen design; the nav label "01 HOME" carries the wayfinding instead. Not changed on my own authority.
 - **R-08** — both live case-study sites render as evidence links.
