@@ -23,8 +23,13 @@ on:
     - cron: "17 4 * * 1"        # Mondays, 04:17 UTC
   workflow_dispatch:
 
+# `actions: write` is required for the D-46 dispatch step at the end of this
+# job. Declaring a permissions block sets every scope not listed here to `none`,
+# so omitting it makes `gh workflow run` fail with 403 (D-47, the same mistake
+# found in measure-live.yml).
 permissions:
   contents: write
+  actions: write
 
 concurrency:
   group: refresh-stats
@@ -74,3 +79,25 @@ jobs:
           Anchors re-fetched and every evidence link verified to resolve.
           Constrained to data/generated/github.json by the single-path guard."
           git push
+          echo "PUBLISH_NEEDED=true" >> "$GITHUB_ENV"
+
+      # D-46: this job had the D-45 defect and nobody looked. D-45 was found in
+      # measure-live.yml — a push made with the default GITHUB_TOKEN does not
+      # trigger other workflows — and the fix was applied THERE and only there.
+      # This job pushes with the same token in the same way, so every weekly
+      # snapshot would have landed in the repository and never reached the site.
+      #
+      # The failure would have been invisible: the rendered "AS OF" stamp stays
+      # consistent with the stale data it is rendering, so no visitor sees a
+      # false claim — the refresh simply stops meaning anything, and the day an
+      # anchor actually moves the site shows the old one with no signal.
+      #
+      # The lesson recorded: fixing a defect in one instance of a pattern is not
+      # fixing the defect. The sibling job is part of the blast radius.
+      - name: Publish the refreshed snapshot
+        if: env.PUBLISH_NEEDED == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh workflow run deploy.yml --ref main
+          echo "deploy dispatched so the snapshot actually reaches the site"

@@ -27,8 +27,15 @@ on:
   schedule:
     - cron: "40 4 * * 1"        # Mondays, after the stats refresh
 
+# D-47: `actions: write` is REQUIRED, not decorative. Declaring a permissions
+# block at all sets every scope NOT listed here to `none` — so with only
+# `contents: write`, the D-45 fix below (`gh workflow run`, which is
+# POST /actions/workflows/{id}/dispatches) would have returned 403 the first
+# time it ran. The D-45 fix landed 10 minutes after the last measurement and
+# had never once executed, so nothing had exercised it.
 permissions:
   contents: write
+  actions: write
 
 concurrency:
   group: measure-live
