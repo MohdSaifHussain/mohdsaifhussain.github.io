@@ -109,9 +109,15 @@
   --mark-nudge: -0.04em;   /* optical baseline correction for both marks */
   --dot-size:    0.5em;
 
-  /* --- Motion (handoff §5 — the complete list; nothing else animates) ----- */
+  /* --- Motion (the declared A3 ledger — nothing else animates) ------------
+     The ledger is six entries as of the v1.1 amendment (MOTION_SPEC_v1_1.md,
+     owner ruling 2026-08-10). Only entries with a TIMED duration need a token
+     here: A3.2 is native scroll, A3.3/A3.4 are instant, and A3.6 is scrubbed
+     to scroll position rather than to a clock. */
   --motion-reveal: 200ms;   /* A3.1 evidence layer, opacity only             */
   --ease-reveal:   ease;
+  --motion-vt:     250ms;   /* A3.5 view transition, transform + opacity     */
+  --ease-vt:       cubic-bezier(.22, .61, .36, 1);   /* ease-out, per spec   */
 }
 
 /* ---------------------------------------------------------------------------
@@ -153,10 +159,34 @@
   }
 }
 
-/* A3.1's transition is the ONLY timed motion on the site. C-10 adopts WCAG
-   AAA 2.3.3 as a hard rule: with reduced motion requested the transition is
-   removed and every state stays reachable and coherent. Implemented in P3.3;
-   the token is zeroed here so the kill switch has a single lever. */
+/* THE SINGLE C-10 LEVER. C-10 adopts WCAG AAA 2.3.3 as a hard rule: with
+   reduced motion requested, motion is removed and every state stays reachable
+   and coherent.
+
+   THERE IS EXACTLY ONE OF THESE BLOCKS IN THE SHIPPED CSS, and that is a
+   requirement, not a habit (STEP-08 requirement 3.5, owner ruling condition 2).
+   Two reasons, and the second is the load-bearing one:
+     - a lever split across two blocks is two levers, and C-10 says one;
+     - tools/check_animations.py reduced_motion_body() locates this block with
+       .search() and reads the FIRST match only, so a second block anywhere
+       would be invisible to the gate that polices this condition.
+
+   DESIGN NOTE — the lever's definition widened here, recorded per the v1.1
+   amendment and citing C-10, not a charter amendment. It was "one variable"
+   (--motion-reveal) when A3.1 was the only timed motion. It is now "one
+   mechanism: zeroed motion tokens, plus the animations that cannot be
+   expressed as a token, all inside this one block." The guarantee C-10 asks
+   for is unchanged — one switch collapses all motion — and the mechanism grew
+   to keep that guarantee true as the ledger grew from four entries to six.
+
+   Element selectors below sit in tokens.css rather than site.css for the same
+   single-block reason. That is a deliberate layering exception (reading R-14),
+   taken because splitting the lever would break both the ruling and the gate. */
 @media (prefers-reduced-motion: reduce) {
-  :root { --motion-reveal: 0ms; }
+  /* A3.1 evidence reveal, and A3.5 view transition: zeroed at the token, so
+     the pseudo-elements resolve instantly and navigation is a plain swap. */
+  :root {
+    --motion-reveal: 0ms;
+    --motion-vt:     0ms;
+  }
 }

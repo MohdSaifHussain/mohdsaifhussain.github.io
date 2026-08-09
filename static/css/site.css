@@ -102,7 +102,7 @@ body {
 .mono-link  { font: var(--type-mono-link); color: var(--accent); text-decoration: none; }
 .accent     { color: var(--accent); }
 
-/* A3.3 is an INSTANT colour swap with no transition — that is the specified
+/* @ships A3.3 — an INSTANT colour swap with no transition. That is the specified
    animation, not an omission (handoff §5). */
 .mono-link:hover, .mono-link:focus-visible { color: var(--ink); }
 
@@ -183,7 +183,7 @@ nav {
 }
 .truth-item { display: inline-flex; align-items: baseline; gap: 8px; }
 
-/* --- Projects: native scroll-snap slider (A3.2, C-14) -------------------
+/* --- Projects: native scroll-snap slider (@ships A3.2, C-14) ------------
    Native scrolling only. The scrollbar stays visible because it IS the
    position indicator, alongside each card's "01 / 05". */
 .section--head { padding-bottom: 0; }
@@ -408,7 +408,7 @@ footer { padding: var(--pad-row) var(--gutter) 38px; border-top: var(--rule-mid-
 .mono-body, .quote, .quote-sm, .receipt, .metric, .audit-row { overflow-wrap: anywhere; }
 
 /* ===========================================================================
-   A3.1 — Home flagship row evidence reveal.  P3.3 / D1.
+   @ships A3.1 — Home flagship row evidence reveal.  P3.3 / D1.
    Opacity only. 200ms via --motion-reveal, which the reduced-motion block in
    tokens.css sets to 0ms — one lever, no second definition.
    ======================================================================== */
@@ -450,7 +450,7 @@ footer { padding: var(--pad-row) var(--gutter) 38px; border-top: var(--rule-mid-
 }
 
 /* ===========================================================================
-   A3.4 — Experience receipts row reading state.  P3.3 / D4.
+   @ships A3.4 — Experience receipts row reading state.  P3.3 / D4.
    Owner-directed addition to the handoff §5 list. Declared WHERE AM I: it is a
    reading-position aid, not an affordance — these rows carry no control.
    Instant, no transition. :hover and :focus-within are IDENTICAL, and no
@@ -486,3 +486,51 @@ footer { padding: var(--pad-row) var(--gutter) 38px; border-top: var(--rule-mid-
    currently broken teaches nothing about how the posture got here. */
 .audit-row--resolved { color: var(--dim); }
 .audit-row--resolved s { text-decoration-thickness: 1px; }
+
+/* ===========================================================================
+   @ships A3.5 — Cross-document view transition, vertical ledger-turn.
+   MOTION_SPEC_v1_1.md §A3.5 (M-1), owner ruling 2026-08-10. Answers WHERE AM I:
+   the wordmark and nav never leave the page, so navigation is continuity of
+   place rather than a "new site" moment.
+
+   Sources, fetched 2026-08-10 rather than recalled (doctrine rule 3):
+     @view-transition at-rule, navigation descriptor, same-origin requirement,
+     and the rule that BOTH documents must opt in —
+     https://developer.mozilla.org/en-US/docs/Web/CSS/@view-transition
+   Both documents opting in is satisfied for free here: every page is rendered
+   from base.html.j2 and serves this one stylesheet.
+
+   PROGRESSIVE ENHANCEMENT, NOT A DEPENDENCY. The feature is Limited
+   availability / not Baseline (MDN, checked 2026-08-10). A browser that does
+   not support @view-transition ignores the at-rule and navigates normally:
+   content is always visible, nothing is delayed and nothing is hidden. No
+   @supports wrapper is needed because the failure mode is already "no
+   transition", never "no content" — C-10 applied to feature detection.
+
+   C-19: native CSS. Zero JS, zero library bytes.
+   C-15: transform and opacity only, 250ms, inside the 400ms cap.
+   =========================================================================== */
+@view-transition { navigation: auto; }
+
+/* The three snapshot groups. header and footer have identical geometry on all
+   five pages, so they hold still while main turns; main is the only group that
+   moves. The nav current-page marker changes with the incoming DOM as state,
+   not as motion. */
+header { view-transition-name: site-header; }
+footer { view-transition-name: site-footer; }
+main   { view-transition-name: page-content; }
+
+/* A3.5 — duration comes from --motion-vt, never a literal, so the single C-10
+   lever in tokens.css reaches it. The spec's illustrative code block showed a
+   250ms literal; its prose requires the token "so the lever below reaches it",
+   and the prose governs (reading R-13). At 0ms these resolve instantly and
+   navigation becomes a plain swap. */
+::view-transition-old(page-content) {
+  animation: vt-turn-out var(--motion-vt) var(--ease-vt) both;
+}
+::view-transition-new(page-content) {
+  animation: vt-turn-in var(--motion-vt) var(--ease-vt) both;
+}
+
+@keyframes vt-turn-out { to   { opacity: 0; transform: translateY(-16px); } }
+@keyframes vt-turn-in  { from { opacity: 0; transform: translateY(22px);  } }

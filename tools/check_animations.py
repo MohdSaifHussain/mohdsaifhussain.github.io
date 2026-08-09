@@ -65,6 +65,10 @@ MAX_TRANSITION_MS = 400
 TRANSITION = re.compile(r"transition:\s*([^;}]+)", re.I)
 ANIMATION = re.compile(r"animation(?:-name)?:\s*([^;}]+)", re.I)
 KEYFRAMES = re.compile(r"@keyframes\s+([\w-]+)", re.I)
+# D-49: an explicit implementation marker. Deliberately not a bare `A3.N`,
+# which occurs throughout ordinary comment prose in both stylesheets.
+SHIPS = re.compile(r"@ships\s+(A3\.\d)", re.I)
+DECLARATION = re.compile(r"([-\w]+)\s*:\s*[^;{}]+", re.I)
 DURATION = re.compile(r"([\d.]+)\s*(ms|s)\b", re.I)
 CUSTOM_PROP = re.compile(r"var\(\s*(--[\w-]+)", re.I)
 
@@ -231,24 +235,104 @@ def check_transitions(css: str) -> list[tuple[str, str]]:
     return problems
 
 
-def check_keyframes(css: str) -> list[tuple[str, str]]:
-    """Any @keyframes block is motion that must be declared and compositor-safe."""
+def check_keyframes(css: str, declared: dict[str, str] | None = None
+                    ) -> list[tuple[str, str]]:
+    """C-12, both directions, over keyframe animations.
+
+    Until the v1.1 amendment this refused EVERY `@keyframes` unconditionally,
+    because the site shipped none and "zero keyframes" was therefore a true and
+    cheap invariant. A3.5 and A3.6 make it false, so the sweep now asks the
+    same question the id list is asked: does what ships match what is declared,
+    in both directions?
+
+      - a @keyframes no A3 entry claims   -> UNDECLARED_ANIMATION
+      - a keyframes name an entry claims,
+        with no @keyframes shipping it    -> UNSHIPPED_ANIMATION
+
+    The second direction is the one that matters. Without it, deleting the CSS
+    for a declared animation would leave /audit publishing an animation that no
+    longer exists, and nothing would notice.
+    """
+    declared = declared_keyframes() if declared is None else declared
+    shipped = set(KEYFRAMES.findall(css))
+
+    problems = []
+    for extra in sorted(shipped - set(declared)):
+        problems.append(("UNDECLARED_ANIMATION",
+                         f"@keyframes {extra} ships but no entry in "
+                         f"audit-spec.json declares it"))
+    for missing in sorted(set(declared) - shipped):
+        problems.append(("UNSHIPPED_ANIMATION",
+                         f"{declared[missing]} declares keyframes "
+                         f"'{missing}' but no @keyframes of that name ships"))
+    return problems
+
+
+def check_keyframe_properties(css: str) -> list[tuple[str, str]]:
+    """C-15 inside the keyframes themselves.
+
+    check_transitions() enforces C-15's transform/opacity rule over
+    `transition:` declarations. Nothing enforced it over keyframe animations,
+    because none shipped. Now that two do, the A2.1 row on /audit — "motion
+    uses transform / opacity only", reported as PASS on this checker's exit
+    code — would be reporting a gate that never looked at the new motion.
+    That is the D-48 disease, so the check follows the motion.
+
+    Only the animatable properties are permitted; `animation-timeline` and
+    friends are not animated properties and never appear inside a keyframe.
+    """
     problems = []
     for m in KEYFRAMES.finditer(css):
-        problems.append(("UNDECLARED_ANIMATION",
-                         f"@keyframes {m.group(1)} — keyframe animation is not on the declared list"))
+        name = m.group(1)
+        brace = css.find("{", m.end())
+        if brace == -1:
+            continue
+        for prop in DECLARATION.findall(_block_after(css, brace + 1)):
+            prop = prop.lower()
+            if prop.startswith("--") or prop in ANIMATABLE:
+                continue
+            problems.append((
+                "FORBIDDEN_PROPERTY",
+                f"@keyframes {name} animates '{prop}'; C-15 permits only "
+                f"{' and '.join(sorted(ANIMATABLE))}"))
     return problems
 
 
 def shipped_ids(css: str) -> set[str]:
     """Which declared animations are actually implemented.
 
-    Each is identified by the marker comment its implementation carries, so a
-    declaration cannot be satisfied by wishful thinking and an implementation
-    cannot exist without naming which entry it is.
+    DEFECT D-49, found in P4.1 and fixed here. This previously matched any
+    occurrence of `A3.N` anywhere in the stylesheet, including ordinary prose
+    inside comments. Every implementation block in this file discusses other
+    entries by id in passing, so the UNSHIPPED_ANIMATION direction could be
+    satisfied by *mentioning* an id rather than by implementing it — the exact
+    "satisfied by wishful thinking" failure the old docstring claimed to
+    prevent. It was caught red-handed: a comment in tokens.css reading
+    "A3.6 is scrubbed" made the gate report A3.6 as shipped while no A3.6 CSS
+    existed at all.
+
+    The marker is now an explicit token that never occurs in prose. Writing
+    `@ships A3.5` is a deliberate act; writing "A3.5" while explaining
+    something is not.
     """
-    return set(re.findall(r"/\*+\s*(?:.*?\b)?(A3\.\d)\b", css)) | \
-           set(re.findall(r"\b(A3\.\d)\b", css))
+    return set(SHIPS.findall(css))
+
+
+def spec_rows() -> list[dict]:
+    return json.loads(SPEC.read_text(encoding="utf-8"))["a3_animations"]
+
+
+def declared_keyframes() -> dict[str, str]:
+    """Keyframe name -> the A3 entry that claims it.
+
+    Declaring keyframes per entry is what lets the sweep below be
+    two-directional. Without it the gate can only ask "is this @keyframes
+    allowed at all", which is a question with no wrong answer once any
+    keyframes ship.
+    """
+    return {name: row["id"]
+            for row in spec_rows()
+            for name in row.get("keyframes", [])}
 
 
 def check_list_agreement(css: str) -> list[tuple[str, str]]:
@@ -266,12 +350,17 @@ def check_list_agreement(css: str) -> list[tuple[str, str]]:
 def run() -> int:
     css, js = css_text(), js_text()
     problems = (check_transitions(css) + check_keyframes(css)
+                + check_keyframe_properties(css)
                 + check_list_agreement(css)
                 + check_reduced_motion(css) + check_native_scroll(css, js))
 
     declared = declared_ids()
+    kf = declared_keyframes()
     print(f"declared animations ({len(declared)}): {', '.join(declared)}")
-    print(f"implemented in CSS  : {', '.join(sorted(shipped_ids(css))) or 'none found'}")
+    print(f"implemented in CSS  : {', '.join(sorted(shipped_ids(css))) or 'none found'}"
+          f"   (marked '@ships A3.N', never a bare mention — D-49)")
+    print(f"declared keyframes  : {', '.join(f'{n} [{i}]' for n, i in sorted(kf.items())) or 'none'}")
+    print(f"shipped keyframes   : {', '.join(sorted(set(KEYFRAMES.findall(css)))) or 'none'}")
     body = reduced_motion_body(css)
     print(f"reduced-motion block: {'present' if body is not None else 'ABSENT'}"
           f"{'' if body is None else ' — ' + ' '.join(body.split())[:60]}")
@@ -292,8 +381,11 @@ def selftest() -> int:
     ok = True
     print("SELFTEST — both directions of the declared list, plus C-15 rules\n")
     cases = [
-        ("a fourth, undeclared animation MUST trip",
-         lambda: check_list_agreement("/* A3.9 rogue */ .x{opacity:0}"),
+        # Marker updated to the D-49 convention. The old form was
+        # "/* A3.9 rogue */", which no longer marks anything as shipped — and
+        # this control failing was how that change announced itself.
+        ("an undeclared animation MUST trip",
+         lambda: check_list_agreement("/* @ships A3.9 rogue */ .x{opacity:0}"),
          "UNDECLARED_ANIMATION", True),
         ("@keyframes MUST trip",
          lambda: check_keyframes("@keyframes pulse { from {opacity:0} }"),
@@ -363,6 +455,39 @@ def selftest() -> int:
         ("the real clock JS MUST NOT trip (C-14)",
          lambda: check_native_scroll("", "var t=host.querySelector('[data-clock-text]')"),
          "SCROLL_NOT_NATIVE", False),
+
+        # Keyframes, both directions (v1.1 amendment, ruling condition 1).
+        ("an UNDECLARED @keyframes MUST still trip",
+         lambda: check_keyframes("@keyframes rogue{from{opacity:0}}",
+                                 {"vt-turn-in": "A3.5"}),
+         "UNDECLARED_ANIMATION", True),
+        ("a DECLARED @keyframes MUST NOT trip",
+         lambda: check_keyframes("@keyframes vt-turn-in{from{opacity:0}}",
+                                 {"vt-turn-in": "A3.5"}),
+         "UNDECLARED_ANIMATION", False),
+        ("a declared keyframes that does NOT ship MUST trip",
+         lambda: check_keyframes("/* nothing here */",
+                                 {"vt-turn-in": "A3.5"}),
+         "UNSHIPPED_ANIMATION", True),
+        ("a keyframe animating a forbidden property MUST trip (C-15)",
+         lambda: check_keyframe_properties("@keyframes k{from{width:0}}"),
+         "FORBIDDEN_PROPERTY", True),
+        ("a keyframe animating transform/opacity MUST NOT trip (C-15)",
+         lambda: check_keyframe_properties(
+             "@keyframes k{from{opacity:0;transform:translateY(12px)}}"),
+         "FORBIDDEN_PROPERTY", False),
+
+        # D-49, both directions. The bug this replaces made every one of these
+        # ids "shipped" by being mentioned, which is why the marker is explicit.
+        ("an id merely MENTIONED in prose MUST NOT count as shipped (D-49)",
+         lambda: check_list_agreement(
+             "/* A3.6 is scrubbed to scroll position, unlike A3.1 */"),
+         "UNSHIPPED_ANIMATION", True),
+        ("an id marked '@ships' MUST count as shipped (D-49)",
+         lambda: [p for p in check_list_agreement(
+             "/* @ships A3.1 @ships A3.2 @ships A3.3 "
+             "@ships A3.4 @ships A3.5 @ships A3.6 */")],
+         "UNSHIPPED_ANIMATION", False),
     ]
     for label, fn, reason, must_trip in cases:
         found = reason in [r for r, _ in fn()]
@@ -373,6 +498,7 @@ def selftest() -> int:
 
     # Positive control at repo level.
     real = check_transitions(css_text()) + check_keyframes(css_text()) + \
+        check_keyframe_properties(css_text()) + \
         check_list_agreement(css_text()) + check_reduced_motion(css_text()) + \
         check_native_scroll(css_text(), js_text())
     if real:
