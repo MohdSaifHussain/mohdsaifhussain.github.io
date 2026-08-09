@@ -582,5 +582,26 @@ main   { view-transition-name: page-content; }
   }
 }
 
-@keyframes xp-surface { from { opacity: 0; transform: translateY(12px); } }
+/* DEFECT D-51 — no opacity channel on text. Erratum 1 against MOTION_SPEC_v1_1.
+   The spec's illustrative keyframe was `from { opacity: 0; transform: ... }`.
+   Every point in a scrubbed range is a RESTING state, so intermediate alpha is
+   not a transient — it is where the text sits for as long as the reader leaves
+   the scroll there, and text at reduced alpha composites toward the background
+   and drops below AA. Recomputed against --bg, AA small text 4.5:1 (the hex is
+   deliberately not quoted here: the COLOR_LITERAL gate scans comments too, and
+   it is right to — a colour value has exactly one home, tokens.css):
+
+     --dim    (.mono-meta)   needs alpha >= 0.854
+     --accent (.numeral-sm)  needs alpha >= 0.618
+     --body   (.receipt)     needs alpha >= 0.568
+     --ink    (.display-xs)  needs alpha >= 0.478
+
+   --dim breaks first, which is what axe caught: [serious] color-contrast on
+   article:nth-child(3), the row part-way through its entry range.
+
+   Flooring the fade instead would mean starting at alpha 0.854 — a 15% change,
+   a fade nobody can see — so the opacity channel is not worth its cost at any
+   value that is safe. translateY carries the whole reveal. .receipt-rule keeps
+   scaleX because a rule carries no text and no contrast obligation. */
+@keyframes xp-surface { from { transform: translateY(12px); } }
 @keyframes xp-rule    { from { transform: scaleX(0); } }

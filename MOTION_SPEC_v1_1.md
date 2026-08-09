@@ -120,3 +120,64 @@ Everything static and visible from first paint; the register is complete and coh
 | A3.6 | `.xp-row`, `.receipt-rule` (/experience/ only) | transform, opacity | scroll-scrubbed (`view()`), linear | WHERE AM I |
 
 Undeclared motion remains a defect. M-3 recorded as STRUCK in `docs/decisions/` with the reasoning from the design session's 1f verdict card.
+
+---
+
+# Errata
+
+Recorded against this specification after the build ran it. **The specification
+text above is left intact as the historical record** — same convention as
+Erratum 1 against STEP-02-HANDOFF (defect D-34). An erratum records that the
+artifact and the spec disagree and says which one is right; it does not quietly
+rewrite the spec so the disagreement disappears.
+
+## Erratum 1 — §A3.6's keyframe must not animate opacity (defect D-51)
+
+**What §A3.6 specifies:**
+
+```css
+@keyframes xp-surface { from { opacity: 0; transform: translateY(12px); } }
+```
+
+**What ships:**
+
+```css
+@keyframes xp-surface { from { transform: translateY(12px); } }
+```
+
+**Why the spec is wrong here.** A scroll-scrubbed animation has no transient
+frames. Progress is bound to scroll position, so **every point in the range is a
+resting state** — an intermediate alpha is not something the reader passes
+through, it is where the text sits for as long as they leave the scroll there.
+Text at reduced alpha composites toward the background and loses contrast.
+
+Recomputed from `tokens.css` against `--bg #0d0d0c`, AA small text 4.5:1 — the
+alpha at which each participating token first meets AA:
+
+| Token | Element | Full-alpha ratio | Meets AA at |
+|---|---|---|---|
+| `--dim` | `.mono-meta` | 5.78:1 | **alpha ≥ 0.854** |
+| `--accent` | `.numeral-sm` | 10.40:1 | alpha ≥ 0.618 |
+| `--body` | `.receipt` | 12.11:1 | alpha ≥ 0.568 |
+| `--ink` | `.display-xs` | 17.07:1 | alpha ≥ 0.478 |
+
+`--dim` breaks first, having the least headroom at full strength. That is
+exactly what the C-06 gate caught before the deploy: axe reported `[serious]
+color-contrast` on `article:nth-child(3)` — the one row part-way through its
+`entry 10% → 55%` range, hence at a fractional alpha. Rows sitting at alpha 0
+were skipped by axe as not visible; the partially faded one was evaluated, and
+failed.
+
+**Why the fade was removed rather than floored.** Flooring the from-opacity at a
+safe value means starting at alpha 0.854 — a 15% change over the whole range,
+which is a fade nobody can perceive. The opacity channel is not worth its cost
+at any value that is safe, so it is removed rather than reduced to a decorative
+number. `translateY(12px)` carries the reveal on its own. `.receipt-rule` keeps
+`scaleX` because a rule carries no text and therefore no contrast obligation.
+
+**Consequence for the ledger:** A3.6's declared properties narrow from
+`transform, opacity` to `transform`. Recorded rather than silently adjusted.
+
+**Range-tuning would not have been a remedy.** Narrowing `animation-range` only
+changes *which* scroll positions produce a sub-AA alpha, never *whether* one
+exists. See the standing rule in `docs/decisions/STEP-08-P4.1-SCRUBBED-STATES.md`.
