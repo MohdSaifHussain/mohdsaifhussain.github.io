@@ -45,6 +45,19 @@
    paint waits on one round trip rather than two (O-8, LCP path). The
    sources remain two commented files. #}
 <link rel="stylesheet" href="/css/site.css">
+{# D-59. The ONLY render-blocking script the site loads, and the only one
+   without `defer`. It applies a theme the visitor already chose this visit
+   BEFORE first paint; deferred, it would repaint after the page is on screen,
+   which is a visible flash of the wrong theme and indistinguishable from a bug.
+
+   External for four lines because it has to be: the INLINE_SCRIPT gate refuses
+   a <script> with a body and no src, and the CSP is script-src 'self' with no
+   'unsafe-inline', no nonce and no hash. There is no inline route here.
+
+   Placed AFTER the stylesheet so the tokens are already parsed when the
+   attribute lands, and its cost is on the record — this is the one deliberate
+   addition to a critical path whose LCP is declared UNMET. #}
+<script src="/js/theme-init.js"></script>
 {# C-26. application/ld+json is data, not executable script: it carries no
    `src` and runs nothing, so it does not breach C-18's no-inline-script rule.
    Contains NO email and no phone — C-33 covers structured data explicitly, and
