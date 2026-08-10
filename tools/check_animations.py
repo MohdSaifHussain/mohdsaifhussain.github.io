@@ -253,6 +253,63 @@ def check_reduced_motion(css: str) -> list[tuple[str, str]]:
     return problems
 
 
+# Properties that change how text composites against the background, and so
+# change its contrast ratio. Deliberately a blunt list rather than an attempt to
+# compute the composited ratio: CSS alone cannot tell which tokens a selector's
+# subtree actually renders, so a checker that tried to do the arithmetic would
+# be guessing with more decimal places. Refusing the channel is the honest move.
+CONTRAST_AFFECTING = {"opacity", "color", "filter",
+                      "background-color", "background", "mix-blend-mode"}
+
+
+def check_scrubbed_contrast(css: str, rows: list[dict] | None = None
+                            ) -> list[tuple[str, str]]:
+    """Defect D-51's class, made structural instead of audit-caught.
+
+    A scrubbed animation has no transient frames: progress is bound to scroll
+    position, so EVERY point in its range is a resting state and must satisfy
+    every static condition, contrast included. D-51 shipped
+    `from { opacity: 0 }` on rows carrying --dim metadata, and --dim drops below
+    AA at any alpha under 0.854 — a state the reader could sit in for as long as
+    they left the scroll there. axe caught it at deploy; this catches it at
+    build.
+
+    Range-tuning is not a remedy and this checker deliberately offers no way to
+    express one: narrowing `animation-range` changes WHICH scroll positions
+    produce a failing state, never WHETHER one exists.
+
+    THE ESCAPE, and why it exists: an entry may declare `contrast_proof` naming
+    the computed floor at which every participating token still passes AA. That
+    keeps this from being a rule obeyable only by never fading anything — but it
+    costs a stated calculation, which is the point. Standing rule:
+    docs/decisions/STEP-08-P4.1-SCRUBBED-STATES.md
+    """
+    rows = spec_rows() if rows is None else rows
+    problems = []
+    for row in rows:
+        if row.get("duration_type") != "scrubbed":
+            continue
+        if row.get("contrast_proof"):
+            continue
+        for name in row.get("keyframes", []):
+            m = re.search(rf"@keyframes\s+{re.escape(name)}\b", css, re.I)
+            if not m:
+                continue
+            brace = css.find("{", m.end())
+            if brace == -1:
+                continue
+            for prop in DECLARATION.findall(_block_after(css, brace + 1)):
+                if prop.lower() in CONTRAST_AFFECTING:
+                    problems.append((
+                        "SCRUBBED_CONTRAST_RISK",
+                        f"{row['id']} is scrubbed and @keyframes {name} animates "
+                        f"'{prop.lower()}', so a reader can rest at any "
+                        f"intermediate value. Remove the channel, or declare "
+                        f"contrast_proof with the computed floor at which every "
+                        f"participating token still meets AA (D-51)"))
+    return problems
+
+
 def check_native_scroll(css: str, js: str) -> list[tuple[str, str]]:
     """C-14: the browser scrolls, and the scroll position stays visible."""
     problems = []
@@ -431,6 +488,7 @@ def run() -> int:
     css, js = css_text(), js_text()
     problems = (check_transitions(css) + check_keyframes(css)
                 + check_keyframe_properties(css)
+                + check_scrubbed_contrast(css)
                 + check_list_agreement(css)
                 + check_reduced_motion(css) + check_native_scroll(css, js))
 
@@ -548,6 +606,33 @@ def selftest() -> int:
              "@media (prefers-reduced-motion: reduce){"
              ":root{--motion-reveal:0ms}.xp-row{animation:none}}"),
          "MOTION_NOT_REDUCED", False),
+
+        # D-51 made structural (director's ruling, approved as designed).
+        ("a SCRUBBED entry fading text MUST trip — this is D-51 itself",
+         lambda: check_scrubbed_contrast(
+             "@keyframes xp-surface{from{opacity:0;transform:translateY(12px)}}",
+             [{"id": "A3.6", "duration_type": "scrubbed",
+               "keyframes": ["xp-surface"]}]),
+         "SCRUBBED_CONTRAST_RISK", True),
+        ("the SHIPPED transform-only version MUST NOT trip",
+         lambda: check_scrubbed_contrast(
+             "@keyframes xp-surface{from{transform:translateY(12px)}}",
+             [{"id": "A3.6", "duration_type": "scrubbed",
+               "keyframes": ["xp-surface"]}]),
+         "SCRUBBED_CONTRAST_RISK", False),
+        ("a declared contrast_proof MUST allow the channel through",
+         lambda: check_scrubbed_contrast(
+             "@keyframes xp-surface{from{opacity:0.9}}",
+             [{"id": "A3.6", "duration_type": "scrubbed",
+               "keyframes": ["xp-surface"],
+               "contrast_proof": "--dim meets AA at alpha >= 0.854"}]),
+         "SCRUBBED_CONTRAST_RISK", False),
+        ("a TIMED entry fading text MUST NOT trip — A3.5 is passed through",
+         lambda: check_scrubbed_contrast(
+             "@keyframes vt-turn-out{to{opacity:0}}",
+             [{"id": "A3.5", "duration_type": "ms",
+               "keyframes": ["vt-turn-out"]}]),
+         "SCRUBBED_CONTRAST_RISK", False),
 
         # C-14, both directions (defect D-48).
         ("scroll-behavior: smooth MUST trip (C-14)",

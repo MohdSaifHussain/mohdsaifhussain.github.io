@@ -186,3 +186,56 @@ Five, and four of them were cases where **a green signal meant nothing**:
 4. **The entire close was builder-performed.** Weaker evidence than director-performed verification, by explicit direction, recorded rather than presented as equivalent.
 5. **The tag is annotated, not signed.**
 6. Measurement is one cycle behind by construction: a page that measures itself changes its own bytes. Every figure carries an "as of" stamp and its environment.
+
+---
+
+## Erratum 2 — the released LCP figure was not protocol-conformant
+
+**Filed 2026-08-10 during P4.1, on defect D-52. The text above is left intact**,
+including §10's measured table and the release record. Same convention as
+Erratum 1 against STEP-02-HANDOFF (D-34): an erratum records that a figure and
+its stated method disagree; it does not rewrite the record so the disagreement
+disappears.
+
+**What this contract and the `v1.0.0` tag message state:** `LCP worst page
+1.65 s`, and C-02 declared UNMET at that figure.
+
+**What the stated protocol produces:** `1.53 s`.
+
+**The error.** `tools/write_audit.py` computed LCP as `max()` over every
+individual Lighthouse run — the worst SINGLE run — while /audit published,
+beside it, *"median of 3 runs per page per profile … the WORST median across all
+pages and profiles is published."* The category scores did implement that
+protocol. LCP, CLS and the transfer figure never did. Replayed through the
+corrected implementation, the release measurement `e80824d` yields a worst
+median of **1.53 s**.
+
+**Direction of error: pessimistic.** The site declared itself slower than its
+own protocol says it was. That is the safe direction, and it is still wrong:
+the figure was not reproducible, and it is the single number C-02 is declared
+against.
+
+**How visible the defect was.** The published figure swung across four
+measurements of a barely-changing site — 1.65 → 2.25 → 2.28 → 2.32 s — while the
+worst median sat at 1.53–1.56 s. That swing is exactly the single-run noise the
+median-of-3 protocol was adopted to eliminate. It went unnoticed because 1.65 s
+happened to be a low worst-run, so the release figure looked plausible.
+
+**Why the tag is not reissued.** `v1.0.0` is annotated, pushed, and immutable in
+practice; deleting or moving it would not achieve removal and would invalidate
+the hand-verified P3.5 close. The erratum is the only honest route, and it is
+filed here rather than left only in the defect log because the subject of this
+site is the accuracy of its own reporting.
+
+**Corrected figures, replayed through the fixed implementation:**
+
+| Measurement | Published then | Worst median (the protocol) |
+|---|---|---|
+| `e80824d` — the v1.0.0 release | 1.65 s | **1.53 s** |
+| `7d66d2c` — post-release audit, no motion | 2.28 s | 1.54 s |
+| `d2b5361` — with v1.1 motion | 2.32 s | 1.56 s |
+
+C-02 re-declares at the corrected figure from the next measurement under the
+fixed implementation. It remains **UNMET** against the 1.5 s target — honestly
+derived, and by a margin of hundredths rather than a number that moved by
+0.67 s depending on which run got unlucky.

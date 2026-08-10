@@ -25,8 +25,10 @@ import argparse
 import datetime as dt
 import json
 import pathlib
+import statistics
 import subprocess
 import sys
+import urllib.parse
 
 sys.stdout.reconfigure(encoding="utf-8")     # defect D-13
 sys.stderr.reconfigure(encoding="utf-8")
@@ -132,6 +134,33 @@ def lighthouse_scores(lhci_dir: pathlib.Path) -> dict:
                          "median across all pages and profiles is published")}
 
 
+def is_home(run: dict) -> bool:
+    """True for the home page only. Matched on the URL PATH, because every page
+    on this site ends in a slash and `endswith('/')` therefore matches all of
+    them (defect D-52)."""
+    return urllib.parse.urlparse(run.get("url", "")).path in ("", "/")
+
+
+def worst_median(runs: list[dict], metric: str, only=None) -> float | None:
+    """The protocol, applied: median per (page, profile), then the WORST of
+    those medians across every cell.
+
+    The worst median, never the worst run. A single run measures the CI
+    runner's mood — two consecutive runs of this same site once differed by 39
+    Lighthouse points — which is why the protocol exists. Taking max() over
+    individual runs re-imports exactly the noise the median removes, and is
+    what defect D-52 was.
+    """
+    cells: dict[tuple, list[float]] = {}
+    for r in runs:
+        if metric not in r or (only is not None and not only(r)):
+            continue
+        cells.setdefault((r.get("url"), r.get("profile")), []).append(r[metric])
+    if not cells:
+        return None
+    return max(statistics.median(v) for v in cells.values())
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--lighthouse", type=pathlib.Path)
@@ -161,16 +190,39 @@ def main() -> int:
                                   f"{w.get('best-practices','?')} / "
                                   f"{w.get('seo','?')}")
         detail["lighthouse"] = lh
-        worst_lcp = max((r.get("lcp_ms", 0) for r in lh["runs"]), default=None)
-        worst_cls = max((r.get("cls", 0) for r in lh["runs"]), default=None)
+        # DEFECT D-52. These three metrics did NOT follow the median-of-3
+        # protocol printed beside them on /audit. LCP and CLS took max() over
+        # every individual run — the worst SINGLE run — and transfer took an
+        # arbitrary one. Only the category scores above ever implemented the
+        # protocol.
+        #
+        # The cost was not theoretical: the published LCP swung 1.65 -> 2.25 ->
+        # 2.28 -> 2.32 s across four measurements while the worst MEDIAN sat
+        # still at 1.53-1.56 s. That swing is precisely the single-run noise the
+        # protocol was adopted to eliminate, and it nearly triggered a revert of
+        # work whose true cost was 0.02 s.
+        #
+        # Corrected to the pre-registered method: median per (page, profile),
+        # then the WORST median across all cells. The protocol was printed
+        # before any result existed and the scores already implemented it, so
+        # this is the code being brought to its own pre-registration — not a
+        # figure being chosen. Rewriting the printed protocol to match the bug
+        # is what would have been result-shopping.
+        worst_lcp = worst_median(lh["runs"], "lcp_ms")
+        worst_cls = worst_median(lh["runs"], "cls")
         if worst_lcp is not None:
-            measured["lcp"] = f"{worst_lcp/1000:.2f} s (worst page)"
+            measured["lcp"] = f"{worst_lcp/1000:.2f} s (worst median)"
         if worst_cls is not None:
-            measured["cls"] = f"{worst_cls:.3f} (worst page)"
-        home = [r for r in lh["runs"] if r["url"].rstrip("/").endswith("127.0.0.1:8765")
-                or r["url"].endswith("/")]
-        if home and home[0].get("transfer_bytes"):
-            measured["transfer"] = f"{int(home[0]['transfer_bytes']):,} B"
+            measured["cls"] = f"{worst_cls:.3f} (worst median)"
+
+        # A1.5 is "Home first-view transfer", so it is the home page only. The
+        # old filter was `url.endswith("/")`, which matches EVERY page on this
+        # site — /projects/, /audit/ and the rest all end in a slash — so the
+        # figure was the first run of whatever sorted first, not the home page
+        # by construction. Matched on the URL PATH instead.
+        home_transfer = worst_median(lh["runs"], "transfer_bytes", is_home)
+        if home_transfer is not None:
+            measured["transfer"] = f"{int(round(home_transfer)):,} B"
 
     # --- axe --------------------------------------------------------------
     if args.axe and args.axe.exists():
@@ -312,6 +364,42 @@ def selftest() -> int:
         ok = ok and good
         print(f"  [{'PASS' if good else 'FAIL'}] median of 3 published, not best "
               f"or worst (runs 59/98/83 -> {w.get('performance')}, expect 83)")
+
+    # --- D-52 controls: the SAME protocol, for the metrics that never had it --
+    # These are the real numbers from the 2026-08-10 measurement. The old code
+    # published 2.32 (the worst single run) and nearly triggered a revert; the
+    # protocol's answer is 1.56, and the difference between those two is the
+    # whole defect.
+    runs = [
+        {"url": "https://x/", "profile": "mobile", "lcp_ms": 1530, "cls": 0.0,
+         "transfer_bytes": 143354},
+        {"url": "https://x/", "profile": "mobile", "lcp_ms": 1560, "cls": 0.0,
+         "transfer_bytes": 143358},
+        {"url": "https://x/", "profile": "mobile", "lcp_ms": 2320, "cls": 0.0,
+         "transfer_bytes": 143377},
+        {"url": "https://x/projects/", "profile": "mobile", "lcp_ms": 1280},
+        {"url": "https://x/projects/", "profile": "mobile", "lcp_ms": 1500},
+        {"url": "https://x/projects/", "profile": "mobile", "lcp_ms": 1610},
+    ]
+    checks = [
+        ("LCP publishes the worst MEDIAN, not the worst run",
+         worst_median(runs, "lcp_ms"), 1560),
+        ("an outlier run cannot move the published figure",
+         worst_median(runs[:3], "lcp_ms"), 1560),
+        ("transfer is the HOME page only, matched on path not a trailing slash",
+         worst_median(runs, "transfer_bytes", is_home), 143358),
+        ("a metric no run carries is ABSENT, never zero",
+         worst_median(runs, "tbt_ms"), None),
+    ]
+    for label, got, expect in checks:
+        good = got == expect
+        ok = ok and good
+        print(f"  [{'PASS' if good else 'FAIL'}] {label} (got {got}, expect {expect})")
+
+    good = is_home({"url": "https://x/"}) and not is_home({"url": "https://x/audit/"})
+    ok = ok and good
+    print(f"  [{'PASS' if good else 'FAIL'}] '/audit/' is not the home page — the "
+          f"old endswith('/') filter matched every page on the site")
 
     return 0 if ok else 1
 

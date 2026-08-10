@@ -61,17 +61,39 @@ imperceptible to be correct is not worth having.
 move things without altering contrast, which is why A3.6's reveal survives as
 translate-only and `.receipt-rule` keeps its `scaleX`.
 
-## How it is enforced today, honestly stated
+## How it is enforced
 
-Today: **by this rule and by the C-06 axe gate, which is what caught D-51 —
-after the fact, at deploy time, rather than structurally.**
+**Structurally, at build time, as of 2026-08-10.** The control was proposed at
+the P4.1 review stop rather than silently added, and approved as designed.
 
-A structural control has been *proposed* rather than silently added, per the
-owner's ruling: a check in `tools/check_animations.py` that refuses a
-contrast-affecting property inside a keyframe used by a scrubbed entry whose
-selector can contain text. It is not implemented as of this file's date. Until
-it exists, this rule is enforced by a reviewer reading it and by axe refusing
-the deploy — and that limit is stated here rather than implied away.
+`tools/check_animations.py` → `check_scrubbed_contrast()`, reason code
+`SCRUBBED_CONTRAST_RISK`. For every entry whose `duration_type` is `scrubbed`,
+it refuses a contrast-affecting property — `opacity`, `color`, `filter`,
+`background-color`, `background`, `mix-blend-mode` — inside any keyframe that
+entry declares.
+
+**It is deliberately blunt, and the bluntness is the honesty.** CSS alone cannot
+tell which tokens a selector's subtree actually renders, so a checker that tried
+to compute the composited ratio would be guessing with more decimal places.
+Refusing what cannot be verified beats pretending to compute it.
+
+**The escape, and its price.** An entry may declare `contrast_proof` naming the
+computed floor at which every participating token still meets AA. That keeps
+this from being a rule obeyable only by never fading anything — but it costs a
+stated calculation, shown in the commit, which is the point.
+
+Controls run in both directions on every build:
+
+| Control | Must |
+|---|---|
+| `xp-surface` **with** `opacity` — D-51 itself | **refuse** |
+| the shipped transform-only `xp-surface` | pass |
+| an entry declaring `contrast_proof` | pass |
+| a **timed** entry fading text (A3.5) | pass — a timed frame is passed through, not rested in |
+
+The last row is the distinction the whole rule turns on, so it is asserted
+rather than assumed: A3.5 animates opacity at 250 ms and is correct to. C-06's
+axe gate still runs as the backstop that originally caught D-51.
 
 ## Related record
 
