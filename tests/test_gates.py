@@ -756,3 +756,68 @@ def test_duration_type_enum_is_closed(duration_type):
     assert any(r["duration_type"] == duration_type for r in spec["a3_animations"]), (
         f"no entry uses duration_type {duration_type!r}; if that is intended, "
         f"remove it from the enum rather than leaving an unused value")
+
+
+# --- P4.2: light mode ------------------------------------------------------
+
+def _light_mapping_blocks(css: str) -> list[str]:
+    """The two blocks that remap the semantic tokens to the light palette."""
+    media = re.search(
+        r"@media \(prefers-color-scheme: light\)\s*\{\s*"
+        r":root:not\(\[data-theme=\"dark\"\]\)\s*\{(.*?)\}", css, re.S)
+    manual = re.search(r":root\[data-theme=\"light\"\]\s*\{(.*?)\}", css, re.S)
+    return [m.group(1) for m in (media, manual) if m]
+
+
+def test_both_light_mappings_are_identical():
+    """CSS cannot OR a media query with a plain selector, so the light mapping
+    is stated twice — once for the system preference, once for the manual
+    toggle. That is the design's ONE accepted duplication, and it is of
+    pointers, never of colour values.
+
+    A drift between them would ship two different light modes: one for visitors
+    whose OS says light, another for visitors who pressed the button. Nobody
+    would see both, so nobody would notice.
+    """
+    css = (ROOT / "static/css/tokens.css").read_text(encoding="utf-8")
+    blocks = _light_mapping_blocks(css)
+    assert len(blocks) == 2, (
+        f"expected both light mapping blocks, found {len(blocks)}")
+
+    def norm(b):
+        return sorted(line.strip() for line in b.split(";")
+                      if line.strip() and "color-scheme" not in line)
+
+    assert norm(blocks[0]) == norm(blocks[1]), (
+        "the prefers-color-scheme mapping and the [data-theme] mapping have "
+        "drifted; they must remap the same tokens to the same values")
+
+
+def test_every_dark_token_has_a_light_counterpart():
+    """Both directions. A dark token with no light value renders unthemed — the
+    dark ink on a light background, or worse, invisible. A light token with no
+    dark counterpart is a value nothing uses.
+    """
+    css = (ROOT / "static/css/tokens.css").read_text(encoding="utf-8")
+    found = {"dark": set(), "light": set()}
+    for theme, name in re.findall(r"^\s*--(dark|light)-([\w-]+):", css, re.M):
+        found[theme].add(name)
+    assert found["dark"] == found["light"], (
+        f"palette tokens do not pair up: dark-only={found['dark'] - found['light']}, "
+        f"light-only={found['light'] - found['dark']}")
+    assert found["dark"], "no palette tokens found at all — the parser or the "\
+                          "naming convention has changed"
+
+
+def test_semantic_tokens_never_hold_a_colour_literal():
+    """The semantic tokens are pointers. A literal creeping back into one would
+    pin that token to a single theme, silently, while every other token themed
+    around it."""
+    css = (ROOT / "static/css/tokens.css").read_text(encoding="utf-8")
+    for name in ("--bg", "--ink", "--body", "--bright", "--dim", "--accent",
+                 "--rule-mid", "--rule-faint", "--row-tint"):
+        for m in re.finditer(rf"^\s*{re.escape(name)}:\s*([^;]+);", css, re.M):
+            value = m.group(1).strip()
+            assert value.startswith("var("), (
+                f"{name} holds {value!r}; semantic tokens must point at a "
+                f"palette token so both themes stay reachable")

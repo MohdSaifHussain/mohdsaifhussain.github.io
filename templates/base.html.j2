@@ -31,7 +31,8 @@
 <link rel="icon" href="/assets/img/icon-192.png" type="image/png" sizes="192x192">
 <link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png">
 <link rel="manifest" href="/site.webmanifest">
-<meta name="theme-color" content="{{ theme_color }}">
+<meta name="theme-color" content="{{ theme_color_dark }}" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="{{ theme_color_light }}" media="(prefers-color-scheme: light)">
 {# Fonts are self-hosted and preloaded (C-04). `crossorigin` is required even
    same-origin: fonts are always fetched in CORS mode.
    Only the three faces used above the fold on every page are preloaded; the

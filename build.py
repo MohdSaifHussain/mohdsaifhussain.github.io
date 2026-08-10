@@ -512,7 +512,15 @@ def build() -> int:
         "github": snapshot,
         # Read from tokens.css rather than repeated: contract 3.2 means even the
         # browser-chrome colour has exactly one definition.
-        "theme_color": read_token(tokens_css, "--bg"),
+        # P4.2: two themes, so two theme-colour metas, each with its own media
+        # query. Read from the PALETTE tokens rather than the semantic --bg,
+        # which is now a var() pointer and carries no literal to read. One meta
+        # would leave the browser chrome wrong in whichever theme it did not
+        # name — visible as a dark title bar above a light page.
+        # Ref, checked 2026-08-10: theme-color accepts a media attribute —
+        # https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/meta/name/theme-color
+        "theme_color_dark": read_token(tokens_css, "--dark-bg"),
+        "theme_color_light": read_token(tokens_css, "--light-bg"),
         # Markup(), so the source quotes render literally as 'self' rather than
         # &#39;self&#39;. Entity decoding would very probably resolve it at parse
         # time — but meta CSP has no report-only mode, so a policy the parser

@@ -12,27 +12,85 @@
 
 :root {
 
-  /* --- Colour (handoff §1, verbatim; contrast measured vs --bg) ----------- */
-  --bg:          #0d0d0c;              /* page background                    */
-  --ink:         #f2f0eb;              /* display text, strong rules 15.9:1  */
-  --body:        #cfccc3;              /* body / receipt text        10.6:1  */
-  --bright:      #e8e5dd;              /* evidence text              13.6:1  */
-  --dim:         #8f8c83;              /* metadata, labels            5.1:1  */
-  --accent:      #e8b64c;              /* THE one accent              9.3:1  */
+  /* === THE TWO PALETTES ====================================================
+     P4.2 closes R-11 / A4.8. Charter §5: "Dark-first; light mode optional
+     later, never at the cost of C-09." DARK REMAINS THE DEFAULT; light is the
+     guest mode.
 
-  /* Ratios above are the handoff's stated values. They are RE-DERIVED from
-     these hex values by tools/check_contrast.py at P3.4 close and reported
-     from that computation, never quoted from the table. (doctrine rule 13) */
+     WHY THE INDIRECTION. Every hex below appears EXACTLY ONCE. The semantic
+     tokens (--bg, --ink, …) are pointers, remapped in the two blocks near the
+     end of this file. The obvious alternative — a full second :root inside a
+     prefers-color-scheme query — would state each light hex twice (once for the
+     media query, once for the manual [data-theme] override) and let the two
+     drift silently. Here a drift is impossible: there is only one value to
+     drift from.
+
+     It also makes the palettes machine-readable without parsing CSS scopes.
+     tools/check_contrast.py reads --dark-* and --light-* directly, so it cannot
+     collapse the two themes into one — which a flat regex over a second :root
+     would have done, silently reporting one palette as the palette.
+
+     LIGHT IS DERIVED, NOT INVENTED. The rule, and the solved values with their
+     measured ratios, are published in
+     docs/decisions/STEP-09-P4.2-LIGHT-DERIVATION.md. That derivation was a
+     one-time act; check_contrast.py verifies these values on every build,
+     forever, which is what makes committed literals honest. */
+
+  /* --- Dark palette (handoff §1, verbatim; the shipped default) ----------- */
+  --dark-bg:      #0d0d0c;             /* page background                    */
+  --dark-ink:     #f2f0eb;             /* display text, strong rules         */
+  --dark-body:    #cfccc3;             /* body / receipt text                */
+  --dark-bright:  #e8e5dd;             /* evidence text                      */
+  --dark-dim:     #8f8c83;             /* metadata, labels                   */
+  --dark-accent:  #e8b64c;             /* THE one accent                     */
+
+  /* --- Light palette (P4.2, derived; measured ratios vs --light-bg) -------
+     --light-ink is the dark palette's own background, inverted: the light
+     theme introduces no colour the site did not already contain.
+     --light-accent honours the 7:1 floor by the owner's ruling, which is what
+     turns the amber into bronze — no amber survives a light background at any
+     WCAG-meaningful ratio, and the ruling chose legibility over the hue. */
+  --light-bg:     #faf9f6;             /* off-white (charter §5)             */
+  --light-ink:    #0d0d0c;             /* 18.47:1                            */
+  --light-body:   #333230;             /* 12.16:1  (dark measures 12.11)     */
+  --light-bright: #21201f;             /* 15.45:1  (dark measures 15.45)     */
+  --light-dim:    #64625c;             /*  5.79:1  (dark measures 5.78)      */
+  --light-accent: #695222;             /*  7.05:1  (dark measures 10.40)     */
+
+  /* Every ratio in the comments above is RE-DERIVED from these hex values by
+     tools/check_contrast.py on every build and reported from that computation,
+     never quoted from a table. (doctrine rule 13) */
+
+  /* --- Semantic tokens: pointers, remapped per theme at the end of this file
+     --------------------------------------------------------------------- */
+  --bg:          var(--dark-bg);
+  --ink:         var(--dark-ink);
+  --body:        var(--dark-body);
+  --bright:      var(--dark-bright);
+  --dim:         var(--dark-dim);
+  --accent:      var(--dark-accent);
+
+  /* The rule and tint system is the ink at low alpha. It has to be themed too:
+     these rgba() values hard-code the DARK ink's channels, so on a light
+     background they would be near-invisible. Stated in channels rather than
+     via colour-mix() so the values stay literal and inspectable, and because
+     build.py refuses rgba() anywhere outside this file. */
+  --dark-rule-mid:    rgba(242, 240, 235, .4);
+  --dark-rule-faint:  rgba(242, 240, 235, .25);
+  --dark-row-tint:    rgba(242, 240, 235, .045);
+  --light-rule-mid:   rgba( 13,  13,  12, .34);
+  --light-rule-faint: rgba( 13,  13,  12, .20);
+  --light-row-tint:   rgba( 13,  13,  12, .045);
 
   --rule-strong: var(--ink);                    /* 2px — opens a section     */
-  --rule-mid:    rgba(242, 240, 235, .4);       /* 1px — separates rows      */
-  --rule-faint:  rgba(242, 240, 235, .25);      /* 1px — dense /audit rows   */
+  --rule-mid:    var(--dark-rule-mid);          /* 1px — separates rows      */
+  --rule-faint:  var(--dark-rule-faint);        /* 1px — dense /audit rows   */
 
   /* A3.4's reading tint. Same ink at very low alpha as the rule system, so the
      row lifts without introducing a second surface colour. Background only —
      text contrast is handled by stepping body -> bright, which keeps every
      ratio above the C-09 floor rather than relying on the tint. */
-  --row-tint: rgba(242, 240, 235, .045);
+  --row-tint: var(--dark-row-tint);
 
   --rule-strong-w: 2px;
   --rule-mid-w:    1px;
@@ -196,4 +254,61 @@
      insists on one of the two. */
   .xp-row,
   .receipt-rule { animation: none; }
+}
+
+/* === THEME SWITCHING (P4.2) ================================================
+   Dark is the default and is declared in :root above. Two things can change it,
+   and THE MANUAL CHOICE WINS over the system preference.
+
+   Refs, checked 2026-08-10 rather than recalled (doctrine rule 3):
+     prefers-color-scheme
+       https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-color-scheme
+     color-scheme
+       https://developer.mozilla.org/en-US/docs/Web/CSS/color-scheme
+
+   `color-scheme` is set beside the tokens so the user agent themes what CSS
+   cannot reach: scrollbars, and the default focus ring on native controls.
+   Without it a light page keeps a dark scrollbar, which reads as a bug.
+
+   `:not([data-theme="dark"])` is what lets a visitor whose system says light
+   choose dark and be obeyed. Both blocks below carry (0,2,0) specificity, so
+   SOURCE ORDER decides — the manual block is last, deliberately.
+
+   SESSION-ONLY, by the owner's ruling. Nothing is stored: no cookie, no
+   localStorage, no fingerprint. So there is no state to apply before first
+   paint, no flash of the wrong theme, and nothing to declare under C-21 at all.
+   A returning visitor is carried by prefers-color-scheme again.
+
+   THE MAPPING APPEARS TWICE AND THE HEXES DO NOT. CSS cannot OR a media query
+   with a plain selector, so these two blocks are the one unavoidable
+   duplication — of POINTERS, never of colour values. A test asserts the two
+   blocks stay identical, so a drift fails the build rather than shipping two
+   different light modes. */
+
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    color-scheme: light;
+    --bg:         var(--light-bg);
+    --ink:        var(--light-ink);
+    --body:       var(--light-body);
+    --bright:     var(--light-bright);
+    --dim:        var(--light-dim);
+    --accent:     var(--light-accent);
+    --rule-mid:   var(--light-rule-mid);
+    --rule-faint: var(--light-rule-faint);
+    --row-tint:   var(--light-row-tint);
+  }
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+  --bg:         var(--light-bg);
+  --ink:        var(--light-ink);
+  --body:       var(--light-body);
+  --bright:     var(--light-bright);
+  --dim:        var(--light-dim);
+  --accent:     var(--light-accent);
+  --rule-mid:   var(--light-rule-mid);
+  --rule-faint: var(--light-rule-faint);
+  --row-tint:   var(--light-row-tint);
 }
