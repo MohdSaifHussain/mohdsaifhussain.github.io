@@ -1,7 +1,7 @@
 {
   "_generated": "Machine-written by tools/write_audit.py in CI from tool output. NEVER hand-edited. A value with no measurement is ABSENT, so /audit renders '\u2014 AT DEPLOY' rather than a plausible-looking number.",
-  "as_of": "2026-08-10T06:55:49Z",
-  "as_of_display": "2026-08-10 12:25 IST",
+  "as_of": "2026-08-10T07:06:51Z",
+  "as_of_display": "2026-08-10 12:36 IST",
   "detail": {
     "axe": {
       "pages": {
@@ -502,7 +502,7 @@
             "performance": {
               "median": 100,
               "runs": [
-                82,
+                85,
                 100,
                 100
               ]
@@ -655,7 +655,7 @@
               "median": 100,
               "runs": [
                 100,
-                100,
+                99,
                 100
               ]
             },
@@ -730,7 +730,7 @@
             "performance": {
               "median": 100,
               "runs": [
-                99,
+                100,
                 100,
                 100
               ]
@@ -840,19 +840,19 @@
             {
               "category": "performance",
               "id": "largest-contentful-paint",
-              "score": 0.96,
+              "score": 0.94,
               "title": "Largest Contentful Paint"
             },
             {
               "category": "performance",
               "id": "total-blocking-time",
-              "score": 0.49,
+              "score": 0.62,
               "title": "Total Blocking Time"
             },
             {
               "category": "performance",
               "id": "speed-index",
-              "score": 0.82,
+              "score": 0.81,
               "title": "Speed Index"
             },
             {
@@ -862,12 +862,12 @@
                 {
                   "cacheLifetimeMs": 600000,
                   "url": "https://mohdsaifhussain.github.io/assets/fonts/InstrumentSerif-Italic.woff2",
-                  "wastedBytes": 31070.416666666664
+                  "wastedBytes": 31055.75
                 },
                 {
                   "cacheLifetimeMs": 600000,
                   "url": "https://mohdsaifhussain.github.io/assets/fonts/InstrumentSerif-Regular.woff2",
-                  "wastedBytes": 29926.416666666664
+                  "wastedBytes": 29912.666666666664
                 },
                 {
                   "cacheLifetimeMs": 600000,
@@ -877,12 +877,12 @@
                 {
                   "cacheLifetimeMs": 600000,
                   "url": "https://mohdsaifhussain.github.io/assets/fonts/IBMPlexMono-Medium.woff2",
-                  "wastedBytes": 18549.666666666664
+                  "wastedBytes": 18747.666666666664
                 },
                 {
                   "cacheLifetimeMs": 600000,
                   "url": "https://mohdsaifhussain.github.io/assets/fonts/IBMPlexMono-Regular.woff2",
-                  "wastedBytes": 18513.916666666664
+                  "wastedBytes": 18515.75
                 }
               ],
               "score": 0,
@@ -911,7 +911,7 @@
                       "width": 412
                     },
                     "lhId": "page-2-SECTION",
-                    "nodeLabel": "03 / 04\n12:19:52 IST\nHYDERABAD, INDIA\nDELIVERY ENGINE \u2014 453 tests, CI-measured \u2026",
+                    "nodeLabel": "03 / 04\n12:30:48 IST\nHYDERABAD, INDIA\nDELIVERY ENGINE \u2014 453 tests, CI-measured \u2026",
                     "path": "1,HTML,1,BODY,2,MAIN,2,SECTION",
                     "selector": "body > main#main > section.truth-strip",
                     "snippet": "<section class=\"truth-strip\">",
@@ -963,7 +963,7 @@
               "id": "render-blocking-insight",
               "items": [
                 {
-                  "totalBytes": 4704,
+                  "totalBytes": 4503,
                   "url": "https://mohdsaifhussain.github.io/css/site.css"
                 }
               ],
@@ -979,7 +979,7 @@
             {
               "category": "performance",
               "id": "max-potential-fid",
-              "score": 0.11,
+              "score": 0.19,
               "title": "Max Potential First Input Delay"
             },
             {
@@ -993,9 +993,9 @@
                     "max-age": 600,
                     "type": "debugdata"
                   },
-                  "totalBytes": 33895,
+                  "totalBytes": 33879,
                   "url": "https://mohdsaifhussain.github.io/assets/fonts/InstrumentSerif-Italic.woff2",
-                  "wastedBytes": 31070.416666666664
+                  "wastedBytes": 31055.75
                 },
                 {
                   "cacheHitProbability": 0.08333333333333333,
@@ -1004,9 +1004,9 @@
                     "max-age": 600,
                     "type": "debugdata"
                   },
-                  "totalBytes": 32647,
+                  "totalBytes": 32632,
                   "url": "https://mohdsaifhussain.github.io/assets/fonts/InstrumentSerif-Regular.woff2",
-                  "wastedBytes": 29926.416666666664
+                  "wastedBytes": 29912.666666666664
                 },
                 {
                   "cacheHitProbability": 0.08333333333333333,
@@ -1026,9 +1026,9 @@
                     "max-age": 600,
                     "type": "debugdata"
                   },
-                  "totalBytes": 20236,
+                  "totalBytes": 20452,
                   "url": "https://mohdsaifhussain.github.io/assets/fonts/IBMPlexMono-Medium.woff2",
-                  "wastedBytes": 18549.666666666664
+                  "wastedBytes": 18747.666666666664
                 },
                 {
                   "cacheHitProbability": 0.08333333333333333,
@@ -1037,9 +1037,9 @@
                     "max-age": 600,
                     "type": "debugdata"
                   },
-                  "totalBytes": 20197,
+                  "totalBytes": 20199,
                   "url": "https://mohdsaifhussain.github.io/assets/fonts/IBMPlexMono-Regular.woff2",
-                  "wastedBytes": 18513.916666666664
+                  "wastedBytes": 18515.75
                 }
               ],
               "score": 0.5,
@@ -1121,12 +1121,12 @@
               "title": "robots.txt is not valid"
             }
           ],
-          "lcp_ms": 2118.514,
-          "performance": 82,
+          "lcp_ms": 2220.1925,
+          "performance": 85,
           "profile": "mobile",
           "seo": 92,
-          "tbt_ms": 612,
-          "transfer_bytes": 145160,
+          "tbt_ms": 453,
+          "transfer_bytes": 145175,
           "url": "https://mohdsaifhussain.github.io/"
         },
         {
@@ -1210,12 +1210,12 @@
               "title": "robots.txt is not valid"
             }
           ],
-          "lcp_ms": 1532.3105,
+          "lcp_ms": 1531.8384999999998,
           "performance": 100,
           "profile": "mobile",
           "seo": 92,
           "tbt_ms": 0,
-          "transfer_bytes": 145190,
+          "transfer_bytes": 145157,
           "url": "https://mohdsaifhussain.github.io/"
         },
         {
@@ -1299,12 +1299,12 @@
               "title": "robots.txt is not valid"
             }
           ],
-          "lcp_ms": 1534.3165,
+          "lcp_ms": 1529.851,
           "performance": 100,
           "profile": "mobile",
           "seo": 92,
           "tbt_ms": 0,
-          "transfer_bytes": 145158,
+          "transfer_bytes": 145143,
           "url": "https://mohdsaifhussain.github.io/"
         },
         {
@@ -1320,12 +1320,12 @@
               "title": "robots.txt is not valid"
             }
           ],
-          "lcp_ms": 1516.9495,
+          "lcp_ms": 1308.0645,
           "performance": 100,
           "profile": "mobile",
           "seo": 92,
           "tbt_ms": 0,
-          "transfer_bytes": 143523,
+          "transfer_bytes": 143489,
           "url": "https://mohdsaifhussain.github.io/projects/"
         },
         {
@@ -1341,12 +1341,12 @@
               "title": "robots.txt is not valid"
             }
           ],
-          "lcp_ms": 1502.106,
+          "lcp_ms": 1506.737,
           "performance": 100,
           "profile": "mobile",
           "seo": 92,
           "tbt_ms": 0,
-          "transfer_bytes": 143524,
+          "transfer_bytes": 143502,
           "url": "https://mohdsaifhussain.github.io/projects/"
         },
         {
@@ -1362,24 +1362,188 @@
               "title": "robots.txt is not valid"
             }
           ],
-          "lcp_ms": 1503.249,
+          "lcp_ms": 1501.9904999999999,
           "performance": 100,
           "profile": "mobile",
           "seo": 92,
           "tbt_ms": 0,
-          "transfer_bytes": 143530,
+          "transfer_bytes": 143492,
           "url": "https://mohdsaifhussain.github.io/projects/"
         },
         {
           "accessibility": 100,
           "best-practices": 100,
+          "cls": 0,
+          "failed_audits": [
+            {
+              "category": "seo",
+              "explanation": "Lighthouse was unable to download a robots.txt file",
+              "id": "robots-txt",
+              "score": 0,
+              "title": "robots.txt is not valid"
+            }
+          ],
+          "lcp_ms": 1452.705,
+          "performance": 100,
+          "profile": "mobile",
+          "seo": 92,
+          "tbt_ms": 48,
+          "transfer_bytes": 109102,
+          "url": "https://mohdsaifhussain.github.io/experience/"
+        },
+        {
+          "accessibility": 100,
+          "best-practices": 100,
+          "cls": 0,
+          "failed_audits": [
+            {
+              "category": "seo",
+              "explanation": "Lighthouse was unable to download a robots.txt file",
+              "id": "robots-txt",
+              "score": 0,
+              "title": "robots.txt is not valid"
+            }
+          ],
+          "lcp_ms": 1352.4099999999999,
+          "performance": 100,
+          "profile": "mobile",
+          "seo": 92,
+          "tbt_ms": 0,
+          "transfer_bytes": 109124,
+          "url": "https://mohdsaifhussain.github.io/experience/"
+        },
+        {
+          "accessibility": 100,
+          "best-practices": 100,
+          "cls": 0,
+          "failed_audits": [
+            {
+              "category": "seo",
+              "explanation": "Lighthouse was unable to download a robots.txt file",
+              "id": "robots-txt",
+              "score": 0,
+              "title": "robots.txt is not valid"
+            }
+          ],
+          "lcp_ms": 1455.475,
+          "performance": 100,
+          "profile": "mobile",
+          "seo": 92,
+          "tbt_ms": 0,
+          "transfer_bytes": 109058,
+          "url": "https://mohdsaifhussain.github.io/experience/"
+        },
+        {
+          "accessibility": 100,
+          "best-practices": 96,
+          "cls": 0,
+          "failed_audits": [
+            {
+              "category": "best-practices",
+              "id": "font-size",
+              "items": [
+                {
+                  "coverage": "53.19%",
+                  "fontSize": "11.5px",
+                  "selector": ".mono-meta",
+                  "source": {
+                    "column": 13,
+                    "line": 203,
+                    "type": "source-location",
+                    "url": "https://mohdsaifhussain.github.io/css/site.css",
+                    "urlProvider": "network"
+                  }
+                },
+                {
+                  "coverage": "23.83%",
+                  "fontSize": "11px",
+                  "selector": ".colophon",
+                  "source": {
+                    "column": 11,
+                    "line": 393,
+                    "type": "source-location",
+                    "url": "https://mohdsaifhussain.github.io/css/site.css",
+                    "urlProvider": "network"
+                  }
+                },
+                {
+                  "coverage": "3.71%",
+                  "fontSize": "11px",
+                  "selector": ".nav-link",
+                  "source": {
+                    "column": 11,
+                    "line": 220,
+                    "type": "source-location",
+                    "url": "https://mohdsaifhussain.github.io/css/site.css",
+                    "urlProvider": "network"
+                  }
+                },
+                {
+                  "coverage": "2.67%",
+                  "fontSize": "11px",
+                  "selector": ".mono-link",
+                  "source": {
+                    "column": 13,
+                    "line": 204,
+                    "type": "source-location",
+                    "url": "https://mohdsaifhussain.github.io/css/site.css",
+                    "urlProvider": "network"
+                  }
+                },
+                {
+                  "coverage": "2.28%",
+                  "fontSize": "10px",
+                  "selector": ".mono-label",
+                  "source": {
+                    "column": 13,
+                    "line": 202,
+                    "type": "source-location",
+                    "url": "https://mohdsaifhussain.github.io/css/site.css",
+                    "urlProvider": "network"
+                  }
+                }
+              ],
+              "score": 0,
+              "title": "Document doesn't use legible font sizes"
+            },
+            {
+              "category": "seo",
+              "explanation": "Lighthouse was unable to download a robots.txt file",
+              "id": "robots-txt",
+              "score": 0,
+              "title": "robots.txt is not valid"
+            }
+          ],
+          "lcp_ms": 1307.328,
+          "performance": 100,
+          "profile": "mobile",
+          "seo": 92,
+          "tbt_ms": 0,
+          "transfer_bytes": 141695,
+          "url": "https://mohdsaifhussain.github.io/certifications/"
+        },
+        {
+          "accessibility": 100,
+          "best-practices": 96,
           "cls": 0,
           "failed_audits": [
             {
               "category": "performance",
-              "id": "total-blocking-time",
+              "id": "first-contentful-paint",
               "score": 0.98,
-              "title": "Total Blocking Time"
+              "title": "First Contentful Paint"
+            },
+            {
+              "category": "performance",
+              "id": "largest-contentful-paint",
+              "score": 0.99,
+              "title": "Largest Contentful Paint"
+            },
+            {
+              "category": "performance",
+              "id": "speed-index",
+              "score": 0.98,
+              "title": "Speed Index"
             },
             {
               "category": "performance",
@@ -1387,28 +1551,28 @@
               "items": [
                 {
                   "cacheLifetimeMs": 600000,
+                  "url": "https://mohdsaifhussain.github.io/assets/fonts/InstrumentSerif-Italic.woff2",
+                  "wastedBytes": 31064
+                },
+                {
+                  "cacheLifetimeMs": 600000,
                   "url": "https://mohdsaifhussain.github.io/assets/fonts/InstrumentSerif-Regular.woff2",
-                  "wastedBytes": 29905.333333333332
+                  "wastedBytes": 29913.583333333332
                 },
                 {
                   "cacheLifetimeMs": 600000,
                   "url": "https://mohdsaifhussain.github.io/assets/fonts/IBMPlexMono-SemiBold.woff2",
-                  "wastedBytes": 21340.916666666664
+                  "wastedBytes": 21307.916666666664
                 },
                 {
                   "cacheLifetimeMs": 600000,
                   "url": "https://mohdsaifhussain.github.io/assets/fonts/IBMPlexMono-Medium.woff2",
-                  "wastedBytes": 18571.666666666664
+                  "wastedBytes": 18556.083333333332
                 },
                 {
                   "cacheLifetimeMs": 600000,
                   "url": "https://mohdsaifhussain.github.io/assets/fonts/IBMPlexMono-Regular.woff2",
-                  "wastedBytes": 18558.833333333332
-                },
-                {
-                  "cacheLifetimeMs": 600000,
-                  "url": "https://mohdsaifhussain.github.io/css/site.css",
-                  "wastedBytes": 4145.166666666666
+                  "wastedBytes": 18515.75
                 }
               ],
               "score": 0,
@@ -1425,18 +1589,12 @@
               "id": "render-blocking-insight",
               "items": [
                 {
-                  "totalBytes": 4522,
+                  "totalBytes": 4726,
                   "url": "https://mohdsaifhussain.github.io/css/site.css"
                 }
               ],
               "score": 0.5,
               "title": "Render blocking requests"
-            },
-            {
-              "category": "performance",
-              "id": "max-potential-fid",
-              "score": 0.86,
-              "title": "Max Potential First Input Delay"
             },
             {
               "category": "performance",
@@ -1449,9 +1607,20 @@
                     "max-age": 600,
                     "type": "debugdata"
                   },
-                  "totalBytes": 32624,
+                  "totalBytes": 33888,
+                  "url": "https://mohdsaifhussain.github.io/assets/fonts/InstrumentSerif-Italic.woff2",
+                  "wastedBytes": 31064
+                },
+                {
+                  "cacheHitProbability": 0.08333333333333333,
+                  "cacheLifetimeMs": 600000,
+                  "debugData": {
+                    "max-age": 600,
+                    "type": "debugdata"
+                  },
+                  "totalBytes": 32633,
                   "url": "https://mohdsaifhussain.github.io/assets/fonts/InstrumentSerif-Regular.woff2",
-                  "wastedBytes": 29905.333333333332
+                  "wastedBytes": 29913.583333333332
                 },
                 {
                   "cacheHitProbability": 0.08333333333333333,
@@ -1460,9 +1629,9 @@
                     "max-age": 600,
                     "type": "debugdata"
                   },
-                  "totalBytes": 23281,
+                  "totalBytes": 23245,
                   "url": "https://mohdsaifhussain.github.io/assets/fonts/IBMPlexMono-SemiBold.woff2",
-                  "wastedBytes": 21340.916666666664
+                  "wastedBytes": 21307.916666666664
                 },
                 {
                   "cacheHitProbability": 0.08333333333333333,
@@ -1471,9 +1640,9 @@
                     "max-age": 600,
                     "type": "debugdata"
                   },
-                  "totalBytes": 20260,
+                  "totalBytes": 20243,
                   "url": "https://mohdsaifhussain.github.io/assets/fonts/IBMPlexMono-Medium.woff2",
-                  "wastedBytes": 18571.666666666664
+                  "wastedBytes": 18556.083333333332
                 },
                 {
                   "cacheHitProbability": 0.08333333333333333,
@@ -1482,26 +1651,83 @@
                     "max-age": 600,
                     "type": "debugdata"
                   },
-                  "totalBytes": 20246,
+                  "totalBytes": 20199,
                   "url": "https://mohdsaifhussain.github.io/assets/fonts/IBMPlexMono-Regular.woff2",
-                  "wastedBytes": 18558.833333333332
-                },
-                {
-                  "cacheHitProbability": 0.08333333333333333,
-                  "cacheLifetimeMs": 600000,
-                  "debugData": {
-                    "max-age": 600,
-                    "type": "debugdata"
-                  },
-                  "totalBytes": 4522,
-                  "url": "https://mohdsaifhussain.github.io/css/site.css",
-                  "wastedBytes": 4145.166666666666
+                  "wastedBytes": 18515.75
                 }
               ],
               "score": 0.5,
               "title": "Serve static assets with an efficient cache policy"
             },
             {
+              "category": "best-practices",
+              "id": "font-size",
+              "items": [
+                {
+                  "coverage": "53.19%",
+                  "fontSize": "11.5px",
+                  "selector": ".mono-meta",
+                  "source": {
+                    "column": 13,
+                    "line": 203,
+                    "type": "source-location",
+                    "url": "https://mohdsaifhussain.github.io/css/site.css",
+                    "urlProvider": "network"
+                  }
+                },
+                {
+                  "coverage": "23.83%",
+                  "fontSize": "11px",
+                  "selector": ".colophon",
+                  "source": {
+                    "column": 11,
+                    "line": 393,
+                    "type": "source-location",
+                    "url": "https://mohdsaifhussain.github.io/css/site.css",
+                    "urlProvider": "network"
+                  }
+                },
+                {
+                  "coverage": "3.71%",
+                  "fontSize": "11px",
+                  "selector": ".nav-link",
+                  "source": {
+                    "column": 11,
+                    "line": 220,
+                    "type": "source-location",
+                    "url": "https://mohdsaifhussain.github.io/css/site.css",
+                    "urlProvider": "network"
+                  }
+                },
+                {
+                  "coverage": "2.67%",
+                  "fontSize": "11px",
+                  "selector": ".mono-link",
+                  "source": {
+                    "column": 13,
+                    "line": 204,
+                    "type": "source-location",
+                    "url": "https://mohdsaifhussain.github.io/css/site.css",
+                    "urlProvider": "network"
+                  }
+                },
+                {
+                  "coverage": "2.28%",
+                  "fontSize": "10px",
+                  "selector": ".mono-label",
+                  "source": {
+                    "column": 13,
+                    "line": 202,
+                    "type": "source-location",
+                    "url": "https://mohdsaifhussain.github.io/css/site.css",
+                    "urlProvider": "network"
+                  }
+                }
+              ],
+              "score": 0,
+              "title": "Document doesn't use legible font sizes"
+            },
+            {
               "category": "seo",
               "explanation": "Lighthouse was unable to download a robots.txt file",
               "id": "robots-txt",
@@ -1509,60 +1735,18 @@
               "title": "robots.txt is not valid"
             }
           ],
-          "lcp_ms": 1495.733,
+          "lcp_ms": 1599.5774999999999,
           "performance": 99,
           "profile": "mobile",
           "seo": 92,
-          "tbt_ms": 94,
-          "transfer_bytes": 109240,
-          "url": "https://mohdsaifhussain.github.io/experience/"
-        },
-        {
-          "accessibility": 100,
-          "best-practices": 100,
-          "cls": 0,
-          "failed_audits": [
-            {
-              "category": "seo",
-              "explanation": "Lighthouse was unable to download a robots.txt file",
-              "id": "robots-txt",
-              "score": 0,
-              "title": "robots.txt is not valid"
-            }
-          ],
-          "lcp_ms": 1350.685,
-          "performance": 100,
-          "profile": "mobile",
-          "seo": 92,
           "tbt_ms": 0,
-          "transfer_bytes": 109168,
-          "url": "https://mohdsaifhussain.github.io/experience/"
-        },
-        {
-          "accessibility": 100,
-          "best-practices": 100,
-          "cls": 0,
-          "failed_audits": [
-            {
-              "category": "seo",
-              "explanation": "Lighthouse was unable to download a robots.txt file",
-              "id": "robots-txt",
-              "score": 0,
-              "title": "robots.txt is not valid"
-            }
-          ],
-          "lcp_ms": 1365.529,
-          "performance": 100,
-          "profile": "mobile",
-          "seo": 92,
-          "tbt_ms": 0,
-          "transfer_bytes": 108986,
-          "url": "https://mohdsaifhussain.github.io/experience/"
+          "transfer_bytes": 141707,
+          "url": "https://mohdsaifhussain.github.io/certifications/"
         },
         {
           "accessibility": 100,
           "best-practices": 96,
-          "cls": 0.04157506913183992,
+          "cls": 0,
           "failed_audits": [
             {
               "category": "best-practices",
@@ -1640,101 +1824,12 @@
               "title": "robots.txt is not valid"
             }
           ],
-          "lcp_ms": 1503.6745,
+          "lcp_ms": 1503.6934999999999,
           "performance": 100,
           "profile": "mobile",
           "seo": 92,
           "tbt_ms": 0,
-          "transfer_bytes": 141717,
-          "url": "https://mohdsaifhussain.github.io/certifications/"
-        },
-        {
-          "accessibility": 100,
-          "best-practices": 96,
-          "cls": 0.04157506913183992,
-          "failed_audits": [
-            {
-              "category": "best-practices",
-              "id": "font-size",
-              "items": [
-                {
-                  "coverage": "53.19%",
-                  "fontSize": "11.5px",
-                  "selector": ".mono-meta",
-                  "source": {
-                    "column": 13,
-                    "line": 203,
-                    "type": "source-location",
-                    "url": "https://mohdsaifhussain.github.io/css/site.css",
-                    "urlProvider": "network"
-                  }
-                },
-                {
-                  "coverage": "23.83%",
-                  "fontSize": "11px",
-                  "selector": ".colophon",
-                  "source": {
-                    "column": 11,
-                    "line": 393,
-                    "type": "source-location",
-                    "url": "https://mohdsaifhussain.github.io/css/site.css",
-                    "urlProvider": "network"
-                  }
-                },
-                {
-                  "coverage": "3.71%",
-                  "fontSize": "11px",
-                  "selector": ".nav-link",
-                  "source": {
-                    "column": 11,
-                    "line": 220,
-                    "type": "source-location",
-                    "url": "https://mohdsaifhussain.github.io/css/site.css",
-                    "urlProvider": "network"
-                  }
-                },
-                {
-                  "coverage": "2.67%",
-                  "fontSize": "11px",
-                  "selector": ".mono-link",
-                  "source": {
-                    "column": 13,
-                    "line": 204,
-                    "type": "source-location",
-                    "url": "https://mohdsaifhussain.github.io/css/site.css",
-                    "urlProvider": "network"
-                  }
-                },
-                {
-                  "coverage": "2.28%",
-                  "fontSize": "10px",
-                  "selector": ".mono-label",
-                  "source": {
-                    "column": 13,
-                    "line": 202,
-                    "type": "source-location",
-                    "url": "https://mohdsaifhussain.github.io/css/site.css",
-                    "urlProvider": "network"
-                  }
-                }
-              ],
-              "score": 0,
-              "title": "Document doesn't use legible font sizes"
-            },
-            {
-              "category": "seo",
-              "explanation": "Lighthouse was unable to download a robots.txt file",
-              "id": "robots-txt",
-              "score": 0,
-              "title": "robots.txt is not valid"
-            }
-          ],
-          "lcp_ms": 1502.0465,
-          "performance": 100,
-          "profile": "mobile",
-          "seo": 92,
-          "tbt_ms": 0,
-          "transfer_bytes": 141708,
+          "transfer_bytes": 141689,
           "url": "https://mohdsaifhussain.github.io/certifications/"
         },
         {
@@ -1747,7 +1842,7 @@
               "id": "font-size",
               "items": [
                 {
-                  "coverage": "54.76%",
+                  "coverage": "46.35%",
                   "fontSize": "11.5px",
                   "selector": ".mono-meta",
                   "source": {
@@ -1759,96 +1854,7 @@
                   }
                 },
                 {
-                  "coverage": "24.53%",
-                  "fontSize": "11px",
-                  "selector": ".colophon",
-                  "source": {
-                    "column": 11,
-                    "line": 393,
-                    "type": "source-location",
-                    "url": "https://mohdsaifhussain.github.io/css/site.css",
-                    "urlProvider": "network"
-                  }
-                },
-                {
-                  "coverage": "3.82%",
-                  "fontSize": "11px",
-                  "selector": ".nav-link",
-                  "source": {
-                    "column": 11,
-                    "line": 220,
-                    "type": "source-location",
-                    "url": "https://mohdsaifhussain.github.io/css/site.css",
-                    "urlProvider": "network"
-                  }
-                },
-                {
-                  "coverage": "2.75%",
-                  "fontSize": "11px",
-                  "selector": ".mono-link",
-                  "source": {
-                    "column": 13,
-                    "line": 204,
-                    "type": "source-location",
-                    "url": "https://mohdsaifhussain.github.io/css/site.css",
-                    "urlProvider": "network"
-                  }
-                },
-                {
-                  "coverage": "2.35%",
-                  "fontSize": "10px",
-                  "selector": ".mono-label",
-                  "source": {
-                    "column": 13,
-                    "line": 202,
-                    "type": "source-location",
-                    "url": "https://mohdsaifhussain.github.io/css/site.css",
-                    "urlProvider": "network"
-                  }
-                }
-              ],
-              "score": 0,
-              "title": "Document doesn't use legible font sizes"
-            },
-            {
-              "category": "seo",
-              "explanation": "Lighthouse was unable to download a robots.txt file",
-              "id": "robots-txt",
-              "score": 0,
-              "title": "robots.txt is not valid"
-            }
-          ],
-          "lcp_ms": 1512.412,
-          "performance": 100,
-          "profile": "mobile",
-          "seo": 92,
-          "tbt_ms": 0,
-          "transfer_bytes": 141679,
-          "url": "https://mohdsaifhussain.github.io/certifications/"
-        },
-        {
-          "accessibility": 100,
-          "best-practices": 96,
-          "cls": 0,
-          "failed_audits": [
-            {
-              "category": "best-practices",
-              "id": "font-size",
-              "items": [
-                {
-                  "coverage": "50.09%",
-                  "fontSize": "11.5px",
-                  "selector": ".mono-meta",
-                  "source": {
-                    "column": 13,
-                    "line": 203,
-                    "type": "source-location",
-                    "url": "https://mohdsaifhussain.github.io/css/site.css",
-                    "urlProvider": "network"
-                  }
-                },
-                {
-                  "coverage": "44.78%",
+                  "coverage": "48.50%",
                   "fontSize": "< 12px",
                   "selector": "",
                   "source": {
@@ -1857,7 +1863,7 @@
                   }
                 },
                 {
-                  "coverage": "5.13%",
+                  "coverage": "5.16%",
                   "fontSize": "\u2265 12px",
                   "selector": "",
                   "source": {
@@ -1877,12 +1883,12 @@
               "title": "robots.txt is not valid"
             }
           ],
-          "lcp_ms": 1353.743,
+          "lcp_ms": 1457.951,
           "performance": 100,
           "profile": "mobile",
           "seo": 92,
           "tbt_ms": 0,
-          "transfer_bytes": 112416,
+          "transfer_bytes": 113568,
           "url": "https://mohdsaifhussain.github.io/audit/"
         },
         {
@@ -1895,7 +1901,7 @@
               "id": "font-size",
               "items": [
                 {
-                  "coverage": "50.09%",
+                  "coverage": "46.35%",
                   "fontSize": "11.5px",
                   "selector": ".mono-meta",
                   "source": {
@@ -1907,7 +1913,7 @@
                   }
                 },
                 {
-                  "coverage": "44.78%",
+                  "coverage": "48.50%",
                   "fontSize": "< 12px",
                   "selector": "",
                   "source": {
@@ -1916,7 +1922,7 @@
                   }
                 },
                 {
-                  "coverage": "5.13%",
+                  "coverage": "5.16%",
                   "fontSize": "\u2265 12px",
                   "selector": "",
                   "source": {
@@ -1936,25 +1942,25 @@
               "title": "robots.txt is not valid"
             }
           ],
-          "lcp_ms": 1351.714,
+          "lcp_ms": 1352.693,
           "performance": 100,
           "profile": "mobile",
           "seo": 92,
           "tbt_ms": 0,
-          "transfer_bytes": 112443,
+          "transfer_bytes": 113521,
           "url": "https://mohdsaifhussain.github.io/audit/"
         },
         {
           "accessibility": 100,
           "best-practices": 96,
-          "cls": 0.04157506913183992,
+          "cls": 0,
           "failed_audits": [
             {
               "category": "best-practices",
               "id": "font-size",
               "items": [
                 {
-                  "coverage": "50.09%",
+                  "coverage": "46.35%",
                   "fontSize": "11.5px",
                   "selector": ".mono-meta",
                   "source": {
@@ -1966,7 +1972,7 @@
                   }
                 },
                 {
-                  "coverage": "44.78%",
+                  "coverage": "48.50%",
                   "fontSize": "< 12px",
                   "selector": "",
                   "source": {
@@ -1975,7 +1981,7 @@
                   }
                 },
                 {
-                  "coverage": "5.13%",
+                  "coverage": "5.16%",
                   "fontSize": "\u2265 12px",
                   "selector": "",
                   "source": {
@@ -1995,12 +2001,12 @@
               "title": "robots.txt is not valid"
             }
           ],
-          "lcp_ms": 1352.159,
+          "lcp_ms": 1351.844,
           "performance": 100,
           "profile": "mobile",
           "seo": 92,
           "tbt_ms": 0,
-          "transfer_bytes": 112506,
+          "transfer_bytes": 113548,
           "url": "https://mohdsaifhussain.github.io/audit/"
         },
         {
@@ -2016,18 +2022,18 @@
               "title": "robots.txt is not valid"
             }
           ],
-          "lcp_ms": 370.937,
+          "lcp_ms": 427.008,
           "performance": 100,
           "profile": "desktop",
           "seo": 92,
           "tbt_ms": 0,
-          "transfer_bytes": 145432,
+          "transfer_bytes": 145181,
           "url": "https://mohdsaifhussain.github.io/"
         },
         {
           "accessibility": 100,
           "best-practices": 100,
-          "cls": 0.0431664214029087,
+          "cls": 0,
           "failed_audits": [
             {
               "category": "seo",
@@ -2037,18 +2043,18 @@
               "title": "robots.txt is not valid"
             }
           ],
-          "lcp_ms": 368.805,
+          "lcp_ms": 324.4635,
           "performance": 100,
           "profile": "desktop",
           "seo": 92,
           "tbt_ms": 0,
-          "transfer_bytes": 145466,
+          "transfer_bytes": 145358,
           "url": "https://mohdsaifhussain.github.io/"
         },
         {
           "accessibility": 100,
           "best-practices": 100,
-          "cls": 0.0431664214029087,
+          "cls": 0,
           "failed_audits": [
             {
               "category": "seo",
@@ -2058,18 +2064,18 @@
               "title": "robots.txt is not valid"
             }
           ],
-          "lcp_ms": 369.832,
+          "lcp_ms": 370.613,
           "performance": 100,
           "profile": "desktop",
           "seo": 92,
           "tbt_ms": 0,
-          "transfer_bytes": 145433,
+          "transfer_bytes": 145187,
           "url": "https://mohdsaifhussain.github.io/"
         },
         {
           "accessibility": 100,
           "best-practices": 100,
-          "cls": 0.0431664214029087,
+          "cls": 0,
           "failed_audits": [
             {
               "category": "seo",
@@ -2079,12 +2085,12 @@
               "title": "robots.txt is not valid"
             }
           ],
-          "lcp_ms": 362.252,
+          "lcp_ms": 364.6485,
           "performance": 100,
           "profile": "desktop",
           "seo": 92,
           "tbt_ms": 0,
-          "transfer_bytes": 143546,
+          "transfer_bytes": 143498,
           "url": "https://mohdsaifhussain.github.io/projects/"
         },
         {
@@ -2100,12 +2106,12 @@
               "title": "robots.txt is not valid"
             }
           ],
-          "lcp_ms": 361.70349999999996,
+          "lcp_ms": 363.2255,
           "performance": 100,
           "profile": "desktop",
           "seo": 92,
           "tbt_ms": 0,
-          "transfer_bytes": 143528,
+          "transfer_bytes": 143557,
           "url": "https://mohdsaifhussain.github.io/projects/"
         },
         {
@@ -2121,12 +2127,12 @@
               "title": "robots.txt is not valid"
             }
           ],
-          "lcp_ms": 361.642,
+          "lcp_ms": 362.01300000000003,
           "performance": 100,
           "profile": "desktop",
           "seo": 92,
           "tbt_ms": 0,
-          "transfer_bytes": 143503,
+          "transfer_bytes": 143543,
           "url": "https://mohdsaifhussain.github.io/projects/"
         },
         {
@@ -2142,33 +2148,12 @@
               "title": "robots.txt is not valid"
             }
           ],
-          "lcp_ms": 342.531,
+          "lcp_ms": 324.076,
           "performance": 100,
           "profile": "desktop",
           "seo": 92,
           "tbt_ms": 0,
-          "transfer_bytes": 109092,
-          "url": "https://mohdsaifhussain.github.io/experience/"
-        },
-        {
-          "accessibility": 100,
-          "best-practices": 100,
-          "cls": 0.0431664214029087,
-          "failed_audits": [
-            {
-              "category": "seo",
-              "explanation": "Lighthouse was unable to download a robots.txt file",
-              "id": "robots-txt",
-              "score": 0,
-              "title": "robots.txt is not valid"
-            }
-          ],
-          "lcp_ms": 320.997,
-          "performance": 100,
-          "profile": "desktop",
-          "seo": 92,
-          "tbt_ms": 0,
-          "transfer_bytes": 109193,
+          "transfer_bytes": 109217,
           "url": "https://mohdsaifhussain.github.io/experience/"
         },
         {
@@ -2184,12 +2169,12 @@
               "title": "robots.txt is not valid"
             }
           ],
-          "lcp_ms": 322.259,
+          "lcp_ms": 321.952,
           "performance": 100,
           "profile": "desktop",
           "seo": 92,
           "tbt_ms": 0,
-          "transfer_bytes": 109125,
+          "transfer_bytes": 109203,
           "url": "https://mohdsaifhussain.github.io/experience/"
         },
         {
@@ -2205,7 +2190,49 @@
               "title": "robots.txt is not valid"
             }
           ],
-          "lcp_ms": 362.7235,
+          "lcp_ms": 322.153,
+          "performance": 100,
+          "profile": "desktop",
+          "seo": 92,
+          "tbt_ms": 0,
+          "transfer_bytes": 109219,
+          "url": "https://mohdsaifhussain.github.io/experience/"
+        },
+        {
+          "accessibility": 100,
+          "best-practices": 100,
+          "cls": 0,
+          "failed_audits": [
+            {
+              "category": "seo",
+              "explanation": "Lighthouse was unable to download a robots.txt file",
+              "id": "robots-txt",
+              "score": 0,
+              "title": "robots.txt is not valid"
+            }
+          ],
+          "lcp_ms": 362.334,
+          "performance": 100,
+          "profile": "desktop",
+          "seo": 92,
+          "tbt_ms": 0,
+          "transfer_bytes": 141686,
+          "url": "https://mohdsaifhussain.github.io/certifications/"
+        },
+        {
+          "accessibility": 100,
+          "best-practices": 100,
+          "cls": 0,
+          "failed_audits": [
+            {
+              "category": "seo",
+              "explanation": "Lighthouse was unable to download a robots.txt file",
+              "id": "robots-txt",
+              "score": 0,
+              "title": "robots.txt is not valid"
+            }
+          ],
+          "lcp_ms": 362.9765,
           "performance": 100,
           "profile": "desktop",
           "seo": 92,
@@ -2226,12 +2253,12 @@
               "title": "robots.txt is not valid"
             }
           ],
-          "lcp_ms": 361.53200000000004,
+          "lcp_ms": 362.51099999999997,
           "performance": 100,
           "profile": "desktop",
           "seo": 92,
           "tbt_ms": 0,
-          "transfer_bytes": 141671,
+          "transfer_bytes": 141664,
           "url": "https://mohdsaifhussain.github.io/certifications/"
         },
         {
@@ -2247,33 +2274,12 @@
               "title": "robots.txt is not valid"
             }
           ],
-          "lcp_ms": 360.99,
+          "lcp_ms": 322.322,
           "performance": 100,
           "profile": "desktop",
           "seo": 92,
           "tbt_ms": 0,
-          "transfer_bytes": 141737,
-          "url": "https://mohdsaifhussain.github.io/certifications/"
-        },
-        {
-          "accessibility": 100,
-          "best-practices": 100,
-          "cls": 0,
-          "failed_audits": [
-            {
-              "category": "seo",
-              "explanation": "Lighthouse was unable to download a robots.txt file",
-              "id": "robots-txt",
-              "score": 0,
-              "title": "robots.txt is not valid"
-            }
-          ],
-          "lcp_ms": 321.94,
-          "performance": 100,
-          "profile": "desktop",
-          "seo": 92,
-          "tbt_ms": 0,
-          "transfer_bytes": 112497,
+          "transfer_bytes": 113700,
           "url": "https://mohdsaifhussain.github.io/audit/"
         },
         {
@@ -2289,12 +2295,12 @@
               "title": "robots.txt is not valid"
             }
           ],
-          "lcp_ms": 322.34299999999996,
+          "lcp_ms": 322.49199999999996,
           "performance": 100,
           "profile": "desktop",
           "seo": 92,
           "tbt_ms": 0,
-          "transfer_bytes": 112374,
+          "transfer_bytes": 113678,
           "url": "https://mohdsaifhussain.github.io/audit/"
         },
         {
@@ -2310,12 +2316,12 @@
               "title": "robots.txt is not valid"
             }
           ],
-          "lcp_ms": 322.39,
+          "lcp_ms": 321.72900000000004,
           "performance": 100,
           "profile": "desktop",
           "seo": 92,
           "tbt_ms": 0,
-          "transfer_bytes": 112430,
+          "transfer_bytes": 113624,
           "url": "https://mohdsaifhussain.github.io/audit/"
         }
       ],
@@ -2336,8 +2342,8 @@
   },
   "gates": {
     "_generated": "Machine-written by tools/gate_status.py from real gate exit codes. NEVER hand-edited. A row with no producer is absent here and renders its declared basis on /audit, never a verification mark.",
-    "as_of": "2026-08-10T06:55:49Z",
-    "commit": "a5cf67d8dfd97a73c982da29a852ccdf3eb0a357",
+    "as_of": "2026-08-10T07:06:51Z",
+    "commit": "86c45d1599ed515be867ca5ae98ab20bac166e1d",
     "results": {
       "anchored": {
         "conditions": "C-27, C-35",
@@ -2382,11 +2388,11 @@
   },
   "measured": {
     "axe": "0 violations",
-    "cls": "0.043 (worst median)",
+    "cls": "0.000 (worst median)",
     "contrast": "dark: AA met; 7:1 met except --dim (5.78:1) \u00b7 light: AA met; 7:1 met except --dim (5.79:1)",
     "lcp": "1.53 s (worst median)",
     "lighthouse": "100 / 100 / 96 / 92",
-    "transfer": "145,433 B",
+    "transfer": "145,187 B",
     "validator": "0 errors"
   },
   "measured_against": "https://mohdsaifhussain.github.io (published origin)"
