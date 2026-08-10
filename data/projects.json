@@ -1,9 +1,9 @@
 {
   "_status": "Owner-verified 2026-08-05 at Phase 1 close (chat record), covering the fields as they stood on that date. OPEN EXCEPTION: TS-Sentry metrics unverified — renders as an honest ✗ pending owner supply. SUPERSEDED FIELDS: the promise strings and per-count version anchoring rewritten under decision D-02 are new text, pending owner re-verification at the P3.2 review stop. C-27 does not report MET until that re-verification is recorded.",
-  "_metrics_basis": "Owner-signed 2026-08-06 (O-3 discharged). Figures in verified_metrics are resume-stated baselines, not fetched counts: the GitHub API returns no test count. Each project renders with a version anchor (release tag or commit SHA) fetched at build into data/generated/github.json, plus a link to the source repo, so every figure is traceable to the version it was stated against. The anchor never implies the figure was re-counted. Genuinely live counts are the recorded v1.1 path (DECISIONS 3.1.3a). EXCEPTION — TS-Sentry: that entry's figures are OWNER-MEASURED (local run, 2026-08-06) and corroborated by the repo's pinned CI and coverage badges. Its basis is therefore stronger than, and distinct from, the resume-baseline basis of the other entries.",
+  "_metrics_basis": "Owner-signed 2026-08-06 (O-3 discharged). THREE BASES ARE NOW IN USE, and each entry declares its own in metrics_basis. (1) CI-MEASURED — delivery-engine, analystkit and opskit: their CI publishes a stats.json counted from the JUnit report of the run that executed the tests, and the site renders that count with the commit it was measured at and the timestamp it was measured. This is defect D-02's recorded upgrade path (DECISIONS 3.1.3a), landed 2026-08-10. The label is 'tests', not 'unit tests': the measurement counts what pytest executed and does not establish that every one is a unit test. The resume-stated baseline each replaced is retained in verified_metrics in this file and is NOT rewritten — only the rendered figure changed. (2) OWNER-MEASURED — TS-Sentry: figures from a local run, 2026-08-06, corroborated by the repo's pinned CI and coverage badges. Unchanged by the D-02 upgrade. (3) RESUME-STATED BASELINES — delivery-engine-fde, whose metrics are qualitative rather than counts and which publishes no stats.json. Every entry still renders a version anchor and an evidence link, so no figure travels without its source.",
   "projects": [
     {
-      "id": "delivery-engine",
+      "id": "delivery-engine", "metrics_basis": "ci-measured",
       "name": "Delivery Engine",
       "flagship": true,
       "problem": "AI analysis you cannot audit is AI analysis you cannot trust.",
@@ -16,7 +16,7 @@
       }
     },
     {
-      "id": "delivery-engine-fde",
+      "id": "delivery-engine-fde", "metrics_basis": "resume-baseline",
       "name": "Delivery Engine — FDE Case Study",
       "flagship": false,
       "archived": true,
@@ -29,7 +29,7 @@
       }
     },
     {
-      "id": "ts-sentry",
+      "id": "ts-sentry", "metrics_basis": "owner-measured",
       "name": "TS-Sentry",
       "flagship": true,
       "_note": "NOT in resume — discovered on GitHub profile. Owner to verify description and supply metrics.",
@@ -43,7 +43,7 @@
       }
     },
     {
-      "id": "analystkit",
+      "id": "analystkit", "metrics_basis": "ci-measured",
       "name": "AnalystKit",
       "flagship": false,
       "problem": "Data quality review without reviewer-grade workpapers is just opinion.",
@@ -54,7 +54,7 @@
       }
     },
     {
-      "id": "opskit",
+      "id": "opskit", "metrics_basis": "ci-measured",
       "name": "OpsKit",
       "flagship": false,
       "problem": "Weekly ops variance analysis should be re-performable, not a one-off spreadsheet.",

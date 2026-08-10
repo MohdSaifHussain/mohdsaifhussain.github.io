@@ -472,6 +472,30 @@ def build() -> int:
         name = repo_url.rstrip("/").rsplit("/", 1)[-1]
         p["_anchor"] = snapshot["repos"][name]
 
+        # DEFECT D-02'S UPGRADE PATH, implemented 2026-08-10. Where the source
+        # repo's CI publishes a measured test count, the HEADLINE metric renders
+        # from that measurement instead of from the resume-stated baseline.
+        #
+        # projects.json is NOT rewritten. The owner-verified baseline stays in
+        # the data file exactly as verified (C-27), and is carried here as
+        # `_baseline_metric` so the card can say what it superseded. Only the
+        # rendered figure changes, and it changes to something measured.
+        #
+        # The label is "tests", not "unit tests". The measurement counts what
+        # pytest executed; it does not establish that every one of them is a
+        # unit test. Claiming the narrower category would be asserting past the
+        # evidence, which is the whole thing this site is about.
+        stats = p["_anchor"].get("stats")
+        if stats and p.get("verified_metrics"):
+            p["_ci_stats"] = stats
+            p["_baseline_metric"] = p["verified_metrics"][0]
+            # NOT named `measured`: that name already holds the /audit measured
+            # dict in this function, and shadowing it renders every A1 cell as
+            # "— AT DEPLOY". Caught by the build refusing, in one edit.
+            measured_metric = (f"{stats['tests_executed']:,} tests, CI-measured "
+                               f"@ {stats['commit_short']}")
+            p["verified_metrics"] = [measured_metric] + p["verified_metrics"][1:]
+
     ctx_common = {
         "profile": data["profile"],
         "projects": projects,

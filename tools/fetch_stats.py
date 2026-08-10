@@ -73,6 +73,21 @@ def _get(url: str) -> dict | None:
         raise
 
 
+def _get_text(url: str) -> str | None:
+    """Plain GET for a raw file. 404 means the repo publishes no stats.json,
+    which is a fact about that repo rather than a failure here."""
+    req = urllib.request.Request(url, headers={
+        "User-Agent": "mohdsaifhussain.github.io-build",
+    })
+    try:
+        with urllib.request.urlopen(req, timeout=30) as r:
+            return r.read().decode("utf-8")
+    except urllib.error.HTTPError as e:
+        if e.code == 404:
+            return None
+        raise
+
+
 def repo_names() -> list[str]:
     """Derived from projects.json, never hardcoded — so adding a project to the
     data file is genuinely the only step (C-34)."""
@@ -116,6 +131,64 @@ def anchor_for(repo: str) -> dict:
     }
 
 
+RAW = "https://raw.githubusercontent.com"
+
+
+def stats_url(repo: str) -> str:
+    return f"{RAW}/{OWNER}/{repo}/main/stats.json"
+
+
+def ci_stats(repo: str) -> dict | None:
+    """The CI-published test count, if this repo publishes one.
+
+    DEFECT D-02'S RECORDED UPGRADE PATH, implemented 2026-08-10. The GitHub API
+    returns no test count, so every displayed figure was a RESUME-STATED
+    BASELINE anchored to a version. The recorded v1.1 path (DECISIONS 3.1.3a)
+    was: each source repo's CI publishes a stats.json this site consumes, so the
+    figure becomes measured rather than asserted.
+
+    ABSENCE IS NOT FAILURE. A repo that publishes no stats.json keeps its
+    resume-stated baseline, and the card says which basis it is on. Returning
+    None here is the honest outcome, not an error — the same rule write_audit.py
+    follows for scores.
+
+    WHAT IS NOT TRUSTED. The count is used only if the payload carries a commit
+    and a measurement timestamp, so a figure can never render without the anchor
+    and the as-of that make it checkable. A count with no provenance is exactly
+    the unanchored claim D-02 was about.
+    """
+    raw = _get_text(stats_url(repo))
+    if raw is None:
+        return None
+    try:
+        doc = json.loads(raw)
+    except json.JSONDecodeError:
+        print(f"  {repo:<24} stats.json present but not valid JSON — ignored")
+        return None
+
+    required = ("tests_executed", "commit", "measured_at")
+    if not all(doc.get(k) for k in required):
+        print(f"  {repo:<24} stats.json missing {required} — ignored")
+        return None
+    if not isinstance(doc["tests_executed"], int) or doc["tests_executed"] <= 0:
+        print(f"  {repo:<24} stats.json reports a non-positive count — ignored")
+        return None
+
+    return {
+        "tests_executed": doc["tests_executed"],
+        "tests_passed": doc.get("tests_passed"),
+        "tests_skipped": doc.get("tests_skipped"),
+        "tests_failed": doc.get("tests_failed"),
+        "commit": doc["commit"],
+        "commit_short": doc["commit"][:7],
+        "commit_url": f"https://github.com/{OWNER}/{repo}/commit/{doc['commit']}",
+        "measured_at": doc["measured_at"],
+        "run_url": doc.get("run_url"),
+        "runner": doc.get("runner"),
+        "source_url": stats_url(repo),
+    }
+
+
 def age_days(snapshot: dict) -> float:
     as_of = dt.datetime.fromisoformat(snapshot["as_of"].replace("Z", "+00:00"))
     return (dt.datetime.now(dt.timezone.utc) - as_of).total_seconds() / 86400
@@ -140,8 +213,17 @@ def verify_links() -> int:
 
     failures = []
     for name, r in sorted(snap["repos"].items()):
-        for field in ("anchor_url", "repo_url"):
-            url = r.get(field)
+        # The CI-measured entries carry two more claims: the commit the count
+        # was measured at, and the stats.json it came from. Both are evidence
+        # links in exactly the sense this function exists for, so both are
+        # checked. A measured figure whose source 404s is worse than a baseline,
+        # because it looks more checkable and is not.
+        fields = ["anchor_url", "repo_url"]
+        if r.get("stats"):
+            fields += ["commit_url", "source_url"]
+
+        for field in fields:
+            url = r.get(field) or (r.get("stats") or {}).get(field)
             if not url:
                 failures.append((name, field, "missing"))
                 continue
@@ -199,8 +281,13 @@ def main() -> int:
     repos = {}
     for name in repo_names():
         repos[name] = anchor_for(name)
+        stats = ci_stats(name)
+        if stats:
+            repos[name]["stats"] = stats
         r = repos[name]
-        print(f"  {name:<24} {r['anchor']:<10} ({r['anchor_type']})")
+        measured = (f"  CI-measured {stats['tests_executed']} tests @ "
+                    f"{stats['commit_short']}") if stats else "  resume baseline"
+        print(f"  {name:<24} {r['anchor']:<10} ({r['anchor_type']}){measured}")
 
     snapshot = {
         "_generated": ("Machine-written by tools/fetch_stats.py. Never hand-edited. "

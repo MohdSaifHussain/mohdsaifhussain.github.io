@@ -366,21 +366,37 @@ def test_pending_entries_never_render_a_check(site):
 def test_metrics_basis_agrees_with_entries():
     """STEP-05 §6, as a passing test (doctrine rule 8).
 
-    Owner-measured counts for the remaining three projects are DEFERRED. While
-    any entry is resume-baseline the basis sentence must be present; once none
-    is, it must be gone. Today this passes on the first branch. The day the last
-    entry is upgraded and the sentence is left behind, it fails — so a sentence
-    describing a basis nobody uses cannot quietly outlive its own truth.
+    A basis sentence describing something nobody uses, or omitting one that is
+    in use, is the D-37 failure: a published statement outliving its own truth.
+
+    UPGRADED 2026-08-10, when the D-02 path landed and this guard stopped being
+    able to answer the question from a hardcoded id list. Each entry now DECLARES
+    its basis, and the guard checks the sentence against those declarations in
+    both directions. The old form asked "is any entry not ts-sentry", which would
+    have gone on reporting resume-baselines forever however many entries were
+    upgraded to CI-measured — a guard that had quietly stopped being able to
+    change its answer.
     """
     data = json.loads((ROOT / "data/projects.json").read_text(encoding="utf-8"))
     basis = data["_metrics_basis"]
-    owner_measured = {"ts-sentry"}
-    any_resume_baseline = any(p["id"] not in owner_measured and p.get("verified_metrics")
-                              for p in data["projects"])
-    mentions = "resume-stated baselines" in basis
-    assert mentions == any_resume_baseline, (
-        "_metrics_basis and the entries disagree about which bases are in use: "
-        f"sentence present={mentions}, resume-baseline entries exist={any_resume_baseline}")
+
+    allowed = {"ci-measured", "owner-measured", "resume-baseline"}
+    declared = {p["id"]: p.get("metrics_basis") for p in data["projects"]}
+    unknown = {k: v for k, v in declared.items() if v not in allowed}
+    assert not unknown, f"entries declare a basis outside {sorted(allowed)}: {unknown}"
+
+    for label, phrase in (("resume-baseline", "resume-stated baselines"),
+                          ("ci-measured", "ci-measured")):
+        in_use = any(v == label for v in declared.values())
+        # Case-insensitive: the sentence uses small caps for its section
+        # headings, and a guard that turned on letter case would be checking
+        # typography rather than meaning.
+        mentioned = phrase.lower() in basis.lower()
+        assert mentioned == in_use, (
+            f"_metrics_basis and the entries disagree about '{label}': "
+            f"sentence says {mentioned}, entries say {in_use}. A basis sentence "
+            f"describing something nobody uses, or omitting one in use, is the "
+            f"D-37 failure — a published statement outliving its own truth.")
 
 
 def test_animation_list_matches_shipped(site):
