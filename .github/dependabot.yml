@@ -1,0 +1,47 @@
+# Dependency updates.  v1.1.0.
+#
+# Two ecosystems, which is all this site has: pinned Python tooling
+# (requirements.txt, requirements-audit.txt) and the Actions the workflows use.
+# The site itself ships zero third-party runtime resources (C-19), so there is
+# no npm ecosystem to watch on the published surface — node_modules exists only
+# to hold axe-core and the Lighthouse/validator CLIs, which are CI-only and
+# pinned at their call sites.
+#
+# WEEKLY, not daily. A dependency PR that arrives faster than anyone reads it is
+# noise, and this repository's whole method is that nothing merges unreviewed —
+# by a person or by a gate wall standing in for one.
+#
+# Ref, checked 2026-08-10 rather than recalled (doctrine rule 3):
+# https://docs.github.com/en/code-security/dependabot/working-with-dependabot/dependabot-options-reference
+
+version: 2
+updates:
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "05:00"
+      timezone: "Etc/UTC"
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: "deps"
+    labels:
+      - "dependencies"
+    # Defect D-23's lesson, encoded: an unpinned tool makes a check
+    # environment-dependent, so every version bump is a real change to what the
+    # gates measure and gets a real PR rather than a silent range.
+    versioning-strategy: "increase"
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "05:00"
+      timezone: "Etc/UTC"
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: "ci"
+    labels:
+      - "dependencies"

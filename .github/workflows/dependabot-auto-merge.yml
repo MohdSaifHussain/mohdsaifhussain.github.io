@@ -1,0 +1,96 @@
+# Auto-merge Dependabot PATCH and MINOR updates — and only ever those.
+#
+# WHY AUTO-MERGE IS SAFE HERE, AND WHERE ITS BOUNDARY IS
+#
+# The usual objection to auto-merge is that nothing read the change. That is a
+# fair objection, and the answer here is not "we trust the ecosystem" — it is
+# that THE GATE WALL IS THE REVIEWER, and on this repository the wall is
+# unusually wide. Before anything reaches the site, CI must pass:
+#
+#   - the full test suite (65 tests, every gate with a negative AND a positive
+#     control, so a gate that refuses everything cannot pass);
+#   - build.py, which REFUSES rather than publishing bad output — colour
+#     literals, unknown tokens, inline style or script, mark drift, unanchored
+#     figures, dangling asset references;
+#   - the four checkers: C-33 contact scan, content rules, the animation ledger
+#     both directions, and contrast recomputed for BOTH themes;
+#   - a determinism check: a second build must produce the same tree hash;
+#   - axe-core and the CSP violation check in a real browser, on all five pages
+#     IN BOTH THEMES, with a rendered-background witness proving each theme
+#     actually rendered;
+#   - the above-fold check, which refuses if anything in the first-paint
+#     viewport starts hidden.
+#
+# A patch or minor bump that breaks any of that does not merge. A patch or minor
+# bump that breaks none of it has been checked more thoroughly than a human
+# skim would check it.
+#
+# THE BOUNDARY, stated plainly:
+#
+#   - MAJOR updates NEVER auto-merge. A major version is an intentional break,
+#     and the gate wall answers "did anything I already check change behaviour",
+#     not "is this the right dependency to be on". That second question is the
+#     owner's and stays the owner's.
+#   - The wall only covers what it measures. It does not read a diff for
+#     malicious code, and a supply-chain compromise that keeps every gate green
+#     would pass. This is a two-ecosystem repository with pinned, mainstream
+#     tooling and no runtime third-party resources (C-19), which is what makes
+#     that residual risk small enough to accept — not any property of the wall.
+#   - It merges. It does not deploy blind: main's own deploy runs the same wall
+#     again before publishing.
+#
+# If any of those conditions stop being true, this file should be deleted rather
+# than adjusted.
+#
+# Refs, checked 2026-08-10 rather than recalled (doctrine rule 3):
+#   dependabot/fetch-metadata  https://github.com/dependabot/fetch-metadata
+#   gh pr merge --auto         https://cli.github.com/manual/gh_pr_merge
+#   Automating Dependabot with Actions
+#   https://docs.github.com/en/code-security/dependabot/working-with-dependabot/automating-dependabot-with-github-actions
+
+name: Dependabot auto-merge
+
+on: pull_request_target
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  auto-merge:
+    if: github.actor == 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Read what kind of update this is
+        id: meta
+        uses: dependabot/fetch-metadata@v2.4.0
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      # `gh pr merge --auto` queues the merge behind the branch protection
+      # checks rather than merging now, so the gate wall is what releases it.
+      # If the wall fails the PR simply stays open, which is the intended
+      # outcome and needs no handling here.
+      - name: Queue patch and minor updates behind the gate wall
+        if: |
+          steps.meta.outputs.update-type == 'version-update:semver-patch' ||
+          steps.meta.outputs.update-type == 'version-update:semver-minor'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Passed through the environment rather than interpolated into the
+          # script. `pull_request_target` runs with write permissions against
+          # the BASE repo, so nothing from the PR should ever reach the shell as
+          # code — this workflow reads no PR content and checks out nothing.
+          PR_URL: ${{ github.event.pull_request.html_url }}
+        run: |
+          gh pr merge --auto --squash "$PR_URL"
+          echo "queued: merges only if every gate passes"
+
+      - name: Say plainly when a major update is held
+        if: steps.meta.outputs.update-type == 'version-update:semver-major'
+        run: |
+          echo "MAJOR update held for the owner's review."
+          echo "  ${{ steps.meta.outputs.dependency-names }}:"
+          echo "  ${{ steps.meta.outputs.previous-version }} -> ${{ steps.meta.outputs.new-version }}"
+          echo "The gate wall answers 'did behaviour change', not 'is this the"
+          echo "right dependency to be on'. The second question is the owner's."
