@@ -103,13 +103,72 @@ def repo_names() -> list[str]:
     return names
 
 
+def semver_key(tag: str) -> tuple | None:
+    """(major, minor, patch, is_final) for a semver-ish tag, else None.
+
+    None means "I cannot order this", and the caller then declines to compare
+    rather than guessing — an anchor chosen by a bad comparison would be a
+    version claim nobody could check.
+    """
+    core = tag.lstrip("vV").split("+")[0]
+    pre = ""
+    if "-" in core:
+        core, pre = core.split("-", 1)
+    parts = core.split(".")
+    if not (1 <= len(parts) <= 3) or not all(p.isdigit() for p in parts):
+        return None
+    nums = [int(p) for p in parts] + [0] * (3 - len(parts))
+    # A pre-release sorts BELOW its own final release: v2.0.0-rc.1 < v2.0.0.
+    return (nums[0], nums[1], nums[2], 0 if pre else 1)
+
+
+def newest_semver_tag(repo: str) -> str | None:
+    tags = _get(f"{API}/repos/{OWNER}/{repo}/tags") or []
+    ranked = [(semver_key(t["name"]), t["name"]) for t in tags
+              if isinstance(t, dict) and semver_key(t.get("name", ""))]
+    return max(ranked)[1] if ranked else None
+
+
 def anchor_for(repo: str) -> dict:
-    """The version anchor: a release tag where one exists, else the commit SHA
-    the default branch currently sits at. Both are citable; neither is a count."""
+    """The version anchor: the newest semver TAG where one exists, else the
+    latest release, else the commit SHA the default branch sits at. All three
+    are citable; none of them is a count.
+
+    TAG BEATS RELEASE — owner's ruling, 2026-08-10. A tag is the stronger
+    version claim; a release is packaging around it. analystkit had tagged
+    v2.1.0 while its latest *release* was still v1.0.0, so this site anchored a
+    2026 measurement to a version two minors behind what the code actually sat
+    at. The tag is linked by tree URL rather than the releases/tag URL, because
+    the latter 404s for a tag with no release — and an evidence link that 404s
+    is worse than no link, since it looks checkable and is not.
+
+    The release is still used when it is the newest thing, and when a tag cannot
+    be ordered as semver this declines to compare and falls back rather than
+    guessing.
+    """
     release = _get(f"{API}/repos/{OWNER}/{repo}/releases/latest")
     meta = _get(f"{API}/repos/{OWNER}/{repo}")
     if meta is None:
         raise SystemExit(f"REASON=REPO_NOT_FOUND  {OWNER}/{repo}")
+
+    newest_tag = newest_semver_tag(repo)
+    release_tag = release["tag_name"] if release else None
+    tag_leads = (
+        newest_tag is not None
+        and (release_tag is None
+             or (semver_key(release_tag) is not None
+                 and semver_key(newest_tag) > semver_key(release_tag)))
+    )
+
+    if tag_leads:
+        return {
+            "anchor": newest_tag,
+            "anchor_type": "tag",
+            "anchor_url": f"{meta['html_url']}/tree/{newest_tag}",
+            "release_lag": release_tag,   # what the release said, for the record
+            "pushed_at": meta["pushed_at"],
+            "repo_url": meta["html_url"],
+        }
 
     if release:
         return {

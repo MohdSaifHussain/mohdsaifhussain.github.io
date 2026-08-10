@@ -42,6 +42,13 @@ cost.
 
 ---
 
+## v1.1 live counts — D-02's upgrade path
+
+| # | Defect | Found by | Severity | Disposition |
+|---|---|---|---|---|
+| D-53 | **A local variable named `measured` shadowed the /audit measured dict.** Implementing the live-counts render in `build.py`, I assigned `measured = f"{n} tests, CI-measured @ {sha}"` inside the projects loop — in the same function scope where `measured = measured_doc.get("measured", {})` already held the figures /audit renders from. Every A1 cell would have rendered "— AT DEPLOY" while real measurements sat in the file unread: the D-48 symptom, reintroduced by a name collision | **Running the build**, which refused on the first attempt with `'str object' has no attribute 'get'`. It never reached a deliverable state and no test would have caught it — the suite's `site` fixture rebuilds, so the build failure IS the test | Minor | **Fixed** by renaming to `measured_metric`, with the reason commented at the site so the collision cannot recur silently. **Logged on the owner's ruling** rather than dropped as a within-edit slip: the precedent is the thirteen P3.1 defects found by reading before any code ran, and "never reached a deliverable because the machinery refused" is exactly what this ledger is for. It is also the D-40 family — a display that would have gone quietly blank while the underlying data was correct |
+| D-54 | **The commit-only-on-change rule reduced nothing, because the commit SHA was part of what it compared.** stats.json's `version` field IS the short commit SHA for any repo with no release on HEAD — which is all three today. Comparing `(tests_executed, version)` against the committed state therefore differed on **every** push, so the rule that existed to stop one-bot-commit-per-push would have produced exactly one bot commit per push | **Reading the rule against the payload it compares**, immediately after pushing it and before the first run could demonstrate it. The runs already in flight did commit, which is the evidence of what it would have done | Minor | **Fixed:** the comparison is the measured COUNT, plus a real release anchor when one exists, and explicitly not the commit SHA. Verified by execution on all three repos: `count and anchor unchanged; not committing`, and no bot commit landed. A rule whose stated purpose is reduction has to be checked against the thing it reduces, not just written |
+
 ## P4.1 — signature motion (v1.1)
 
 | # | Defect | Found by | Severity | Disposition |
