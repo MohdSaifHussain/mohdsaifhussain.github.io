@@ -631,6 +631,24 @@ main   { view-transition-name: page-content; }
    No transition, in either state. A theme change is instant (A3.3 family); the
    declared A3 ledger stays at six and animating this would be undeclared
    motion under C-12. */
+/* DEFECT D-58. The toggle ships `hidden` so it is never a dead affordance, and
+   theme.js reveals it — which inserted a box into the nav AFTER first paint and
+   shifted every page below it. Measured CLS went 0.000 -> 0.043, intermittently
+   on all five pages and both profiles, against C-02's required 0.000.
+
+   This is D-31 exactly, which reserved a box for the clock's text swap for the
+   same reason. I applied that lesson to someone else's element and not to my
+   own.
+
+   `visibility: hidden` with the box kept: the space is reserved from first
+   paint, so revealing it moves nothing. It is still not focusable and still
+   absent from the accessibility tree, so the no-dead-tab-stop guarantee that
+   made it `hidden` in the first place is unchanged. */
+.theme-toggle[hidden] {
+  display: inline-block;
+  visibility: hidden;
+}
+
 .theme-toggle {
   font: var(--type-mono-label);
   letter-spacing: var(--ls-mono-label);
