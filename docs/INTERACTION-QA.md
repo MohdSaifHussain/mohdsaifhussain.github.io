@@ -47,6 +47,7 @@ Asserted by `test_evidence_layer_never_covers_the_links_column`. Observed clicka
 | 11 | Certification specimen tile | `C` dashed, labelled `VERIFIABLE` | `—` non-interactive | `—` | `—` | `C` no dead stop | `C` | `C` |
 | 12 | Audit table rows | `C` | `—` | `—` | `—` | `C` | `C` | `C` restacks < 900px |
 | 13 | Footer links | `C` | `C O` | `C O` | `C` | `C O` | `C` | `C` |
+| 14 | **Theme toggle (P4.2)** | `C` bordered control, accent on ground | `C` inverts to solid accent | `C` accent outline — the selector gained `button`, see limit 5 | `C` | `C` native `<button>`: Tab reaches it, Space and Enter activate | `C` instant, nothing to disable | `C` tap target ≥ label box + 7/11px padding |
 
 ## Honest limits of this matrix
 
@@ -57,6 +58,22 @@ Asserted by `test_evidence_layer_never_covers_the_links_column`. Observed clicka
 3. **Touch column is largely `C`.** The director's 375px pass (P3.2 close, DevTools plus a physical phone, all five pages) covers layout and overflow. Per-component touch *interaction* on a physical device is verified for the slider only.
 
 4. **`active` states are structural throughout.** No component defines a distinct `:active` treatment; the column records that absence deliberately, rather than leaving it blank as though never considered.
+
+5. **Row 14 carries no `O` yet, and that is the point.** The theme toggle is the
+   site's first `<button>`. Every structural property is asserted — it is hidden
+   until `theme.js` can act on it, so no dead affordance or dead tab stop ships;
+   its label is constant with state in `aria-pressed`; it reuses the inverted
+   accent pair the skip link already uses, which `check_contrast.py` measures in
+   both themes. None of that is evidence that it *feels* like a control, which
+   is `O` and only `O`. The director's live check fills this row.
+
+6. **Every `O` in rows 1-13 is a DARK-MODE observation.** They were all made
+   before light mode existed. The properties they record are theme-independent
+   in construction — hover swaps, focus outlines and the A3.1 layer are declared
+   in tokens that theme, and no rule changes structure between themes — but that
+   is a reading of the CSS, not a second observation. **Light mode inherits the
+   `C` marks and inherits none of the `O` marks.** The matrix does not quietly
+   widen to cover a theme nobody has looked at; the live check covers both.
 
 ## Where the observations came from
 

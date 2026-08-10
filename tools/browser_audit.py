@@ -41,6 +41,12 @@ AXE = ROOT / "node_modules" / "axe-core" / "axe.min.js"
 
 PAGES = ["/", "/projects/", "/experience/", "/certifications/", "/audit/"]
 
+# P4.2. Both themes, every page. axe's colour-contrast rule evaluates what is
+# RENDERED, so a palette that only exists under a media query is a palette axe
+# has never looked at — and light mode would have shipped with its contrast
+# checked by nobody but a static calculator.
+THEMES = ("dark", "light")
+
 
 class _Server(socketserver.TCPServer):
     # Defect D-36: shutdown() stops the serve_forever loop but does NOT close
@@ -71,7 +77,11 @@ def audit(base: str) -> tuple[list[tuple[str, str]], dict]:
     with sync_playwright() as p:
         browser = p.chromium.launch()
         for path in PAGES:
-            page = browser.new_page()
+          for theme in THEMES:
+            # emulate_media at page creation, so the FIRST paint is already in
+            # the theme under test — not a dark page repainted light after axe
+            # has begun looking at it.
+            page = browser.new_page(color_scheme=theme)
             console_errors: list[str] = []
             csp_violations: list[str] = []
 
@@ -96,7 +106,18 @@ def audit(base: str) -> tuple[list[tuple[str, str]], dict]:
             result = page.evaluate("() => axe.run(document)")
             violations = result.get("violations", [])
 
-            summary[path] = {
+            # THE WITNESS. Requirement (4): the job must exercise both themes,
+            # not assume the second. A loop that says "light" proves nothing —
+            # if emulation silently failed, every run would be dark and every
+            # run would still pass. So each run records the background it
+            # actually rendered, and a check below refuses if the two themes
+            # produced the same one.
+            background = page.evaluate(
+                "() => getComputedStyle(document.body).backgroundColor")
+
+            summary[f"{path} [{theme}]"] = {
+                "theme": theme,
+                "background": background,
                 "axe_violations": len(violations),
                 "rules_available": rules_available,
                 # Evidence that axe actually EVALUATED this page. Without it,
@@ -110,14 +131,27 @@ def audit(base: str) -> tuple[list[tuple[str, str]], dict]:
             for v in violations:
                 nodes = "; ".join(n.get("target", [""])[0] for n in v.get("nodes", [])[:3])
                 problems.append(("AXE_VIOLATION",
-                                 f"{path}  [{v['impact']}] {v['id']}: {v['help']}  -> {nodes}"))
+                                 f"{path} [{theme}]  [{v['impact']}] {v['id']}: "
+                                 f"{v['help']}  -> {nodes}"))
             for c in csp_violations:
-                problems.append(("CSP_VIOLATION", f"{path}  {c}"))
+                problems.append(("CSP_VIOLATION", f"{path} [{theme}]  {c}"))
             for e in console_errors:
-                problems.append(("CONSOLE_ERROR", f"{path}  {e[:200]}"))
+                problems.append(("CONSOLE_ERROR", f"{path} [{theme}]  {e[:200]}"))
 
             page.close()
         browser.close()
+
+    # Did the two themes actually render differently? If colour-scheme
+    # emulation had no effect, every page would report one background and the
+    # "light" half of this audit would be dark pages wearing a label.
+    seen = {th: {s["background"] for s in summary.values() if s["theme"] == th}
+            for th in THEMES}
+    if len(THEMES) > 1 and seen["dark"] & seen["light"]:
+        problems.append((
+            "THEME_NOT_APPLIED",
+            f"dark and light rendered the same background {seen['dark'] & seen['light']} — "
+            f"colour-scheme emulation did not take, so the light-mode half of "
+            f"this audit examined dark pages"))
 
     return problems, summary
 
@@ -341,11 +375,12 @@ def main() -> int:
         httpd.server_close()      # release the socket, not just the loop (D-36)
 
     print("Browser audit — what was examined:\n")
-    print(f"  {'page':<20}{'axe viol.':>11}{'checks eval.':>14}"
-          f"{'CSP viol.':>11}{'console err.':>14}")
+    print(f"  {'page [theme]':<30}{'rendered bg':<22}{'axe viol.':>11}"
+          f"{'checks eval.':>14}{'CSP viol.':>11}{'console err.':>14}")
     for path, s in summary.items():
-        print(f"  {path:<20}{s['axe_violations']:>11}{s['checks_evaluated']:>14}"
-              f"{s['csp_violations']:>11}{s['console_errors']:>14}")
+        print(f"  {path:<30}{s.get('background', '?'):<22}{s['axe_violations']:>11}"
+              f"{s['checks_evaluated']:>14}{s['csp_violations']:>11}"
+              f"{s['console_errors']:>14}")
 
     rules = next(iter(summary.values()))["rules_available"] if summary else 0
     if args.json_out:
@@ -370,8 +405,15 @@ def main() -> int:
             print(f"  REASON={reason}  {detail}")
         return 1
 
+    themes_seen = sorted({s.get("theme") for s in summary.values() if s.get("theme")})
+    backgrounds = sorted({s.get("background") for s in summary.values()})
+    print(f"  themes exercised      : {', '.join(themes_seen) or 'none'}")
+    print(f"  distinct backgrounds  : {', '.join(backgrounds)}  "
+          f"(the witness that both themes actually rendered)")
+
     print("\nBROWSER AUDIT OK — zero axe violations, zero CSP violations, "
-          "zero console errors, across every page")
+          "zero console errors,\n                   across every page IN EVERY "
+          "THEME")
     return 0
 
 

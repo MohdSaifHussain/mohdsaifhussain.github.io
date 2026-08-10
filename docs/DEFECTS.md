@@ -42,6 +42,14 @@ cost.
 
 ---
 
+## P4.2 — light mode
+
+| # | Defect | Found by | Severity | Disposition |
+|---|---|---|---|---|
+| D-55 | **The published contrast figure was typed, not measured.** `write_audit.py` ran `check_contrast.py`, **discarded its output entirely**, and on exit 0 wrote a hard-coded string — `"AA met; 7:1 met except --dim (5.78:1)"` — with the ratio typed by hand. The checker's own numbers never reached the page. Had a token changed, the gate would still have exited 0 and /audit would have gone on publishing 5.78:1 forever: a figure with no producer behind it, D-52's family exactly, on the one page whose subject is its own accuracy | **Reading the chain while planning P4.2**, before it misled anyone. Requirement (1) asked for per-token measured ratios in both themes, and that cannot be built on top of a literal. No test would have caught it — the suite asserts `check_contrast.py` exits 0, which it did | **Material** | **Fixed.** `check_contrast.py` gains `--json-out`; `write_audit.py` consumes it and publishes the DERIVED summary, with the per-token rows for both themes carried into `detail` and published as the A5 table on /audit. The summary now reads itself out of the measurement: `dark: … (5.78:1) · light: … (5.79:1)` |
+| D-56 | **`read_token("--bg")` broke the moment the tokens were themed.** The semantic tokens became `var()` pointers so both palettes could be reached, and `read_token` requires a hex literal — so the `<meta name="theme-color">` value had no literal to read and the build refused | **Running the build**, immediately, on the first build after the palette landed | Minor | **Fixed, and it was the right failure.** Two `theme-color` metas now ship, one per `prefers-color-scheme`, read from the palette tokens. A single meta would have left the browser chrome dark above a light page — a defect nothing else would have caught, since no gate inspects browser chrome. Logged because the refusal did the finding |
+| D-57 | **The global focus ring would have silently stopped covering everything.** `:where(a):focus-visible, :where(span[tabindex]):focus-visible` matched every interactive element the site had — because until P4.2 the site contained no `<button>` at all. The theme toggle would have been the first, and would have received the user-agent default ring instead of the site's accent outline | **Reading the selector against the new element type** during D3, before the toggle shipped | Minor | **Fixed:** `:where(button):focus-visible` added. The lesson is the general one — C-07 asks for visible focus "everywhere", and *everywhere* is precisely the word that quietly stops being true when a new element type arrives. A selector that enumerates element types is a claim with an expiry date nobody writes down |
+
 ## v1.1 live counts — D-02's upgrade path
 
 | # | Defect | Found by | Severity | Disposition |

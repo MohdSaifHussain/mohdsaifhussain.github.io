@@ -28,6 +28,7 @@ import pathlib
 import statistics
 import subprocess
 import sys
+import tempfile
 import urllib.parse
 
 sys.stdout.reconfigure(encoding="utf-8")     # defect D-13
@@ -239,10 +240,25 @@ def main() -> int:
                                "sample": [m.get("message") for m in errors[:5]]}
 
     # --- contrast (deterministic; same everywhere) ------------------------
-    r = subprocess.run([sys.executable, "tools/check_contrast.py"],
-                       cwd=ROOT, capture_output=True, text=True)
-    if r.returncode == 0:
-        measured["contrast"] = "AA met; 7:1 met except --dim (5.78:1)"
+    # DEFECT D-55. This ran check_contrast.py, DISCARDED its output entirely,
+    # and on exit 0 wrote a hard-coded string with the figure "5.78:1" typed by
+    # hand. The checker's own numbers never reached the page. If a token had
+    # changed, the gate would still have exited 0 and /audit would have gone on
+    # publishing 5.78 — a figure with no producer behind it, which is exactly
+    # D-52's family, and on the one page whose subject is its own accuracy.
+    #
+    # The summary is now DERIVED, and the per-token rows for both themes are
+    # carried into detail so /audit can publish the table rather than a
+    # sentence about it.
+    with tempfile.TemporaryDirectory() as td:
+        contrast_json = pathlib.Path(td) / "contrast.json"
+        r = subprocess.run(
+            [sys.executable, "tools/check_contrast.py", "--json-out", str(contrast_json)],
+            cwd=ROOT, capture_output=True, text=True)
+        if r.returncode == 0 and contrast_json.exists():
+            doc = json.loads(contrast_json.read_text(encoding="utf-8"))
+            measured["contrast"] = doc["summary"]
+            detail["contrast"] = doc
 
     # --- charter-check gates (defect D-48) --------------------------------
     # These are NOT measurements of the published origin. They are the exit

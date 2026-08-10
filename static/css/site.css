@@ -106,7 +106,15 @@ body {
    animation, not an omission (handoff §5). */
 .mono-link:hover, .mono-link:focus-visible { color: var(--ink); }
 
-:where(a):focus-visible, :where(span[tabindex]):focus-visible {
+/* P4.2 adds `button` to this list. The site had no <button> at all until the
+   theme toggle, so the selector matched every interactive thing that existed —
+   and would have silently stopped doing that the moment one shipped, handing
+   the first real control the user-agent default ring instead of the site's.
+   C-07 asks for visible focus states everywhere, and "everywhere" is the part
+   that quietly stops being true when a new element type arrives. */
+:where(a):focus-visible,
+:where(button):focus-visible,
+:where(span[tabindex]):focus-visible {
   outline: var(--rule-strong-w) solid var(--accent);
   outline-offset: 3px;
 }
@@ -307,6 +315,8 @@ nav {
 .audit-row--a2, .audit-head--a2 { grid-template-columns: 80px 1fr 200px 200px; }
 .audit-row--a3, .audit-head--a3 { grid-template-columns: 80px 1fr 160px 120px 260px; }
 .audit-row--a4, .audit-head--a4 { grid-template-columns: 80px 1fr 1.4fr; }
+/* P4.2: contrast, per token, both themes. */
+.audit-row--a5, .audit-head--a5 { grid-template-columns: 70px 90px 90px 120px 110px 70px 1fr; }
 .audit-row span { display: inline-flex; align-items: baseline; gap: 7px; }
 .dim { color: var(--dim); }
 .audit-note { max-width: 1000px; }
@@ -383,7 +393,8 @@ footer { padding: var(--pad-row) var(--gutter) 38px; border-top: var(--rule-mid-
   /* Audit tables restack: each row becomes a labelled block. */
   .audit-head { display: none; }
   .audit-row,
-  .audit-row--a1, .audit-row--a2, .audit-row--a3, .audit-row--a4 {
+  .audit-row--a1, .audit-row--a2, .audit-row--a3, .audit-row--a4,
+  .audit-row--a5 {
     grid-template-columns: 1fr;
     gap: 6px;
     padding: 14px 0;
@@ -605,3 +616,33 @@ main   { view-transition-name: page-content; }
    scaleX because a rule carries no text and no contrast obligation. */
 @keyframes xp-surface { from { transform: translateY(12px); } }
 @keyframes xp-rule    { from { transform: scaleX(0); } }
+
+/* --- Theme toggle (P4.2) --------------------------------------------------
+   Follows .pdf-button, which is this site's existing language for "a control
+   you press" as distinct from "a link you follow". Deliberately NOT styled as
+   a nav link: the 01–04 + A numbering means destination, and this is neither a
+   destination nor numbered (reading R-17).
+
+   Pressed and unpressed both reuse the INVERTED accent pair that the skip link
+   and PDF button already use, so the toggle introduces no new colour pair —
+   check_contrast.py already measures --bg on --accent in both themes
+   (10.40:1 dark, 7.05:1 light).
+
+   No transition, in either state. A theme change is instant (A3.3 family); the
+   declared A3 ledger stays at six and animating this would be undeclared
+   motion under C-12. */
+.theme-toggle {
+  font: var(--type-mono-label);
+  letter-spacing: var(--ls-mono-label);
+  text-transform: uppercase;
+  color: var(--accent);
+  background: none;
+  border: var(--rule-mid-w) solid var(--accent);
+  padding: 7px 11px;
+  cursor: pointer;
+}
+.theme-toggle:hover,
+.theme-toggle[aria-pressed="true"] {
+  background: var(--accent);
+  color: var(--bg);
+}

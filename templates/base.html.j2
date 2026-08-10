@@ -68,6 +68,21 @@
       </li>
       {% endfor %}
     </ul>
+    {# P4.2. A CONTROL, not a destination: no 01–04 number prefix, because that
+       scheme means "this is a place you can go" and this is a thing you press.
+       Recorded as reading R-17.
+
+       `hidden` until theme.js removes it — the toggle does nothing without
+       script, and a control that cannot act is a dead affordance and a dead tab
+       stop, which C-07 and the P3.3 tabindex ruling both refuse.
+
+       The label is constant and the STATE lives in aria-pressed, which is the
+       toggle-button pattern; a label that rewrites itself between "Light" and
+       "Dark" is ambiguous about whether it names the current mode or the one
+       you would get. Ref, checked 2026-08-10:
+       https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Attributes/aria-pressed #}
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-pressed="false" hidden>Light mode</button>
   </nav>
 </header>
 
@@ -88,7 +103,14 @@
   </div>
   <p class="colophon">{{ colophon }} <a class="mono-link" href="/audit/">&rarr; /AUDIT</a></p>
 </footer>
-{# External scripts only (C-18). `defer` so neither blocks rendering (C-04). #}
+{# External scripts only (C-18). `defer` so neither blocks rendering (C-04).
+
+   theme.js sits OUTSIDE the block deliberately: index.html.j2 overrides
+   `scripts`, and an override replaces rather than appends, so a theme toggle
+   declared inside the block would silently vanish from the Home page — the one
+   page that overrides it. This is the first script the site loads on all five
+   pages. #}
+<script src="/js/theme.js" defer></script>
 {% block scripts %}{% endblock %}
 </body>
 </html>

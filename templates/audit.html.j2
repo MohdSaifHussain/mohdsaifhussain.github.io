@@ -106,6 +106,46 @@
     {% endfor %}
   </div>
 
+  {# A5 — contrast, per token, in BOTH themes. P4.2.
+
+     A1.3 publishes one sentence about contrast. That sentence used to be a
+     hard-coded literal in write_audit.py, with the figure "5.78:1" typed by
+     hand and the checker's own output discarded (defect D-55). These rows are
+     the checker's output, recomputed from tokens.css on every measurement run.
+
+     Absent until a measurement has produced them — the same rule as every
+     other cell on this page. #}
+  {% if contrast_rows %}
+  <div class="audit-table">
+    <div class="audit-head audit-head--a5">
+      <span class="mono-label">A5</span><span class="mono-label">Theme</span>
+      <span class="mono-label">Token</span><span class="mono-label">Hex on bg</span>
+      <span class="mono-label">Size</span><span class="mono-label">Measured</span>
+      <span class="mono-label">Usage</span>
+    </div>
+    {% for row in contrast_rows %}
+    <div class="audit-row audit-row--a5">
+      <span class="mono-meta dim">{{ '%02d' % loop.index }}</span>
+      <span class="mono-meta{{ ' accent' if row.theme == 'light' else ' dim' }}">{{ row.theme | upper }}</span>
+      <span>{{ row.fg }}</span>
+      <span class="mono-meta dim">{{ row.hex }} / {{ row.bg_hex }}</span>
+      <span class="mono-meta dim">{{ '%g' % row.px }}px{{ ' bold' if row.bold }}{{ ' L' if row.large }}</span>
+      <span>{{ '%.2f' % row.ratio }}:1 {{ m.mark_check() if row.aaa else m.mark_cross() }}</span>
+      <span class="mono-meta dim">{{ row.usage }}</span>
+    </div>
+    {% endfor %}
+  </div>
+
+  <p class="mono-meta audit-note">
+    A5 IS EVERY PAIR, IN BOTH THEMES, RECOMPUTED FROM TOKENS.CSS BY THE WCAG 2.2
+    RELATIVE-LUMINANCE FORMULA — NEVER QUOTED FROM A TABLE (C-09, DOCTRINE RULE 13).
+    THE MARK IN THE MEASURED COLUMN IS THE 7:1 TARGET, NOT AA: EVERY ROW SHOWN MEETS
+    AA AT THE SIZE IT IS USED, OR THE BUILD WOULD HAVE REFUSED.
+    LIGHT MODE MAY NOT COST A 7:1 THE DARK THEME ALREADY REACHES, AND --DIM'S
+    SHORTFALL MAY NOT DEEPEN; BOTH ARE GATED, WITH THEIR OWN REASON CODES.
+  </p>
+  {% endif %}
+
   {# The protocol is published beside the scores it produced. A number whose
      method is unstated cannot be checked or repeated — and single-run figures
      were retired here after two consecutive runs of the same site differed by

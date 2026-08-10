@@ -457,6 +457,13 @@ def build() -> int:
     # describe the COMMIT they ran against, not the published origin — which is
     # a different subject from the Lighthouse figures above, so it is carried
     # and displayed separately rather than folded into `measured`.
+    # P4.2 / D-55. The per-token contrast rows, both themes, recomputed by
+    # check_contrast.py and carried through write_audit.py. /audit publishes the
+    # table rather than a sentence about it — and the sentence it used to
+    # publish was a typed literal, which is the defect.
+    contrast_rows = ((measured_doc.get("detail") or {})
+                     .get("contrast") or {}).get("rows", [])
+
     gates_doc = measured_doc.get("gates") or {}
     gates = gates_doc.get("results", {})
     gates_commit = gates_doc.get("commit", "")
@@ -541,6 +548,7 @@ def build() -> int:
         "measurement_protocol": measurement_protocol,
         "gates": gates,
         "gates_commit": gates_commit,
+        "contrast_rows": contrast_rows,
         "nav": NAV,
         "colophon": COLOPHON,
         "visits": VISITS,
