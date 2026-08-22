@@ -35,6 +35,12 @@ somewhere in this repository. Where a condition is unmet it says so.
 
 - `tools/fetch_stats.py` assumed every GitHub link was a repo root (CU-3).
 
+### Measured
+
+After these changes, `measure-live` run 32575042812 (2026-08-22): Lighthouse
+**100 / 100 / 100 / 100** worst median across both profiles, LCP 1.52 s,
+CLS 0.000, 147,557 B, 0 axe violations, 0 validator errors. C-01 MET.
+
 ### Declared, unchanged
 
 - **C-02** LCP 1.53 s against 1.5 s stays declared: the one lever left, an

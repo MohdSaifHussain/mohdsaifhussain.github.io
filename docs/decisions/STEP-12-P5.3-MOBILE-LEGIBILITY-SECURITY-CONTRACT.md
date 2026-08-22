@@ -1,7 +1,7 @@
 # STEP-12: P5.3 — Mobile legibility, the robots audit, and supply-chain pins
 
 **Project:** mohdsaifhussain.github.io | **Phase:** P5.3 | **Date:** 2026-08-22
-**Status:** **Closed 2026-08-22** on the owner's standing go (eye-check waived for this batch; see Outcome). The measured effect on C-01 lands when `measure-live` runs against the published origin; until then the /audit figures are the previous run's, as always.
+**Status:** **Closed 2026-08-22**, exit criterion met by measurement: C-01 reads 100 on all four Lighthouse categories, both profiles, after `measure-live` run 32575042812. Eye-check waived by the owner for this batch (see Outcome).
 **Tier:** STANDARD. **Verified on mobile:** the owner ruled 2026-08-22 that every change is checked on mobile; here the two fixes are mobile-profile findings, and the measurement reported is the worst median across both Lighthouse profiles.
 **Depends on:** P5.2 closed.
 
@@ -34,9 +34,12 @@ The LCP lever (5.3.4). Screen-reader passes (owner-run, A4.9). Hosting headers (
 
 - [x] Six gates exit 0 after the change (run by the builder 2026-08-22).
 - [x] Both new tests pass; the CSP test's negative control (a policy carrying `'unsafe-inline'`) refuses.
-- [ ] `measure-live` dispatched after deploy; result read back from `data/generated/audit.json` and reported.
+- [x] `measure-live` dispatched after deploy (run 32575042812, 2026-08-22 18:47 IST): worst median across both profiles **100 / 100 / 100 / 100**; no failing best-practices or SEO audit on any of 30 runs; LCP 1.52 s (C-02 still declared, by 20 ms); transfer 147,557 B; axe 0; validator 0.
 - [x] Owner's eye-check: **waived by the owner's ruling of 2026-08-22** for this batch. Recorded as a deviation, not absorbed.
 
 ## 6. Outcome
 
-Written after the measurement run; see the session report and DECISIONS 5.3.x.
+- D1 and D2 did what they were built to do, confirmed by the live measurement: best-practices 96 became 100 (the `font-size` audit no longer fails on the mobile profile) and SEO 92 became 100 (the `robots-txt` audit no longer fails on either profile), which also confirms D-61's diagnosis.
+- LCP read 1.52 s, worst median. C-02 stays declared (5.3.4).
+- **Deviation:** the owner's eye-check was waived by the owner's ruling of 2026-08-22 for this batch. The builder read the rendered pages and the live CSS; that is weaker than the owner on a phone and is recorded as such.
+- Carried: A4.9 (owner-run screen-reader passes), A4.1 (hosting headers), A4.3 (certifications, by policy).
