@@ -109,9 +109,8 @@
     <div class="foot-links">
       <a class="mono-link" href="{{ profile.links.linkedin }}" rel="noopener noreferrer">LINKEDIN</a>
       <a class="mono-link" href="{{ profile.links.github }}" rel="noopener noreferrer">GITHUB</a>
-      {# C-22 / decision D-03: v1.0.0 ships with zero third-party resources, so
-         the counter is honestly a dash rather than a number nobody measured. #}
-      <span class="foot-visits">VISITS {{ visits }}</span>
+      {# P5.2, decision 5.2.1: the visit counter is retired. D-03's dash was the
+         designed state; a dash that looks like a broken counter is not. #}
     </div>
   </div>
   <p class="colophon">{{ colophon }} <a class="mono-link" href="/audit/">&rarr; /AUDIT</a></p>

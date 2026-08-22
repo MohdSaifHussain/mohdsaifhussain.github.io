@@ -68,7 +68,12 @@ CSP = {
     "img-src": "'self'",
     "font-src": "'self'",
     "manifest-src": "'self'",
-    "connect-src": "'none'",     # nothing fetches; a future beacon would break loudly
+    # P5.3 (STEP-12, defect D-61): 'self', not 'none'. Lighthouse's robots.txt
+    # audit fetches /robots.txt FROM INSIDE THE PAGE; under 'none' that fetch
+    # was blocked and the audit reported "robots.txt is not valid" on all 30
+    # runs while the file itself was valid. 'self' still refuses any beacon
+    # to another origin, which is what 'none' was there to guarantee.
+    "connect-src": "'self'",
     "object-src": "'none'",
     "frame-src": "'none'",
     "base-uri": "'none'",
@@ -137,9 +142,8 @@ BASIS_SENTENCES = {
 }
 RETIRED_BASES = {"owner-measured"}   # retired 2026-08-22, CU-4
 
-# Decision D-03: v1.0.0 ships zero third-party resources, so the counter is an
-# honest dash. Flipping this to a real counter is a one-line change here.
-VISITS = "—"
+# Decision D-03 shipped `VISITS —` here; P5.2 (decision 5.2.1) retired the
+# element. A counter would be a third-party resource, and A4.4 is resolved.
 
 
 class BuildRefused(Exception):
@@ -591,7 +595,6 @@ def build() -> int:
         "contrast_rows": contrast_rows,
         "nav": NAV,
         "colophon": COLOPHON,
-        "visits": VISITS,
     }
 
     # Defect F-01: pages were written to disk BEFORE the output gates were

@@ -329,7 +329,6 @@ footer { padding: var(--pad-row) var(--gutter) 38px; border-top: var(--rule-mid-
 }
 .wordmark-foot { font: var(--type-wordmark-foot); letter-spacing: var(--ls-wordmark); color: var(--dim); }
 .foot-links { display: flex; gap: 22px; align-items: baseline; }
-.foot-visits { font: var(--type-mono-link); color: var(--dim); }
 .colophon { margin-top: 18px; font: var(--type-mono-meta-sm); color: var(--dim); }
 
 /* ===========================================================================

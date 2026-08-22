@@ -110,9 +110,10 @@ def run() -> int:
         return 1
 
     # Defect D-22: scoping this to the whole rendered page caught site chrome
-    # shared by all five pages — the <title> separator, and the footer's
-    # "VISITS —", which is the DESIGNED state per handoff §3. Enforcing the
-    # rule there would have forced a change that violates the design authority.
+    # shared by all five pages — the <title> separator, and (until P5.2 retired
+    # it) the footer's "VISITS —", which was the DESIGNED state per handoff §3.
+    # Enforcing the rule there would have forced a change against the design
+    # authority. The footer fixture below keeps proving the scope, not the string.
     # C-27's em-dash rule is about resume-derived TEXT, and that lives in
     # <main>. Chrome inside <main> is still bound, which is the point.
     problems += check_em_dash(main_of(xp_page.read_text(encoding="utf-8")),
@@ -170,7 +171,7 @@ def selftest() -> int:
          lambda: check_em_dash(
              main_of(f"<title>x — y</title><main><p>Ops {EM_DASH} led</p></main>"), "fixture"),
          "EM_DASH", True),
-        ("handoff-mandated 'VISITS —' in the footer MUST NOT trip",
+        ("an em dash in footer chrome outside <main> MUST NOT trip",
          lambda: check_em_dash(
              main_of('<main><p>clean</p></main><footer>VISITS —</footer>'), "fixture"),
          "EM_DASH", False),
