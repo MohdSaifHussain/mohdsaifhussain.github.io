@@ -380,13 +380,16 @@ def test_metrics_basis_agrees_with_entries():
     data = json.loads((ROOT / "data/projects.json").read_text(encoding="utf-8"))
     basis = data["_metrics_basis"]
 
-    allowed = {"ci-measured", "owner-measured", "resume-baseline"}
+    allowed = {"ci-measured", "owner-measured", "resume-baseline", "repo-stated"}
     declared = {p["id"]: p.get("metrics_basis") for p in data["projects"]}
     unknown = {k: v for k, v in declared.items() if v not in allowed}
     assert not unknown, f"entries declare a basis outside {sorted(allowed)}: {unknown}"
 
     for label, phrase in (("resume-baseline", "resume-stated baselines"),
-                          ("ci-measured", "ci-measured")):
+                          ("ci-measured", "ci-measured"),
+                          # Fourth basis, admitted by owner's ruling 2026-08-22
+                          # (DECISIONS, content update CU-1). First use: switchyard.
+                          ("repo-stated", "repo-stated")):
         in_use = any(v == label for v in declared.values())
         # Case-insensitive: the sentence uses small caps for its section
         # headings, and a guard that turned on letter case would be checking

@@ -88,18 +88,38 @@ def _get_text(url: str) -> str | None:
         raise
 
 
-def repo_names() -> list[str]:
+def repo_name_from_link(url: str) -> str | None:
+    """The repository a GitHub link belongs to, or None for a non-GitHub link.
+
+    Only the first path segment after the owner is the repo. A #fragment or a
+    /blob/... deep path is still a link INTO that repo, not a repo of its own.
+    Until 2026-08-22 every link in the record happened to be a repo root, so
+    the old code's whole-remainder slice never had to be right; the first
+    deep links (switchyard's see_it_running and showcase) turned it into
+    'switchyard#see-it-running', urllib dropped the fragment, and the
+    releases/latest call came back as repo metadata with no tag_name
+    (DECISIONS CU-3).
+    """
+    prefix = f"https://github.com/{OWNER}/"
+    if not url.startswith(prefix):
+        return None
+    rest = url[len(prefix):].split("#", 1)[0].split("?", 1)[0]
+    name = rest.split("/", 1)[0].strip()
+    return name or None
+
+
+def repo_names(data: dict | None = None) -> list[str]:
     """Derived from projects.json, never hardcoded — so adding a project to the
-    data file is genuinely the only step (C-34)."""
-    data = json.loads(PROJECTS.read_text(encoding="utf-8"))
+    data file is genuinely the only step (C-34). Each repo once, in first-seen
+    order, however many links point into it."""
+    if data is None:
+        data = json.loads(PROJECTS.read_text(encoding="utf-8"))
     names: list[str] = []
     for project in data["projects"]:
         for url in project.get("links", {}).values():
-            prefix = f"https://github.com/{OWNER}/"
-            if url.startswith(prefix):
-                name = url[len(prefix):].strip("/")
-                if name and name not in names:
-                    names.append(name)
+            name = repo_name_from_link(url)
+            if name and name not in names:
+                names.append(name)
     return names
 
 
