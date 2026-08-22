@@ -85,6 +85,14 @@ Derivation and solved values: `STEP-09-P4.2-LIGHT-DERIVATION.md`.
 | `projects.json` count semantics | "live count fetched at build" | Version-anchored to a release/SHA, with an evidence link per count | Defect D-02, found by reading the data against what the GitHub API actually returns |
 | Body-text floor in the shipped CSS | 12px, as `reference/design.html` renders it in 21 places | 12.5px, per handoff §1's own stated minimum | Defect D-12, found by tallying font declarations in the reference |
 
+## Phase P5.1: The card's basis sentence, per entry (STEP-10)
+
+Contract: `STEP-10-P5.1-CARD-BASIS-CONTRACT.md`. Tier STANDARD, the first phase of this site not run at FULL; chosen because the deploy path was exercised twice the same day and the owner's local read is the verification that matters.
+
+| # | Decision | Alternative(s) not taken | Reason | Recorded in |
+|---|---|---|---|---|
+| 5.1.1 | **The basis sentence lives in `build.py` as `BASIS_SENTENCES`, one per basis, and the template prints `p._basis_sentence`; a basis with no sentence refuses the build, with `BASIS_RETIRED` distinct from `BASIS_UNKNOWN`** | (a) Four `{% if %}` branches in the template; (b) sentences in `projects.json` as data; (c) a silent fallback to the resume sentence | (a) puts meaning in a template with no reason code and nothing to unit-test. (b) would put site chrome into an owner-verified data file, the same objection as 3.1.11 for the colophon. (c) is exactly the defect. Wordings are the owner's ruling, 2026-08-22 | Owner's ruling, 2026-08-22; `build.py`, `tests/test_card_basis.py`; D-60 |
+
 ## Content updates (after P4.2, SOP section 1)
 
 Not a phase. Recorded here because a content update extended a closed set that a gate guards.

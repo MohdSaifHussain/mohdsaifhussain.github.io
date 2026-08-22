@@ -63,7 +63,7 @@
           <span class="metric metric--pending">{{ m.mark_cross() }}{{ p.get('metrics_pending') }}</span>
           {% endif %}
         </div>
-        <p class="mono-meta card-basis">Figures are resume-stated baselines, anchored to the version below. The anchor fixes the version; it does not re-count.</p>
+        <p class="mono-meta card-basis">{{ p._basis_sentence }}</p>
       </div>
     </div>
 

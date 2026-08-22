@@ -11,7 +11,8 @@ than any evidence this tool could produce. Per the director's ruling
 (DECISIONS 3.1.3) this tool fetches what the API genuinely provides — the
 release tag or commit SHA each repo currently sits at, and when it was last
 pushed — and every displayed count is anchored to that and linked to its
-source. The counts themselves remain resume-stated baselines, labelled as such.
+source. Each count's basis is declared per entry (resume-baseline, ci-measured,
+repo-stated) and the card says which; since 2026-08-22 no count is unlabelled.
 
 Genuinely live counts are recorded as the v1.1 path (DECISIONS 3.1.3a): each
 source repo's own CI publishes a stats.json this site consumes. That is NOT

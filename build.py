@@ -119,6 +119,24 @@ NAV = [
 COLOPHON = ("An AI-orchestrated portfolio: designed and built by Mohd Saif "
             "Hussain directing Claude, under a governed, audited process.")
 
+# P5.1, owner's ruling 2026-08-22: one sentence per basis, stating how the
+# figures on that card were obtained. The card prints exactly one of these.
+# A basis absent here cannot render (BASIS_UNKNOWN); a retired one cannot
+# either (BASIS_RETIRED). Keep in step with projects.json `_metrics_basis`.
+BASIS_SENTENCES = {
+    "ci-measured": (
+        "Figures are CI-measured: counted by the source repo's own CI from the "
+        "run that executed the tests, at the commit shown. The anchor below is "
+        "the version; the count is the measurement."),
+    "repo-stated": (
+        "Figures are the source repo's own published record, cited at the "
+        "version below. The anchor fixes the version; it does not re-count."),
+    "resume-baseline": (
+        "Figures are resume-stated baselines, anchored to the version below. "
+        "The anchor fixes the version; it does not re-count."),
+}
+RETIRED_BASES = {"owner-measured"}   # retired 2026-08-22, CU-4
+
 # Decision D-03: v1.0.0 ships zero third-party resources, so the counter is an
 # honest dash. Flipping this to a real counter is a one-line change here.
 VISITS = "—"
@@ -289,6 +307,26 @@ def gate_anchors(projects: list[dict], snapshot: dict) -> list[tuple[str, str]]:
         elif not repos[name].get("anchor") or not repos[name].get("anchor_url"):
             out.append(("STAT_UNANCHORED", f"{p['id']}: anchor or evidence link missing"))
     return out
+
+
+def attach_basis_sentences(projects: list[dict]) -> None:
+    """P5.1 (STEP-10, defect D-60): the card's basis sentence is chosen per
+    entry from the basis it declares. A basis with no sentence refuses the
+    build, because a card that renders a figure without saying how it was
+    obtained is the D-02 claim-without-source in a new coat. Two reason codes,
+    because 'never defined' and 'defined, then retired' are different mistakes.
+    """
+    for p in projects:
+        basis = p.get("metrics_basis")
+        if basis in RETIRED_BASES:
+            raise BuildRefused("BASIS_RETIRED",
+                               f"{p['id']}: '{basis}' is retired; no entry may declare it "
+                               f"(projects.json _metrics_basis clause 2)")
+        if basis not in BASIS_SENTENCES:
+            raise BuildRefused("BASIS_UNKNOWN",
+                               f"{p['id']}: '{basis}' has no basis sentence; "
+                               f"known: {sorted(BASIS_SENTENCES)}")
+        p["_basis_sentence"] = BASIS_SENTENCES[basis]
 
 
 def read_token(tokens_css: str, name: str) -> str:
@@ -502,6 +540,8 @@ def build() -> int:
             measured_metric = (f"{stats['tests_executed']:,} tests, CI-measured "
                                f"@ {stats['commit_short']}")
             p["verified_metrics"] = [measured_metric] + p["verified_metrics"][1:]
+
+    attach_basis_sentences(projects)
 
     ctx_common = {
         "profile": data["profile"],
