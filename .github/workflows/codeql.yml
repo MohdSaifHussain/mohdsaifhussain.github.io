@@ -1,0 +1,40 @@
+# CodeQL — static analysis of the build tooling and the workflows themselves.
+#
+# P5.3 (STEP-12, decision 5.3.3). The site ships no server code, so this scans
+# what CAN carry a defect: the Python that builds and gates the site, and the
+# Actions workflows that publish it. Every action is pinned by commit SHA with
+# its version alongside, so a tag cannot be moved under this workflow;
+# Dependabot (github-actions ecosystem) bumps the SHAs.
+name: CodeQL
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    - cron: "23 5 * * 1"        # Mondays, after the measurement run
+
+permissions:
+  contents: read
+
+jobs:
+  analyze:
+    name: Analyze (${{ matrix.language }})
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write    # to upload the SARIF results, and nothing else
+      actions: read
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [python, actions]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+      - uses: github/codeql-action/init@37f2634a92ba38a0926ef79a0748ac8ae7d95ab2  # v4.37.8
+        with:
+          languages: ${{ matrix.language }}
+      - uses: github/codeql-action/analyze@37f2634a92ba38a0926ef79a0748ac8ae7d95ab2  # v4.37.8
+        with:
+          category: "/language:${{ matrix.language }}"
