@@ -190,6 +190,16 @@
 
 @media (max-width: 900px) {
   :root {
+    /* P5.3 (STEP-12): the three small mono steps rise to 12px on narrow
+       viewports. Lighthouse's legibility audit (best-practices, mobile
+       profile only) wants >= 60% of text at >= 12px; .mono-meta, .colophon
+       and the nav links covered 50-55% of the text below that line. Desktop
+       is untouched: it measured 100 already, and the handoff's scale stands
+       there. Same mechanism as the display steps below: redefine, never
+       duplicate a rule. */
+    --type-mono-meta:    400 12px/1.6 var(--font-mono);
+    --type-mono-meta-sm: 400 12px/1.6 var(--font-mono);
+    --type-mono-link:    600 12px/1   var(--font-mono);
     --type-display-xl: 400 38px/1.18 var(--font-serif);  /* was 62 */
     --type-display-lg: 400 34px/1.05 var(--font-serif);  /* was 54 */
     --type-display-md: 400 28px/1.1  var(--font-serif);  /* was 40 */
