@@ -10,6 +10,37 @@ decision log, the phase contracts, and `data/generated/audit.json` as written by
 CI. Nothing here is rounded and nothing is claimed that is not measured
 somewhere in this repository. Where a condition is unmet it says so.
 
+## [Unreleased]
+
+### Added
+
+- **Switchyard**, the sixth project entry, sourced from its own README and
+  showcase at v1.0.0; **TS-Sentry** re-sourced to its README and CI log.
+  A fourth metrics basis, **REPO-STATED**, defined and guarded (CU-1, CU-4).
+- Each project card states its own basis in its own sentence; the build
+  refuses a basis it cannot explain (P5.1, D-60).
+- CodeQL on the build tooling and the workflows; every action pinned by
+  commit SHA (P5.3).
+
+### Changed
+
+- The footer's `VISITS —` is retired; A4.4 resolved (P5.2).
+- The three small mono type steps rise to 12px on viewports at or below
+  900px, for Lighthouse's mobile legibility line; desktop unchanged (P5.3).
+- CSP `connect-src` is `'self'` rather than `'none'`: Lighthouse's robots.txt
+  audit fetches from inside the page and was failing on every run under
+  `'none'` (D-61). No origin other than this one may be contacted.
+
+### Fixed
+
+- `tools/fetch_stats.py` assumed every GitHub link was a repo root (CU-3).
+
+### Declared, unchanged
+
+- **C-02** LCP 1.53 s against 1.5 s stays declared: the one lever left, an
+  inline head script under a CSP hash, is forbidden by C-18, and the
+  render-blocking theme script is ruling 4.2.7's accepted cost (5.3.4).
+
 ## [1.1.0] — 2026-08-10
 
 ### Added

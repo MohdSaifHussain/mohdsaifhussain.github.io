@@ -14,6 +14,12 @@ is a design change, not a content update.
 > C-08's screen-reader partial. So these steps are proven to *work*; they are not
 > yet proven to be *followable by the owner unaided*. That distinction is the
 > point of C-36 and is not glossed here.
+>
+> **Narrowed 2026-08-22.** On 2026-08-22 the owner directed two additions
+> through the procedure end to end (Switchyard added, TS-Sentry re-sourced;
+> DECISIONS CU-1 to CU-4), which narrows the declaration without faking it:
+> the owner ruled on every step and read every result, and the builder typed
+> the commands. "Unaided" remains undemonstrated and is still declared.
 
 ---
 

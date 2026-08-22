@@ -49,3 +49,9 @@ vnu.json
 axe.json
 gates.json
 .lighthouseci/
+
+# Owner's working notes and a local copy of the governed-orchestration skill.
+# Owner's ruling 2026-08-22: not shipped, not committed.
+*.txt
+!requirements*.txt
+governed-orchestration/

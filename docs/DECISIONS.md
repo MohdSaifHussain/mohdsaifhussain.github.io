@@ -93,6 +93,25 @@ Contract: `STEP-10-P5.1-CARD-BASIS-CONTRACT.md`. Tier STANDARD, the first phase 
 |---|---|---|---|---|
 | 5.1.1 | **The basis sentence lives in `build.py` as `BASIS_SENTENCES`, one per basis, and the template prints `p._basis_sentence`; a basis with no sentence refuses the build, with `BASIS_RETIRED` distinct from `BASIS_UNKNOWN`** | (a) Four `{% if %}` branches in the template; (b) sentences in `projects.json` as data; (c) a silent fallback to the resume sentence | (a) puts meaning in a template with no reason code and nothing to unit-test. (b) would put site chrome into an owner-verified data file, the same objection as 3.1.11 for the colophon. (c) is exactly the defect. Wordings are the owner's ruling, 2026-08-22 | Owner's ruling, 2026-08-22; `build.py`, `tests/test_card_basis.py`; D-60 |
 
+## Phase P5.2: The visit counter retired (STEP-11)
+
+Contract: `STEP-11-P5.2-VISITS-RETIRED-CONTRACT.md`. Tier STANDARD.
+
+| # | Decision | Alternative(s) not taken | Reason | Recorded in |
+|---|---|---|---|---|
+| 5.2.1 | **The `VISITS` element is removed from the footer; A4.4 moves to the resolved register; no counter replaces it.** A recorded deviation from handoff §3, which designed the dash | (a) Keep the dash, as 3.1.4 ruled for v1.0.0; (c) wire a counter and narrow the zero-third-party claim; (d) read traffic from the repository's Insights only | The owner read the live page and asked whether the counter was broken: a designed dash that reads as a broken feature is not the honest state 3.1.4 intended. (c) trades a standing claim for a number that starts at zero. (d) is what the owner does anyway and needs no element | Owner's ruling, 2026-08-22; `templates/base.html.j2`, `tests/test_visits_retired.py` |
+
+## Phase P5.3: Mobile legibility, the robots audit, supply-chain pins (STEP-12)
+
+Contract: `STEP-12-P5.3-MOBILE-LEGIBILITY-SECURITY-CONTRACT.md`. Tier STANDARD. Eye-check waived by the owner for this batch.
+
+| # | Decision | Alternative(s) not taken | Reason | Recorded in |
+|---|---|---|---|---|
+| 5.3.1 | **The three small mono type steps are 12px at or below 900px; desktop keeps the handoff scale** | (a) Raise the tokens globally; (b) accept best-practices 96 as declared | Lighthouse's legibility line is a mobile-profile audit and desktop already measured 100; (a) changes a design the owner approved for no measured gain. (b) leaves a fixable gap declared, which the register exists to avoid when the fix costs nothing the charter protects | `static/css/tokens.css`; `tests/test_p53.py` |
+| 5.3.2 | **CSP `connect-src 'self'`, not `'none'`** | Keep `'none'` and declare SEO 92 permanently; or drop robots.txt | The 92 was never about robots.txt: Lighthouse fetches it from inside the page and `'none'` blocked the fetch on all 30 runs (D-61). `'self'` forbids exactly what `'none'` was guarding against, a beacon to another origin, and `test_no_third_party_resources_load` still proves nothing else loads | `build.py` `CSP`; D-61 |
+| 5.3.3 | **Every third-party action is pinned by commit SHA, version kept as a comment; CodeQL added for python and actions** | Tag pins as before (a tag can be moved) | A moved tag is the supply-chain failure the skill's own rule 3 warns about; Dependabot's github-actions ecosystem already bumps SHAs, so the cost is one-time. CodeQL covers the only code this repo executes: the build tooling and the workflows | `.github/workflows/*.yml`, `codeql.yml` |
+| 5.3.4 | **C-02 (LCP 1.53 s vs 1.5 s) stays declared; no LCP phase** | Inline `theme-init.js` in `<head>` under a CSP `'sha256-…'` hash | C-18 forbids inline script and the CSP carries no hashes by design (`gate_inline`, `INLINE_SCRIPT`); the render-blocking external script is ruling 4.2.7's accepted cost. Manufacturing a change against a standing rule to win 30 ms would be the overclaim rule 9 names. If C-18 is ever re-ruled, this is the first lever to try | This row; CHANGELOG "Declared, unchanged" |
+
 ## Content updates (after P4.2, SOP section 1)
 
 Not a phase. Recorded here because a content update extended a closed set that a gate guards.
