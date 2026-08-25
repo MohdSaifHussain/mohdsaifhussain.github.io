@@ -1,7 +1,7 @@
 {
   "_generated": "Machine-written by tools/write_audit.py in CI from tool output. NEVER hand-edited. A value with no measurement is ABSENT, so /audit renders '\u2014 AT DEPLOY' rather than a plausible-looking number.",
-  "as_of": "2026-08-25T14:07:30Z",
-  "as_of_display": "2026-08-25 19:37 IST",
+  "as_of": "2026-08-25T14:38:39Z",
+  "as_of_display": "2026-08-25 20:08 IST",
   "detail": {
     "axe": {
       "pages": {
@@ -484,11 +484,11 @@
           "profile": "mobile",
           "samples": {
             "accessibility": {
-              "median": 95,
+              "median": 100,
               "runs": [
-                95,
-                95,
-                95
+                100,
+                100,
+                100
               ]
             },
             "best-practices": {
@@ -502,7 +502,7 @@
             "performance": {
               "median": 100,
               "runs": [
-                95,
+                94,
                 100,
                 100
               ]
@@ -788,11 +788,11 @@
           "profile": "mobile",
           "samples": {
             "accessibility": {
-              "median": 96,
+              "median": 100,
               "runs": [
-                96,
-                96,
-                96
+                100,
+                100,
+                100
               ]
             },
             "best-practices": {
@@ -806,7 +806,7 @@
             "performance": {
               "median": 100,
               "runs": [
-                99,
+                100,
                 100,
                 100
               ]
@@ -827,14 +827,14 @@
       "run_count": 30,
       "runs": [
         {
-          "accessibility": 95,
+          "accessibility": 100,
           "best-practices": 100,
           "cls": 0,
           "failed_audits": [
             {
               "category": "performance",
               "id": "first-contentful-paint",
-              "score": 0.99,
+              "score": 0.98,
               "title": "First Contentful Paint"
             },
             {
@@ -846,7 +846,7 @@
             {
               "category": "performance",
               "id": "total-blocking-time",
-              "score": 0.86,
+              "score": 0.84,
               "title": "Total Blocking Time"
             },
             {
@@ -867,22 +867,22 @@
                 {
                   "cacheLifetimeMs": 600000,
                   "url": "https://mohdsaifhussain.github.io/assets/fonts/InstrumentSerif-Regular.woff2",
-                  "wastedBytes": 29902.583333333332
+                  "wastedBytes": 30094.166666666664
                 },
                 {
                   "cacheLifetimeMs": 600000,
                   "url": "https://mohdsaifhussain.github.io/assets/fonts/IBMPlexMono-SemiBold.woff2",
-                  "wastedBytes": 21305.166666666664
-                },
-                {
-                  "cacheLifetimeMs": 600000,
-                  "url": "https://mohdsaifhussain.github.io/assets/fonts/IBMPlexMono-Regular.woff2",
-                  "wastedBytes": 18706.416666666664
+                  "wastedBytes": 21346.416666666664
                 },
                 {
                   "cacheLifetimeMs": 600000,
                   "url": "https://mohdsaifhussain.github.io/assets/fonts/IBMPlexMono-Medium.woff2",
-                  "wastedBytes": 18555.166666666664
+                  "wastedBytes": 18554.25
+                },
+                {
+                  "cacheLifetimeMs": 600000,
+                  "url": "https://mohdsaifhussain.github.io/assets/fonts/IBMPlexMono-Regular.woff2",
+                  "wastedBytes": 18514.833333333332
                 }
               ],
               "score": 0,
@@ -899,11 +899,11 @@
               "id": "render-blocking-insight",
               "items": [
                 {
-                  "totalBytes": 4521,
+                  "totalBytes": 4527,
                   "url": "https://mohdsaifhussain.github.io/css/site.css"
                 },
                 {
-                  "totalBytes": 1305,
+                  "totalBytes": 1289,
                   "url": "https://mohdsaifhussain.github.io/js/theme-init.js"
                 }
               ],
@@ -912,14 +912,8 @@
             },
             {
               "category": "performance",
-              "id": "interactive",
-              "score": 0.99,
-              "title": "Time to Interactive"
-            },
-            {
-              "category": "performance",
               "id": "max-potential-fid",
-              "score": 0.23,
+              "score": 0.36,
               "title": "Max Potential First Input Delay"
             },
             {
@@ -944,9 +938,9 @@
                     "max-age": 600,
                     "type": "debugdata"
                   },
-                  "totalBytes": 32621,
+                  "totalBytes": 32830,
                   "url": "https://mohdsaifhussain.github.io/assets/fonts/InstrumentSerif-Regular.woff2",
-                  "wastedBytes": 29902.583333333332
+                  "wastedBytes": 30094.166666666664
                 },
                 {
                   "cacheHitProbability": 0.08333333333333333,
@@ -955,9 +949,9 @@
                     "max-age": 600,
                     "type": "debugdata"
                   },
-                  "totalBytes": 23242,
+                  "totalBytes": 23287,
                   "url": "https://mohdsaifhussain.github.io/assets/fonts/IBMPlexMono-SemiBold.woff2",
-                  "wastedBytes": 21305.166666666664
+                  "wastedBytes": 21346.416666666664
                 },
                 {
                   "cacheHitProbability": 0.08333333333333333,
@@ -966,811 +960,293 @@
                     "max-age": 600,
                     "type": "debugdata"
                   },
-                  "totalBytes": 20407,
-                  "url": "https://mohdsaifhussain.github.io/assets/fonts/IBMPlexMono-Regular.woff2",
-                  "wastedBytes": 18706.416666666664
-                },
-                {
-                  "cacheHitProbability": 0.08333333333333333,
-                  "cacheLifetimeMs": 600000,
-                  "debugData": {
-                    "max-age": 600,
-                    "type": "debugdata"
-                  },
-                  "totalBytes": 20242,
+                  "totalBytes": 20241,
                   "url": "https://mohdsaifhussain.github.io/assets/fonts/IBMPlexMono-Medium.woff2",
-                  "wastedBytes": 18555.166666666664
+                  "wastedBytes": 18554.25
+                },
+                {
+                  "cacheHitProbability": 0.08333333333333333,
+                  "cacheLifetimeMs": 600000,
+                  "debugData": {
+                    "max-age": 600,
+                    "type": "debugdata"
+                  },
+                  "totalBytes": 20198,
+                  "url": "https://mohdsaifhussain.github.io/assets/fonts/IBMPlexMono-Regular.woff2",
+                  "wastedBytes": 18514.833333333332
                 }
               ],
               "score": 0.5,
               "title": "Serve static assets with an efficient cache policy"
-            },
-            {
-              "category": "accessibility",
-              "id": "target-size",
-              "items": [
-                {
-                  "node": {
-                    "boundingRect": {
-                      "bottom": 1909,
-                      "height": 12,
-                      "left": 20,
-                      "right": 63,
-                      "top": 1897,
-                      "width": 43
-                    },
-                    "explanation": "Fix any of the following:\n  Target has insufficient size (43.2px by 12px, should be at least 24px by 24px)\n  Target has insufficient space to its closest neighbors. Safe clickable space has a diameter of 20.6px instead of at least 24px.",
-                    "lhId": "1-0-A",
-                    "nodeLabel": "REPO \u2197",
-                    "path": "1,HTML,1,BODY,2,MAIN,1,SECTION,4,ARTICLE,3,DIV,0,A",
-                    "selector": "section.section > article.ledger-row > div.ledger-links > a.mono-link",
-                    "snippet": "<a class=\"mono-link\" href=\"https://github.com/MohdSaifHussain/finding-bridge\" rel=\"noopener noreferrer\">",
-                    "type": "node"
-                  },
-                  "subItems": {
-                    "items": [
-                      {
-                        "relatedNode": {
-                          "boundingRect": {
-                            "bottom": 1931,
-                            "height": 12,
-                            "left": 20,
-                            "right": 70,
-                            "top": 1919,
-                            "width": 50
-                          },
-                          "lhId": "1-1-A",
-                          "nodeLabel": "USAGE \u2197",
-                          "path": "1,HTML,1,BODY,2,MAIN,1,SECTION,4,ARTICLE,3,DIV,4,A",
-                          "selector": "section.section > article.ledger-row > div.ledger-links > a.mono-link",
-                          "snippet": "<a class=\"mono-link\" href=\"https://github.com/MohdSaifHussain/finding-bridge/blob/master/docs/USAGE.md\" rel=\"noopener noreferrer\">",
-                          "type": "node"
-                        }
-                      }
-                    ],
-                    "type": "subitems"
-                  }
-                },
-                {
-                  "node": {
-                    "boundingRect": {
-                      "bottom": 1931,
-                      "height": 12,
-                      "left": 20,
-                      "right": 70,
-                      "top": 1919,
-                      "width": 50
-                    },
-                    "explanation": "Fix any of the following:\n  Target has insufficient size (50.4px by 12px, should be at least 24px by 24px)\n  Target has insufficient space to its closest neighbors. Safe clickable space has a diameter of 20.6px instead of at least 24px.",
-                    "lhId": "1-1-A",
-                    "nodeLabel": "USAGE \u2197",
-                    "path": "1,HTML,1,BODY,2,MAIN,1,SECTION,4,ARTICLE,3,DIV,4,A",
-                    "selector": "section.section > article.ledger-row > div.ledger-links > a.mono-link",
-                    "snippet": "<a class=\"mono-link\" href=\"https://github.com/MohdSaifHussain/finding-bridge/blob/master/docs/USAGE.md\" rel=\"noopener noreferrer\">",
-                    "type": "node"
-                  },
-                  "subItems": {
-                    "items": [
-                      {
-                        "relatedNode": {
-                          "boundingRect": {
-                            "bottom": 1909,
-                            "height": 12,
-                            "left": 20,
-                            "right": 63,
-                            "top": 1897,
-                            "width": 43
-                          },
-                          "lhId": "1-0-A",
-                          "nodeLabel": "REPO \u2197",
-                          "path": "1,HTML,1,BODY,2,MAIN,1,SECTION,4,ARTICLE,3,DIV,0,A",
-                          "selector": "section.section > article.ledger-row > div.ledger-links > a.mono-link",
-                          "snippet": "<a class=\"mono-link\" href=\"https://github.com/MohdSaifHussain/finding-bridge\" rel=\"noopener noreferrer\">",
-                          "type": "node"
-                        }
-                      }
-                    ],
-                    "type": "subitems"
-                  }
-                }
-              ],
-              "score": 0,
-              "title": "Touch targets do not have sufficient size or spacing."
             }
           ],
-          "lcp_ms": 1909.78,
-          "performance": 95,
+          "lcp_ms": 1856.383,
+          "performance": 94,
           "profile": "mobile",
           "seo": 100,
-          "tbt_ms": 234.9999999999999,
-          "transfer_bytes": 148031,
+          "tbt_ms": 248,
+          "transfer_bytes": 148057,
           "url": "https://mohdsaifhussain.github.io/"
         },
         {
-          "accessibility": 95,
+          "accessibility": 100,
           "best-practices": 100,
           "cls": 0,
-          "failed_audits": [
-            {
-              "category": "accessibility",
-              "id": "target-size",
-              "items": [
-                {
-                  "node": {
-                    "boundingRect": {
-                      "bottom": 1932,
-                      "height": 12,
-                      "left": 20,
-                      "right": 63,
-                      "top": 1920,
-                      "width": 43
-                    },
-                    "explanation": "Fix any of the following:\n  Target has insufficient size (43.4px by 12px, should be at least 24px by 24px)\n  Target has insufficient space to its closest neighbors. Safe clickable space has a diameter of 20.6px instead of at least 24px.",
-                    "lhId": "1-0-A",
-                    "nodeLabel": "REPO \u2197",
-                    "path": "1,HTML,1,BODY,2,MAIN,1,SECTION,4,ARTICLE,3,DIV,0,A",
-                    "selector": "section.section > article.ledger-row > div.ledger-links > a.mono-link",
-                    "snippet": "<a class=\"mono-link\" href=\"https://github.com/MohdSaifHussain/finding-bridge\" rel=\"noopener noreferrer\">",
-                    "type": "node"
-                  },
-                  "subItems": {
-                    "items": [
-                      {
-                        "relatedNode": {
-                          "boundingRect": {
-                            "bottom": 1954,
-                            "height": 12,
-                            "left": 20,
-                            "right": 71,
-                            "top": 1942,
-                            "width": 51
-                          },
-                          "lhId": "1-1-A",
-                          "nodeLabel": "USAGE \u2197",
-                          "path": "1,HTML,1,BODY,2,MAIN,1,SECTION,4,ARTICLE,3,DIV,4,A",
-                          "selector": "section.section > article.ledger-row > div.ledger-links > a.mono-link",
-                          "snippet": "<a class=\"mono-link\" href=\"https://github.com/MohdSaifHussain/finding-bridge/blob/master/docs/USAGE.md\" rel=\"noopener noreferrer\">",
-                          "type": "node"
-                        }
-                      }
-                    ],
-                    "type": "subitems"
-                  }
-                },
-                {
-                  "node": {
-                    "boundingRect": {
-                      "bottom": 1954,
-                      "height": 12,
-                      "left": 20,
-                      "right": 71,
-                      "top": 1942,
-                      "width": 51
-                    },
-                    "explanation": "Fix any of the following:\n  Target has insufficient size (50.6px by 12px, should be at least 24px by 24px)\n  Target has insufficient space to its closest neighbors. Safe clickable space has a diameter of 20.6px instead of at least 24px.",
-                    "lhId": "1-1-A",
-                    "nodeLabel": "USAGE \u2197",
-                    "path": "1,HTML,1,BODY,2,MAIN,1,SECTION,4,ARTICLE,3,DIV,4,A",
-                    "selector": "section.section > article.ledger-row > div.ledger-links > a.mono-link",
-                    "snippet": "<a class=\"mono-link\" href=\"https://github.com/MohdSaifHussain/finding-bridge/blob/master/docs/USAGE.md\" rel=\"noopener noreferrer\">",
-                    "type": "node"
-                  },
-                  "subItems": {
-                    "items": [
-                      {
-                        "relatedNode": {
-                          "boundingRect": {
-                            "bottom": 1932,
-                            "height": 12,
-                            "left": 20,
-                            "right": 63,
-                            "top": 1920,
-                            "width": 43
-                          },
-                          "lhId": "1-0-A",
-                          "nodeLabel": "REPO \u2197",
-                          "path": "1,HTML,1,BODY,2,MAIN,1,SECTION,4,ARTICLE,3,DIV,0,A",
-                          "selector": "section.section > article.ledger-row > div.ledger-links > a.mono-link",
-                          "snippet": "<a class=\"mono-link\" href=\"https://github.com/MohdSaifHussain/finding-bridge\" rel=\"noopener noreferrer\">",
-                          "type": "node"
-                        }
-                      }
-                    ],
-                    "type": "subitems"
-                  }
-                }
-              ],
-              "score": 0,
-              "title": "Touch targets do not have sufficient size or spacing."
-            }
-          ],
-          "lcp_ms": 1218.2559999999999,
+          "lcp_ms": 1219.995,
           "performance": 100,
           "profile": "mobile",
           "seo": 100,
           "tbt_ms": 0,
-          "transfer_bytes": 148143,
+          "transfer_bytes": 148100,
           "url": "https://mohdsaifhussain.github.io/"
         },
         {
-          "accessibility": 95,
+          "accessibility": 100,
           "best-practices": 100,
           "cls": 0,
-          "failed_audits": [
-            {
-              "category": "accessibility",
-              "id": "target-size",
-              "items": [
-                {
-                  "node": {
-                    "boundingRect": {
-                      "bottom": 1932,
-                      "height": 12,
-                      "left": 20,
-                      "right": 63,
-                      "top": 1920,
-                      "width": 43
-                    },
-                    "explanation": "Fix any of the following:\n  Target has insufficient size (43.4px by 12px, should be at least 24px by 24px)\n  Target has insufficient space to its closest neighbors. Safe clickable space has a diameter of 20.6px instead of at least 24px.",
-                    "lhId": "1-0-A",
-                    "nodeLabel": "REPO \u2197",
-                    "path": "1,HTML,1,BODY,2,MAIN,1,SECTION,4,ARTICLE,3,DIV,0,A",
-                    "selector": "section.section > article.ledger-row > div.ledger-links > a.mono-link",
-                    "snippet": "<a class=\"mono-link\" href=\"https://github.com/MohdSaifHussain/finding-bridge\" rel=\"noopener noreferrer\">",
-                    "type": "node"
-                  },
-                  "subItems": {
-                    "items": [
-                      {
-                        "relatedNode": {
-                          "boundingRect": {
-                            "bottom": 1954,
-                            "height": 12,
-                            "left": 20,
-                            "right": 71,
-                            "top": 1942,
-                            "width": 51
-                          },
-                          "lhId": "1-1-A",
-                          "nodeLabel": "USAGE \u2197",
-                          "path": "1,HTML,1,BODY,2,MAIN,1,SECTION,4,ARTICLE,3,DIV,4,A",
-                          "selector": "section.section > article.ledger-row > div.ledger-links > a.mono-link",
-                          "snippet": "<a class=\"mono-link\" href=\"https://github.com/MohdSaifHussain/finding-bridge/blob/master/docs/USAGE.md\" rel=\"noopener noreferrer\">",
-                          "type": "node"
-                        }
-                      }
-                    ],
-                    "type": "subitems"
-                  }
-                },
-                {
-                  "node": {
-                    "boundingRect": {
-                      "bottom": 1954,
-                      "height": 12,
-                      "left": 20,
-                      "right": 71,
-                      "top": 1942,
-                      "width": 51
-                    },
-                    "explanation": "Fix any of the following:\n  Target has insufficient size (50.6px by 12px, should be at least 24px by 24px)\n  Target has insufficient space to its closest neighbors. Safe clickable space has a diameter of 20.6px instead of at least 24px.",
-                    "lhId": "1-1-A",
-                    "nodeLabel": "USAGE \u2197",
-                    "path": "1,HTML,1,BODY,2,MAIN,1,SECTION,4,ARTICLE,3,DIV,4,A",
-                    "selector": "section.section > article.ledger-row > div.ledger-links > a.mono-link",
-                    "snippet": "<a class=\"mono-link\" href=\"https://github.com/MohdSaifHussain/finding-bridge/blob/master/docs/USAGE.md\" rel=\"noopener noreferrer\">",
-                    "type": "node"
-                  },
-                  "subItems": {
-                    "items": [
-                      {
-                        "relatedNode": {
-                          "boundingRect": {
-                            "bottom": 1932,
-                            "height": 12,
-                            "left": 20,
-                            "right": 63,
-                            "top": 1920,
-                            "width": 43
-                          },
-                          "lhId": "1-0-A",
-                          "nodeLabel": "REPO \u2197",
-                          "path": "1,HTML,1,BODY,2,MAIN,1,SECTION,4,ARTICLE,3,DIV,0,A",
-                          "selector": "section.section > article.ledger-row > div.ledger-links > a.mono-link",
-                          "snippet": "<a class=\"mono-link\" href=\"https://github.com/MohdSaifHussain/finding-bridge\" rel=\"noopener noreferrer\">",
-                          "type": "node"
-                        }
-                      }
-                    ],
-                    "type": "subitems"
-                  }
-                }
-              ],
-              "score": 0,
-              "title": "Touch targets do not have sufficient size or spacing."
-            }
-          ],
-          "lcp_ms": 1237.762,
+          "lcp_ms": 1525.5819999999999,
           "performance": 100,
           "profile": "mobile",
           "seo": 100,
           "tbt_ms": 0,
-          "transfer_bytes": 148244,
+          "transfer_bytes": 148010,
           "url": "https://mohdsaifhussain.github.io/"
         },
         {
-          "accessibility": 96,
+          "accessibility": 100,
           "best-practices": 100,
           "cls": 0,
-          "failed_audits": [
-            {
-              "category": "performance",
-              "id": "first-contentful-paint",
-              "score": 0.97,
-              "title": "First Contentful Paint"
-            },
-            {
-              "category": "performance",
-              "id": "largest-contentful-paint",
-              "score": 0.99,
-              "title": "Largest Contentful Paint"
-            },
-            {
-              "category": "performance",
-              "id": "speed-index",
-              "score": 0.98,
-              "title": "Speed Index"
-            },
-            {
-              "category": "performance",
-              "id": "cache-insight",
-              "items": [
-                {
-                  "cacheLifetimeMs": 600000,
-                  "url": "https://mohdsaifhussain.github.io/assets/fonts/InstrumentSerif-Italic.woff2",
-                  "wastedBytes": 31152.916666666664
-                },
-                {
-                  "cacheLifetimeMs": 600000,
-                  "url": "https://mohdsaifhussain.github.io/assets/fonts/InstrumentSerif-Regular.woff2",
-                  "wastedBytes": 29986
-                },
-                {
-                  "cacheLifetimeMs": 600000,
-                  "url": "https://mohdsaifhussain.github.io/assets/fonts/IBMPlexMono-SemiBold.woff2",
-                  "wastedBytes": 21364.75
-                },
-                {
-                  "cacheLifetimeMs": 600000,
-                  "url": "https://mohdsaifhussain.github.io/assets/fonts/IBMPlexMono-Medium.woff2",
-                  "wastedBytes": 18601.916666666664
-                },
-                {
-                  "cacheLifetimeMs": 600000,
-                  "url": "https://mohdsaifhussain.github.io/assets/fonts/IBMPlexMono-Regular.woff2",
-                  "wastedBytes": 18583.583333333332
-                }
-              ],
-              "score": 0,
-              "title": "Use efficient cache lifetimes"
-            },
-            {
-              "category": "performance",
-              "id": "network-dependency-tree-insight",
-              "score": 0,
-              "title": "Network dependency tree"
-            },
-            {
-              "category": "performance",
-              "id": "render-blocking-insight",
-              "items": [
-                {
-                  "totalBytes": 1355,
-                  "url": "https://mohdsaifhussain.github.io/js/theme-init.js"
-                },
-                {
-                  "totalBytes": 4508,
-                  "url": "https://mohdsaifhussain.github.io/css/site.css"
-                }
-              ],
-              "score": 0.5,
-              "title": "Render blocking requests"
-            },
-            {
-              "category": "performance",
-              "id": "uses-long-cache-ttl",
-              "items": [
-                {
-                  "cacheHitProbability": 0.08333333333333333,
-                  "cacheLifetimeMs": 600000,
-                  "debugData": {
-                    "max-age": 600,
-                    "type": "debugdata"
-                  },
-                  "totalBytes": 33985,
-                  "url": "https://mohdsaifhussain.github.io/assets/fonts/InstrumentSerif-Italic.woff2",
-                  "wastedBytes": 31152.916666666664
-                },
-                {
-                  "cacheHitProbability": 0.08333333333333333,
-                  "cacheLifetimeMs": 600000,
-                  "debugData": {
-                    "max-age": 600,
-                    "type": "debugdata"
-                  },
-                  "totalBytes": 32712,
-                  "url": "https://mohdsaifhussain.github.io/assets/fonts/InstrumentSerif-Regular.woff2",
-                  "wastedBytes": 29986
-                },
-                {
-                  "cacheHitProbability": 0.08333333333333333,
-                  "cacheLifetimeMs": 600000,
-                  "debugData": {
-                    "max-age": 600,
-                    "type": "debugdata"
-                  },
-                  "totalBytes": 23307,
-                  "url": "https://mohdsaifhussain.github.io/assets/fonts/IBMPlexMono-SemiBold.woff2",
-                  "wastedBytes": 21364.75
-                },
-                {
-                  "cacheHitProbability": 0.08333333333333333,
-                  "cacheLifetimeMs": 600000,
-                  "debugData": {
-                    "max-age": 600,
-                    "type": "debugdata"
-                  },
-                  "totalBytes": 20293,
-                  "url": "https://mohdsaifhussain.github.io/assets/fonts/IBMPlexMono-Medium.woff2",
-                  "wastedBytes": 18601.916666666664
-                },
-                {
-                  "cacheHitProbability": 0.08333333333333333,
-                  "cacheLifetimeMs": 600000,
-                  "debugData": {
-                    "max-age": 600,
-                    "type": "debugdata"
-                  },
-                  "totalBytes": 20273,
-                  "url": "https://mohdsaifhussain.github.io/assets/fonts/IBMPlexMono-Regular.woff2",
-                  "wastedBytes": 18583.583333333332
-                }
-              ],
-              "score": 0.5,
-              "title": "Serve static assets with an efficient cache policy"
-            },
-            {
-              "category": "accessibility",
-              "id": "target-size",
-              "items": [
-                {
-                  "node": {
-                    "boundingRect": {
-                      "bottom": 1625,
-                      "height": 12,
-                      "left": 2362,
-                      "right": 2405,
-                      "top": 1613,
-                      "width": 43
-                    },
-                    "explanation": "Fix any of the following:\n  Target has insufficient size (43.2px by 12px, should be at least 24px by 24px)\n  Target has insufficient space to its closest neighbors. Safe clickable space has a diameter of 20.6px instead of at least 24px.",
-                    "lhId": "1-0-A",
-                    "nodeLabel": "REPO \u2197",
-                    "path": "1,HTML,1,BODY,2,MAIN,1,DIV,6,ARTICLE,4,DIV,1,DIV,0,A",
-                    "selector": "article.card > div.card-foot > div.card-links > a.mono-link",
-                    "snippet": "<a class=\"mono-link\" href=\"https://github.com/MohdSaifHussain/finding-bridge\" rel=\"noopener noreferrer\">",
-                    "type": "node"
-                  },
-                  "subItems": {
-                    "items": [
-                      {
-                        "relatedNode": {
-                          "boundingRect": {
-                            "bottom": 1647,
-                            "height": 12,
-                            "left": 2362,
-                            "right": 2412,
-                            "top": 1635,
-                            "width": 50
-                          },
-                          "lhId": "1-1-A",
-                          "nodeLabel": "USAGE \u2197",
-                          "path": "1,HTML,1,BODY,2,MAIN,1,DIV,6,ARTICLE,4,DIV,1,DIV,4,A",
-                          "selector": "article.card > div.card-foot > div.card-links > a.mono-link",
-                          "snippet": "<a class=\"mono-link\" href=\"https://github.com/MohdSaifHussain/finding-bridge/blob/master/docs/USAGE.md\" rel=\"noopener noreferrer\">",
-                          "type": "node"
-                        }
-                      }
-                    ],
-                    "type": "subitems"
-                  }
-                },
-                {
-                  "node": {
-                    "boundingRect": {
-                      "bottom": 1647,
-                      "height": 12,
-                      "left": 2362,
-                      "right": 2412,
-                      "top": 1635,
-                      "width": 50
-                    },
-                    "explanation": "Fix any of the following:\n  Target has insufficient size (50.4px by 12px, should be at least 24px by 24px)\n  Target has insufficient space to its closest neighbors. Safe clickable space has a diameter of 20.6px instead of at least 24px.",
-                    "lhId": "1-1-A",
-                    "nodeLabel": "USAGE \u2197",
-                    "path": "1,HTML,1,BODY,2,MAIN,1,DIV,6,ARTICLE,4,DIV,1,DIV,4,A",
-                    "selector": "article.card > div.card-foot > div.card-links > a.mono-link",
-                    "snippet": "<a class=\"mono-link\" href=\"https://github.com/MohdSaifHussain/finding-bridge/blob/master/docs/USAGE.md\" rel=\"noopener noreferrer\">",
-                    "type": "node"
-                  },
-                  "subItems": {
-                    "items": [
-                      {
-                        "relatedNode": {
-                          "boundingRect": {
-                            "bottom": 1625,
-                            "height": 12,
-                            "left": 2362,
-                            "right": 2405,
-                            "top": 1613,
-                            "width": 43
-                          },
-                          "lhId": "1-0-A",
-                          "nodeLabel": "REPO \u2197",
-                          "path": "1,HTML,1,BODY,2,MAIN,1,DIV,6,ARTICLE,4,DIV,1,DIV,0,A",
-                          "selector": "article.card > div.card-foot > div.card-links > a.mono-link",
-                          "snippet": "<a class=\"mono-link\" href=\"https://github.com/MohdSaifHussain/finding-bridge\" rel=\"noopener noreferrer\">",
-                          "type": "node"
-                        }
-                      }
-                    ],
-                    "type": "subitems"
-                  }
-                }
-              ],
-              "score": 0,
-              "title": "Touch targets do not have sufficient size or spacing."
-            }
-          ],
-          "lcp_ms": 1713.339,
-          "performance": 99,
-          "profile": "mobile",
-          "seo": 100,
-          "tbt_ms": 0,
-          "transfer_bytes": 147607,
-          "url": "https://mohdsaifhussain.github.io/projects/"
-        },
-        {
-          "accessibility": 96,
-          "best-practices": 100,
-          "cls": 0,
-          "failed_audits": [
-            {
-              "category": "accessibility",
-              "id": "target-size",
-              "items": [
-                {
-                  "node": {
-                    "boundingRect": {
-                      "bottom": 1647,
-                      "height": 12,
-                      "left": 2362,
-                      "right": 2405,
-                      "top": 1635,
-                      "width": 43
-                    },
-                    "explanation": "Fix any of the following:\n  Target has insufficient size (43.4px by 12px, should be at least 24px by 24px)\n  Target has insufficient space to its closest neighbors. Safe clickable space has a diameter of 20.6px instead of at least 24px.",
-                    "lhId": "1-0-A",
-                    "nodeLabel": "REPO \u2197",
-                    "path": "1,HTML,1,BODY,2,MAIN,1,DIV,6,ARTICLE,4,DIV,1,DIV,0,A",
-                    "selector": "article.card > div.card-foot > div.card-links > a.mono-link",
-                    "snippet": "<a class=\"mono-link\" href=\"https://github.com/MohdSaifHussain/finding-bridge\" rel=\"noopener noreferrer\">",
-                    "type": "node"
-                  },
-                  "subItems": {
-                    "items": [
-                      {
-                        "relatedNode": {
-                          "boundingRect": {
-                            "bottom": 1669,
-                            "height": 12,
-                            "left": 2362,
-                            "right": 2412,
-                            "top": 1657,
-                            "width": 51
-                          },
-                          "lhId": "1-1-A",
-                          "nodeLabel": "USAGE \u2197",
-                          "path": "1,HTML,1,BODY,2,MAIN,1,DIV,6,ARTICLE,4,DIV,1,DIV,4,A",
-                          "selector": "article.card > div.card-foot > div.card-links > a.mono-link",
-                          "snippet": "<a class=\"mono-link\" href=\"https://github.com/MohdSaifHussain/finding-bridge/blob/master/docs/USAGE.md\" rel=\"noopener noreferrer\">",
-                          "type": "node"
-                        }
-                      }
-                    ],
-                    "type": "subitems"
-                  }
-                },
-                {
-                  "node": {
-                    "boundingRect": {
-                      "bottom": 1669,
-                      "height": 12,
-                      "left": 2362,
-                      "right": 2412,
-                      "top": 1657,
-                      "width": 51
-                    },
-                    "explanation": "Fix any of the following:\n  Target has insufficient size (50.6px by 12px, should be at least 24px by 24px)\n  Target has insufficient space to its closest neighbors. Safe clickable space has a diameter of 20.6px instead of at least 24px.",
-                    "lhId": "1-1-A",
-                    "nodeLabel": "USAGE \u2197",
-                    "path": "1,HTML,1,BODY,2,MAIN,1,DIV,6,ARTICLE,4,DIV,1,DIV,4,A",
-                    "selector": "article.card > div.card-foot > div.card-links > a.mono-link",
-                    "snippet": "<a class=\"mono-link\" href=\"https://github.com/MohdSaifHussain/finding-bridge/blob/master/docs/USAGE.md\" rel=\"noopener noreferrer\">",
-                    "type": "node"
-                  },
-                  "subItems": {
-                    "items": [
-                      {
-                        "relatedNode": {
-                          "boundingRect": {
-                            "bottom": 1647,
-                            "height": 12,
-                            "left": 2362,
-                            "right": 2405,
-                            "top": 1635,
-                            "width": 43
-                          },
-                          "lhId": "1-0-A",
-                          "nodeLabel": "REPO \u2197",
-                          "path": "1,HTML,1,BODY,2,MAIN,1,DIV,6,ARTICLE,4,DIV,1,DIV,0,A",
-                          "selector": "article.card > div.card-foot > div.card-links > a.mono-link",
-                          "snippet": "<a class=\"mono-link\" href=\"https://github.com/MohdSaifHussain/finding-bridge\" rel=\"noopener noreferrer\">",
-                          "type": "node"
-                        }
-                      }
-                    ],
-                    "type": "subitems"
-                  }
-                }
-              ],
-              "score": 0,
-              "title": "Touch targets do not have sufficient size or spacing."
-            }
-          ],
-          "lcp_ms": 1247.949,
+          "lcp_ms": 1249.049,
           "performance": 100,
           "profile": "mobile",
           "seo": 100,
           "tbt_ms": 0,
-          "transfer_bytes": 147725,
-          "url": "https://mohdsaifhussain.github.io/projects/"
-        },
-        {
-          "accessibility": 96,
-          "best-practices": 100,
-          "cls": 0,
-          "failed_audits": [
-            {
-              "category": "accessibility",
-              "id": "target-size",
-              "items": [
-                {
-                  "node": {
-                    "boundingRect": {
-                      "bottom": 1647,
-                      "height": 12,
-                      "left": 2362,
-                      "right": 2405,
-                      "top": 1635,
-                      "width": 43
-                    },
-                    "explanation": "Fix any of the following:\n  Target has insufficient size (43.4px by 12px, should be at least 24px by 24px)\n  Target has insufficient space to its closest neighbors. Safe clickable space has a diameter of 20.6px instead of at least 24px.",
-                    "lhId": "1-0-A",
-                    "nodeLabel": "REPO \u2197",
-                    "path": "1,HTML,1,BODY,2,MAIN,1,DIV,6,ARTICLE,4,DIV,1,DIV,0,A",
-                    "selector": "article.card > div.card-foot > div.card-links > a.mono-link",
-                    "snippet": "<a class=\"mono-link\" href=\"https://github.com/MohdSaifHussain/finding-bridge\" rel=\"noopener noreferrer\">",
-                    "type": "node"
-                  },
-                  "subItems": {
-                    "items": [
-                      {
-                        "relatedNode": {
-                          "boundingRect": {
-                            "bottom": 1669,
-                            "height": 12,
-                            "left": 2362,
-                            "right": 2412,
-                            "top": 1657,
-                            "width": 51
-                          },
-                          "lhId": "1-1-A",
-                          "nodeLabel": "USAGE \u2197",
-                          "path": "1,HTML,1,BODY,2,MAIN,1,DIV,6,ARTICLE,4,DIV,1,DIV,4,A",
-                          "selector": "article.card > div.card-foot > div.card-links > a.mono-link",
-                          "snippet": "<a class=\"mono-link\" href=\"https://github.com/MohdSaifHussain/finding-bridge/blob/master/docs/USAGE.md\" rel=\"noopener noreferrer\">",
-                          "type": "node"
-                        }
-                      }
-                    ],
-                    "type": "subitems"
-                  }
-                },
-                {
-                  "node": {
-                    "boundingRect": {
-                      "bottom": 1669,
-                      "height": 12,
-                      "left": 2362,
-                      "right": 2412,
-                      "top": 1657,
-                      "width": 51
-                    },
-                    "explanation": "Fix any of the following:\n  Target has insufficient size (50.6px by 12px, should be at least 24px by 24px)\n  Target has insufficient space to its closest neighbors. Safe clickable space has a diameter of 20.6px instead of at least 24px.",
-                    "lhId": "1-1-A",
-                    "nodeLabel": "USAGE \u2197",
-                    "path": "1,HTML,1,BODY,2,MAIN,1,DIV,6,ARTICLE,4,DIV,1,DIV,4,A",
-                    "selector": "article.card > div.card-foot > div.card-links > a.mono-link",
-                    "snippet": "<a class=\"mono-link\" href=\"https://github.com/MohdSaifHussain/finding-bridge/blob/master/docs/USAGE.md\" rel=\"noopener noreferrer\">",
-                    "type": "node"
-                  },
-                  "subItems": {
-                    "items": [
-                      {
-                        "relatedNode": {
-                          "boundingRect": {
-                            "bottom": 1647,
-                            "height": 12,
-                            "left": 2362,
-                            "right": 2405,
-                            "top": 1635,
-                            "width": 43
-                          },
-                          "lhId": "1-0-A",
-                          "nodeLabel": "REPO \u2197",
-                          "path": "1,HTML,1,BODY,2,MAIN,1,DIV,6,ARTICLE,4,DIV,1,DIV,0,A",
-                          "selector": "article.card > div.card-foot > div.card-links > a.mono-link",
-                          "snippet": "<a class=\"mono-link\" href=\"https://github.com/MohdSaifHussain/finding-bridge\" rel=\"noopener noreferrer\">",
-                          "type": "node"
-                        }
-                      }
-                    ],
-                    "type": "subitems"
-                  }
-                }
-              ],
-              "score": 0,
-              "title": "Touch targets do not have sufficient size or spacing."
-            }
-          ],
-          "lcp_ms": 1240.357,
-          "performance": 100,
-          "profile": "mobile",
-          "seo": 100,
-          "tbt_ms": 0,
-          "transfer_bytes": 147563,
+          "transfer_bytes": 147655,
           "url": "https://mohdsaifhussain.github.io/projects/"
         },
         {
           "accessibility": 100,
           "best-practices": 100,
           "cls": 0,
-          "lcp_ms": 1200.124,
+          "lcp_ms": 1201.954,
           "performance": 100,
           "profile": "mobile",
           "seo": 100,
           "tbt_ms": 0,
-          "transfer_bytes": 110766,
+          "transfer_bytes": 147623,
+          "url": "https://mohdsaifhussain.github.io/projects/"
+        },
+        {
+          "accessibility": 100,
+          "best-practices": 100,
+          "cls": 0,
+          "lcp_ms": 1204.491,
+          "performance": 100,
+          "profile": "mobile",
+          "seo": 100,
+          "tbt_ms": 0,
+          "transfer_bytes": 147582,
+          "url": "https://mohdsaifhussain.github.io/projects/"
+        },
+        {
+          "accessibility": 100,
+          "best-practices": 100,
+          "cls": 0,
+          "lcp_ms": 1202.1955,
+          "performance": 100,
+          "profile": "mobile",
+          "seo": 100,
+          "tbt_ms": 0,
+          "transfer_bytes": 110761,
           "url": "https://mohdsaifhussain.github.io/experience/"
         },
         {
           "accessibility": 100,
           "best-practices": 100,
           "cls": 0,
-          "lcp_ms": 1249.5765000000001,
+          "lcp_ms": 1247.0320000000002,
           "performance": 100,
           "profile": "mobile",
+          "seo": 100,
+          "tbt_ms": 0,
+          "transfer_bytes": 110783,
+          "url": "https://mohdsaifhussain.github.io/experience/"
+        },
+        {
+          "accessibility": 100,
+          "best-practices": 100,
+          "cls": 0,
+          "lcp_ms": 1201.3055,
+          "performance": 100,
+          "profile": "mobile",
+          "seo": 100,
+          "tbt_ms": 0,
+          "transfer_bytes": 110737,
+          "url": "https://mohdsaifhussain.github.io/experience/"
+        },
+        {
+          "accessibility": 100,
+          "best-practices": 100,
+          "cls": 0,
+          "lcp_ms": 1204.191,
+          "performance": 100,
+          "profile": "mobile",
+          "seo": 100,
+          "tbt_ms": 0,
+          "transfer_bytes": 143265,
+          "url": "https://mohdsaifhussain.github.io/certifications/"
+        },
+        {
+          "accessibility": 100,
+          "best-practices": 100,
+          "cls": 0,
+          "lcp_ms": 1246.522,
+          "performance": 100,
+          "profile": "mobile",
+          "seo": 100,
+          "tbt_ms": 0,
+          "transfer_bytes": 143258,
+          "url": "https://mohdsaifhussain.github.io/certifications/"
+        },
+        {
+          "accessibility": 100,
+          "best-practices": 100,
+          "cls": 0,
+          "lcp_ms": 1203.6660000000002,
+          "performance": 100,
+          "profile": "mobile",
+          "seo": 100,
+          "tbt_ms": 0,
+          "transfer_bytes": 143281,
+          "url": "https://mohdsaifhussain.github.io/certifications/"
+        },
+        {
+          "accessibility": 100,
+          "best-practices": 100,
+          "cls": 0,
+          "lcp_ms": 1201.6025,
+          "performance": 100,
+          "profile": "mobile",
+          "seo": 100,
+          "tbt_ms": 0,
+          "transfer_bytes": 115584,
+          "url": "https://mohdsaifhussain.github.io/audit/"
+        },
+        {
+          "accessibility": 100,
+          "best-practices": 100,
+          "cls": 0,
+          "lcp_ms": 1200.897,
+          "performance": 100,
+          "profile": "mobile",
+          "seo": 100,
+          "tbt_ms": 0,
+          "transfer_bytes": 115648,
+          "url": "https://mohdsaifhussain.github.io/audit/"
+        },
+        {
+          "accessibility": 100,
+          "best-practices": 100,
+          "cls": 0,
+          "lcp_ms": 1202.201,
+          "performance": 100,
+          "profile": "mobile",
+          "seo": 100,
+          "tbt_ms": 0,
+          "transfer_bytes": 115588,
+          "url": "https://mohdsaifhussain.github.io/audit/"
+        },
+        {
+          "accessibility": 100,
+          "best-practices": 100,
+          "cls": 0,
+          "lcp_ms": 297.88,
+          "performance": 100,
+          "profile": "desktop",
+          "seo": 100,
+          "tbt_ms": 0,
+          "transfer_bytes": 148240,
+          "url": "https://mohdsaifhussain.github.io/"
+        },
+        {
+          "accessibility": 100,
+          "best-practices": 100,
+          "cls": 0,
+          "lcp_ms": 327.552,
+          "performance": 100,
+          "profile": "desktop",
+          "seo": 100,
+          "tbt_ms": 0,
+          "transfer_bytes": 148254,
+          "url": "https://mohdsaifhussain.github.io/"
+        },
+        {
+          "accessibility": 100,
+          "best-practices": 100,
+          "cls": 0,
+          "lcp_ms": 328.788,
+          "performance": 100,
+          "profile": "desktop",
+          "seo": 100,
+          "tbt_ms": 0,
+          "transfer_bytes": 148087,
+          "url": "https://mohdsaifhussain.github.io/"
+        },
+        {
+          "accessibility": 100,
+          "best-practices": 100,
+          "cls": 0,
+          "lcp_ms": 281.848,
+          "performance": 100,
+          "profile": "desktop",
+          "seo": 100,
+          "tbt_ms": 0,
+          "transfer_bytes": 147665,
+          "url": "https://mohdsaifhussain.github.io/projects/"
+        },
+        {
+          "accessibility": 100,
+          "best-practices": 100,
+          "cls": 0,
+          "lcp_ms": 321.89,
+          "performance": 100,
+          "profile": "desktop",
+          "seo": 100,
+          "tbt_ms": 0,
+          "transfer_bytes": 147632,
+          "url": "https://mohdsaifhussain.github.io/projects/"
+        },
+        {
+          "accessibility": 100,
+          "best-practices": 100,
+          "cls": 0,
+          "lcp_ms": 281.76,
+          "performance": 100,
+          "profile": "desktop",
+          "seo": 100,
+          "tbt_ms": 0,
+          "transfer_bytes": 147628,
+          "url": "https://mohdsaifhussain.github.io/projects/"
+        },
+        {
+          "accessibility": 100,
+          "best-practices": 100,
+          "cls": 0,
+          "lcp_ms": 322.2415,
+          "performance": 100,
+          "profile": "desktop",
+          "seo": 100,
+          "tbt_ms": 0,
+          "transfer_bytes": 110744,
+          "url": "https://mohdsaifhussain.github.io/experience/"
+        },
+        {
+          "accessibility": 100,
+          "best-practices": 100,
+          "cls": 0,
+          "lcp_ms": 281.41949999999997,
+          "performance": 100,
+          "profile": "desktop",
           "seo": 100,
           "tbt_ms": 0,
           "transfer_bytes": 110755,
@@ -1780,264 +1256,84 @@
           "accessibility": 100,
           "best-practices": 100,
           "cls": 0,
-          "lcp_ms": 1233.269,
+          "lcp_ms": 341.794,
           "performance": 100,
-          "profile": "mobile",
+          "profile": "desktop",
           "seo": 100,
           "tbt_ms": 0,
-          "transfer_bytes": 110712,
+          "transfer_bytes": 110751,
           "url": "https://mohdsaifhussain.github.io/experience/"
         },
         {
           "accessibility": 100,
           "best-practices": 100,
           "cls": 0,
-          "lcp_ms": 1206.441,
+          "lcp_ms": 323.172,
           "performance": 100,
-          "profile": "mobile",
+          "profile": "desktop",
           "seo": 100,
           "tbt_ms": 0,
-          "transfer_bytes": 143256,
+          "transfer_bytes": 143262,
           "url": "https://mohdsaifhussain.github.io/certifications/"
         },
         {
           "accessibility": 100,
           "best-practices": 100,
           "cls": 0,
-          "lcp_ms": 1201.757,
+          "lcp_ms": 321.295,
           "performance": 100,
-          "profile": "mobile",
+          "profile": "desktop",
           "seo": 100,
           "tbt_ms": 0,
-          "transfer_bytes": 143251,
+          "transfer_bytes": 143244,
           "url": "https://mohdsaifhussain.github.io/certifications/"
         },
         {
           "accessibility": 100,
           "best-practices": 100,
           "cls": 0,
-          "lcp_ms": 1202.098,
+          "lcp_ms": 367.173,
           "performance": 100,
-          "profile": "mobile",
+          "profile": "desktop",
           "seo": 100,
           "tbt_ms": 0,
-          "transfer_bytes": 143276,
+          "transfer_bytes": 143270,
           "url": "https://mohdsaifhussain.github.io/certifications/"
         },
         {
           "accessibility": 100,
           "best-practices": 100,
           "cls": 0,
-          "lcp_ms": 1203.2145,
+          "lcp_ms": 282.664,
           "performance": 100,
-          "profile": "mobile",
+          "profile": "desktop",
           "seo": 100,
           "tbt_ms": 0,
-          "transfer_bytes": 115593,
+          "transfer_bytes": 115585,
           "url": "https://mohdsaifhussain.github.io/audit/"
         },
         {
           "accessibility": 100,
           "best-practices": 100,
           "cls": 0,
-          "lcp_ms": 1200.7314999999999,
+          "lcp_ms": 283.024,
           "performance": 100,
-          "profile": "mobile",
+          "profile": "desktop",
           "seo": 100,
           "tbt_ms": 0,
-          "transfer_bytes": 115569,
+          "transfer_bytes": 115579,
           "url": "https://mohdsaifhussain.github.io/audit/"
         },
         {
           "accessibility": 100,
           "best-practices": 100,
           "cls": 0,
-          "lcp_ms": 1201.3715,
-          "performance": 100,
-          "profile": "mobile",
-          "seo": 100,
-          "tbt_ms": 0,
-          "transfer_bytes": 115573,
-          "url": "https://mohdsaifhussain.github.io/audit/"
-        },
-        {
-          "accessibility": 100,
-          "best-practices": 100,
-          "cls": 0,
-          "lcp_ms": 282.005,
+          "lcp_ms": 281.4885,
           "performance": 100,
           "profile": "desktop",
           "seo": 100,
           "tbt_ms": 0,
-          "transfer_bytes": 148338,
-          "url": "https://mohdsaifhussain.github.io/"
-        },
-        {
-          "accessibility": 100,
-          "best-practices": 100,
-          "cls": 0,
-          "lcp_ms": 281.969,
-          "performance": 100,
-          "profile": "desktop",
-          "seo": 100,
-          "tbt_ms": 0,
-          "transfer_bytes": 148246,
-          "url": "https://mohdsaifhussain.github.io/"
-        },
-        {
-          "accessibility": 100,
-          "best-practices": 100,
-          "cls": 0,
-          "lcp_ms": 325.025,
-          "performance": 100,
-          "profile": "desktop",
-          "seo": 100,
-          "tbt_ms": 0,
-          "transfer_bytes": 148255,
-          "url": "https://mohdsaifhussain.github.io/"
-        },
-        {
-          "accessibility": 100,
-          "best-practices": 100,
-          "cls": 0,
-          "lcp_ms": 282.176,
-          "performance": 100,
-          "profile": "desktop",
-          "seo": 100,
-          "tbt_ms": 0,
-          "transfer_bytes": 147597,
-          "url": "https://mohdsaifhussain.github.io/projects/"
-        },
-        {
-          "accessibility": 100,
-          "best-practices": 100,
-          "cls": 0,
-          "lcp_ms": 282.39300000000003,
-          "performance": 100,
-          "profile": "desktop",
-          "seo": 100,
-          "tbt_ms": 0,
-          "transfer_bytes": 147602,
-          "url": "https://mohdsaifhussain.github.io/projects/"
-        },
-        {
-          "accessibility": 100,
-          "best-practices": 100,
-          "cls": 0,
-          "lcp_ms": 280.762,
-          "performance": 100,
-          "profile": "desktop",
-          "seo": 100,
-          "tbt_ms": 0,
-          "transfer_bytes": 147558,
-          "url": "https://mohdsaifhussain.github.io/projects/"
-        },
-        {
-          "accessibility": 100,
-          "best-practices": 100,
-          "cls": 0,
-          "lcp_ms": 280.2855,
-          "performance": 100,
-          "profile": "desktop",
-          "seo": 100,
-          "tbt_ms": 0,
-          "transfer_bytes": 110741,
-          "url": "https://mohdsaifhussain.github.io/experience/"
-        },
-        {
-          "accessibility": 100,
-          "best-practices": 100,
-          "cls": 0,
-          "lcp_ms": 295.1485,
-          "performance": 100,
-          "profile": "desktop",
-          "seo": 100,
-          "tbt_ms": 0,
-          "transfer_bytes": 110724,
-          "url": "https://mohdsaifhussain.github.io/experience/"
-        },
-        {
-          "accessibility": 100,
-          "best-practices": 100,
-          "cls": 0,
-          "lcp_ms": 281.6095,
-          "performance": 100,
-          "profile": "desktop",
-          "seo": 100,
-          "tbt_ms": 0,
-          "transfer_bytes": 110800,
-          "url": "https://mohdsaifhussain.github.io/experience/"
-        },
-        {
-          "accessibility": 100,
-          "best-practices": 100,
-          "cls": 0,
-          "lcp_ms": 321.765,
-          "performance": 100,
-          "profile": "desktop",
-          "seo": 100,
-          "tbt_ms": 0,
-          "transfer_bytes": 143223,
-          "url": "https://mohdsaifhussain.github.io/certifications/"
-        },
-        {
-          "accessibility": 100,
-          "best-practices": 100,
-          "cls": 0,
-          "lcp_ms": 321.668,
-          "performance": 100,
-          "profile": "desktop",
-          "seo": 100,
-          "tbt_ms": 0,
-          "transfer_bytes": 143251,
-          "url": "https://mohdsaifhussain.github.io/certifications/"
-        },
-        {
-          "accessibility": 100,
-          "best-practices": 100,
-          "cls": 0,
-          "lcp_ms": 321.384,
-          "performance": 100,
-          "profile": "desktop",
-          "seo": 100,
-          "tbt_ms": 0,
-          "transfer_bytes": 143233,
-          "url": "https://mohdsaifhussain.github.io/certifications/"
-        },
-        {
-          "accessibility": 100,
-          "best-practices": 100,
-          "cls": 0,
-          "lcp_ms": 306.31899999999996,
-          "performance": 100,
-          "profile": "desktop",
-          "seo": 100,
-          "tbt_ms": 0,
-          "transfer_bytes": 115569,
-          "url": "https://mohdsaifhussain.github.io/audit/"
-        },
-        {
-          "accessibility": 100,
-          "best-practices": 100,
-          "cls": 0,
-          "lcp_ms": 280.9765,
-          "performance": 100,
-          "profile": "desktop",
-          "seo": 100,
-          "tbt_ms": 0,
-          "transfer_bytes": 115595,
-          "url": "https://mohdsaifhussain.github.io/audit/"
-        },
-        {
-          "accessibility": 100,
-          "best-practices": 100,
-          "cls": 0,
-          "lcp_ms": 280.488,
-          "performance": 100,
-          "profile": "desktop",
-          "seo": 100,
-          "tbt_ms": 0,
-          "transfer_bytes": 115575,
+          "transfer_bytes": 115576,
           "url": "https://mohdsaifhussain.github.io/audit/"
         }
       ],
@@ -2045,7 +1341,7 @@
         3
       ],
       "worst": {
-        "accessibility": 95,
+        "accessibility": 100,
         "best-practices": 100,
         "performance": 100,
         "seo": 100
@@ -2058,8 +1354,8 @@
   },
   "gates": {
     "_generated": "Machine-written by tools/gate_status.py from real gate exit codes. NEVER hand-edited. A row with no producer is absent here and renders its declared basis on /audit, never a verification mark.",
-    "as_of": "2026-08-25T14:07:29Z",
-    "commit": "5aa8950a9eb7032abecbb25e658e7e8b926ad687",
+    "as_of": "2026-08-25T14:38:38Z",
+    "commit": "5fad68032748cb02687f0d4a22ac3f49f69c35a6",
     "results": {
       "anchored": {
         "conditions": "C-27, C-35",
@@ -2106,9 +1402,9 @@
     "axe": "0 violations",
     "cls": "0.000 (worst median)",
     "contrast": "dark: AA met; 7:1 met except --dim (5.78:1) \u00b7 light: AA met; 7:1 met except --dim (5.79:1)",
-    "lcp": "1.25 s (worst median)",
-    "lighthouse": "100 / 95 / 100 / 100",
-    "transfer": "148,255 B",
+    "lcp": "1.53 s (worst median)",
+    "lighthouse": "100 / 100 / 100 / 100",
+    "transfer": "148,240 B",
     "validator": "0 errors"
   },
   "measured_against": "https://mohdsaifhussain.github.io (published origin)"
