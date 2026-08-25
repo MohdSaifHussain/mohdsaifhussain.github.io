@@ -1,14 +1,15 @@
-# Auto-merge Dependabot PATCH and MINOR updates — and only ever those.
+# Auto-merge Dependabot PATCH and MINOR updates, and same-release pin
+# corrections that verify against the upstream tag. Nothing else.
 #
 # WHY AUTO-MERGE IS SAFE HERE, AND WHERE ITS BOUNDARY IS
 #
 # The usual objection to auto-merge is that nothing read the change. That is a
 # fair objection, and the answer here is not "we trust the ecosystem" — it is
 # that THE GATE WALL IS THE REVIEWER, and on this repository the wall is
-# unusually wide. Before anything reaches the site, CI must pass:
+# unusually wide. Before anything is PUBLISHED, `deploy.yml` must pass:
 #
-#   - the full test suite (65 tests, every gate with a negative AND a positive
-#     control, so a gate that refuses everything cannot pass);
+#   - the full test suite, every gate with a negative AND a positive control,
+#     so a gate that refuses everything cannot pass;
 #   - build.py, which REFUSES rather than publishing bad output — colour
 #     literals, unknown tokens, inline style or script, mark drift, unanchored
 #     figures, dangling asset references;
@@ -21,9 +22,12 @@
 #   - the above-fold check, which refuses if anything in the first-paint
 #     viewport starts hidden.
 #
-# A patch or minor bump that breaks any of that does not merge. A patch or minor
-# bump that breaks none of it has been checked more thoroughly than a human
-# skim would check it.
+# WHERE THE WALL STANDS, stated precisely (defect D-63 was a claim wider than
+# this): on a pull request only CodeQL runs. The wall above runs on `main`, in
+# the deploy this workflow dispatches after the merge, and the deploy job
+# publishes only if the build job passed. So a bump that breaks the wall lands
+# on `main` and does NOT reach the site, and the failed run is the signal. A
+# bump that breaks nothing has been checked more thoroughly than a human skim.
 #
 # THE BOUNDARY, stated plainly:
 #
@@ -31,22 +35,54 @@
 #     and the gate wall answers "did anything I already check change behaviour",
 #     not "is this the right dependency to be on". That second question is the
 #     owner's and stays the owner's.
+#   - A SHA-only bump (no semver update-type, the shape Dependabot produces for
+#     a pinned Action whose version comment did not change) merges ONLY when
+#     the new SHA is the commit the upstream tag named in the version comment
+#     resolves to, checked against the upstream repository by API here and
+#     now. That is a pin correction to the same release, and defect D-62 is
+#     why they occur: two pins carried the annotated-tag object's SHA rather
+#     than the commit's. Any SHA that does not resolve that way is HELD and
+#     the reason printed, because a moved SHA under an unchanged version is
+#     the supply-chain signal that pinning exists to surface.
 #   - The wall only covers what it measures. It does not read a diff for
 #     malicious code, and a supply-chain compromise that keeps every gate green
 #     would pass. This is a two-ecosystem repository with pinned, mainstream
 #     tooling and no runtime third-party resources (C-19), which is what makes
 #     that residual risk small enough to accept — not any property of the wall.
-#   - It merges. It does not deploy blind: main's own deploy runs the same wall
-#     again before publishing.
+#   - It merges. It does not deploy blind: `main`'s deploy runs the wall before
+#     publishing.
+#
+# WHY THIS WORKFLOW WAITS FOR CHECKS ITSELF rather than `gh pr merge --auto`:
+# `--auto` needs the repository's allow-auto-merge setting and a protected base
+# branch with required checks. Neither exists on this repository, so the
+# earlier version of this file could never have merged anything, and in fact
+# never reached its merge step (D-63). Polling the PR's own check runs, minus
+# this job, needs no repository setting and states exactly what it waited for.
+#
+# WHY IT DISPATCHES THE DEPLOY: a merge made with GITHUB_TOKEN does not create
+# `push` workflow runs (GitHub's rule against recursive workflows), so without
+# the dispatch a merged bump would never be built, gated, or published. The
+# same rule is why `measure-live.yml` and `refresh-stats.yml` dispatch it
+# (D-45, D-46), and `actions: write` is required for the dispatch (D-47).
+#
+# SECURITY: `pull_request_target` runs with write permissions against the BASE
+# repository, so nothing from the PR may reach the shell as code. This workflow
+# checks out nothing and executes nothing from the PR. The one PR-derived
+# string it reads, the version comment beside the pin, is fetched as data by
+# API, matched against a strict character class before use, and only ever
+# used as a path segment in a further API call.
 #
 # If any of those conditions stop being true, this file should be deleted rather
 # than adjusted.
 #
-# Refs, checked 2026-08-10 rather than recalled (doctrine rule 3):
+# Refs, checked 2026-08-25 rather than recalled (doctrine rule 3):
 #   dependabot/fetch-metadata  https://github.com/dependabot/fetch-metadata
-#   gh pr merge --auto         https://cli.github.com/manual/gh_pr_merge
 #   Automating Dependabot with Actions
 #   https://docs.github.com/en/code-security/dependabot/working-with-dependabot/automating-dependabot-with-github-actions
+#   Triggering a workflow from a workflow (GITHUB_TOKEN does not trigger push)
+#   https://docs.github.com/en/actions/using-workflows/triggering-a-workflow#triggering-a-workflow-from-a-workflow
+#   Git refs and tag objects (annotated tags peel to a commit)
+#   https://docs.github.com/en/rest/git/tags
 
 name: Dependabot auto-merge
 
@@ -55,6 +91,11 @@ on: pull_request_target
 permissions:
   contents: write
   pull-requests: write
+  actions: write
+
+concurrency:
+  group: dependabot-auto-merge-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
 
 jobs:
   auto-merge:
@@ -67,30 +108,138 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
-      # `gh pr merge --auto` queues the merge behind the branch protection
-      # checks rather than merging now, so the gate wall is what releases it.
-      # If the wall fails the PR simply stays open, which is the intended
-      # outcome and needs no handling here.
-      - name: Queue patch and minor updates behind the gate wall
-        if: |
-          steps.meta.outputs.update-type == 'version-update:semver-patch' ||
-          steps.meta.outputs.update-type == 'version-update:semver-minor'
+      - name: Decide, and say why
+        id: decide
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # Passed through the environment rather than interpolated into the
-          # script. `pull_request_target` runs with write permissions against
-          # the BASE repo, so nothing from the PR should ever reach the shell as
-          # code — this workflow reads no PR content and checks out nothing.
-          PR_URL: ${{ github.event.pull_request.html_url }}
+          # Every value below arrives through the environment, never
+          # interpolated into the script body.
+          REPO: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          UPDATE_TYPE: ${{ steps.meta.outputs.update-type }}
+          ECOSYSTEM: ${{ steps.meta.outputs.package-ecosystem }}
+          DEPS: ${{ steps.meta.outputs.dependency-names }}
+          NEW_VERSION: ${{ steps.meta.outputs.new-version }}
         run: |
-          gh pr merge --auto --squash "$PR_URL"
-          echo "queued: merges only if every gate passes"
+          set -euo pipefail
+          verdict=hold
+          reason="unclassified update; nothing merges without a stated reason"
 
-      - name: Say plainly when a major update is held
-        if: steps.meta.outputs.update-type == 'version-update:semver-major'
+          case "$UPDATE_TYPE" in
+            version-update:semver-patch|version-update:semver-minor)
+              verdict=merge
+              reason="$UPDATE_TYPE"
+              ;;
+            version-update:semver-major)
+              reason="MAJOR update held for the owner's review: $DEPS"
+              ;;
+            "")
+              if [ "$ECOSYSTEM" != "github_actions" ]; then
+                reason="no update-type and ecosystem is '$ECOSYSTEM'; only Actions pins are verified by tag"
+              elif ! printf '%s' "$NEW_VERSION" | grep -Eq '^[0-9a-f]{40}$'; then
+                reason="no update-type and new-version '$NEW_VERSION' is not a 40-hex commit SHA"
+              else
+                # Same-version SHA bump. Verify against upstream, one pin line
+                # at a time: every changed workflow line that pins one of the
+                # bumped dependencies at NEW_VERSION must carry a version
+                # comment whose upstream tag peels to exactly NEW_VERSION.
+                verified=0; failed=""
+                files=$(gh api "repos/$REPO/pulls/$PR_NUMBER/files" --paginate \
+                          -q '.[].filename' | grep -E '^\.github/workflows/[A-Za-z0-9._-]+\.ya?ml$' || true)
+                IFS=',' read -ra dep_list <<< "$DEPS"
+                for f in $files; do
+                  content=$(gh api "repos/$REPO/contents/$f?ref=$HEAD_SHA" \
+                              -H "Accept: application/vnd.github.raw+json")
+                  for dep in "${dep_list[@]}"; do
+                    dep=$(printf '%s' "$dep" | tr -d ' ')
+                    upstream=$(printf '%s' "$dep" | cut -d/ -f1,2)
+                    while IFS= read -r line; do
+                      [ -n "$line" ] || continue
+                      tag=$(printf '%s' "$line" | sed -nE 's/.*#[[:space:]]*(v?[0-9][0-9A-Za-z._-]*)[[:space:]]*$/\1/p')
+                      if [ -z "$tag" ]; then
+                        failed="$failed; $f: $dep pinned without a version comment"; continue
+                      fi
+                      obj=$(gh api "repos/$upstream/git/ref/tags/$tag" -q '.object.type + " " + .object.sha' 2>/dev/null || echo "missing -")
+                      type=${obj%% *}; sha=${obj##* }
+                      if [ "$type" = tag ]; then
+                        sha=$(gh api "repos/$upstream/git/tags/$sha" -q '.object.sha')
+                      fi
+                      if [ "$sha" = "$NEW_VERSION" ]; then
+                        verified=$((verified + 1))
+                        echo "verified: $upstream tag $tag -> $sha ($f)"
+                      else
+                        failed="$failed; $f: $upstream tag $tag resolves to '$sha', PR pins $NEW_VERSION"
+                      fi
+                    done <<< "$(printf '%s\n' "$content" | grep -F "$dep@$NEW_VERSION" || true)"
+                  done
+                done
+                if [ "$verified" -gt 0 ] && [ -z "$failed" ]; then
+                  verdict=merge
+                  reason="same-release pin correction: $verified line(s) verified against the upstream tag"
+                elif [ -z "$failed" ]; then
+                  reason="no changed pin line matched $DEPS@$NEW_VERSION; nothing to verify"
+                else
+                  reason="SHA does not verify against the upstream tag${failed}"
+                fi
+              fi
+              ;;
+          esac
+
+          echo "verdict=$verdict" >> "$GITHUB_OUTPUT"
+          echo "reason=$reason"   >> "$GITHUB_OUTPUT"
+          echo "$verdict: $reason"
+
+      - name: Wait for every other check on this PR
+        if: steps.decide.outputs.verdict == 'merge'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          SELF: ${{ github.job }}
         run: |
-          echo "MAJOR update held for the owner's review."
-          echo "  ${{ steps.meta.outputs.dependency-names }}:"
-          echo "  ${{ steps.meta.outputs.previous-version }} -> ${{ steps.meta.outputs.new-version }}"
+          set -euo pipefail
+          # 20 minutes, polled every 30 s. CodeQL on this repository takes
+          # about a minute; the cap is for a stuck runner, not a slow one.
+          for i in $(seq 1 40); do
+            runs=$(gh api "repos/$REPO/commits/$HEAD_SHA/check-runs" --paginate \
+                     -q ".check_runs[] | select(.name != \"$SELF\") | .status + \" \" + (.conclusion // \"-\") + \" \" + .name")
+            # Status and conclusion come FIRST because check names carry spaces
+            # ("Analyze (python)"); keyed on the name's position the loop never
+            # saw a completed check and waited out its cap. Caught by dry run.
+            total=$(printf '%s\n' "$runs" | grep -c . || true)
+            if [ "$total" -gt 0 ]; then
+              bad=$(printf '%s\n' "$runs" | awk '$1=="completed" && $2!="success" && $2!="skipped" && $2!="neutral"' || true)
+              if [ -n "$bad" ]; then
+                echo "held: a check failed"; printf '%s\n' "$bad"; exit 1
+              fi
+              pending=$(printf '%s\n' "$runs" | awk '$1!="completed"' | grep -c . || true)
+              if [ "$pending" -eq 0 ]; then
+                echo "every other check passed:"; printf '%s\n' "$runs"; exit 0
+              fi
+            fi
+            sleep 30
+          done
+          echo "held: checks did not complete within 20 minutes"; exit 1
+
+      - name: Merge, then dispatch the deploy that gates it
+        if: steps.decide.outputs.verdict == 'merge'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          REASON: ${{ steps.decide.outputs.reason }}
+        run: |
+          set -euo pipefail
+          gh pr merge --squash --delete-branch "$PR_URL"
+          echo "merged: $REASON"
+          gh workflow run deploy.yml --ref main
+          echo "deploy dispatched: the gate wall runs on main before anything publishes"
+
+      - name: Say plainly why an update is held
+        if: steps.decide.outputs.verdict != 'merge'
+        env:
+          REASON: ${{ steps.decide.outputs.reason }}
+        run: |
+          echo "HELD: $REASON"
           echo "The gate wall answers 'did behaviour change', not 'is this the"
           echo "right dependency to be on'. The second question is the owner's."

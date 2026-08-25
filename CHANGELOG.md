@@ -37,6 +37,13 @@ somewhere in this repository. Where a condition is unmet it says so.
 ### Fixed
 
 - `tools/fetch_stats.py` assumed every GitHub link was a repo root (CU-3).
+- The Dependabot auto-merge workflow had never executed and could not have
+  merged (no branch protection, no allow-auto-merge, no `update-type` on a
+  SHA-only bump). It now waits for the PR's checks itself, verifies a SHA-only
+  Actions bump against the upstream tag, merges, and dispatches the deploy
+  (D-63, 5.3.5).
+- Two `codeql-action` pins were the annotated-tag object's SHA rather than the
+  commit's; Dependabot's corrections (#2, #3) now merge on evidence (D-62).
 
 ### Measured
 

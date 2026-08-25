@@ -682,7 +682,9 @@ def test_scheduled_workflows_publish_what_they_commit():
     Ref: GitHub Actions docs, "Triggering a workflow from a workflow" and
     "Assigning permissions to jobs".
     """
-    for name in ("measure-live.yml", "refresh-stats.yml"):
+    # dependabot-auto-merge.yml joined the list 2026-08-25 (D-63): a merge made
+    # with GITHUB_TOKEN creates no push run, so it too must dispatch the deploy.
+    for name in ("measure-live.yml", "refresh-stats.yml", "dependabot-auto-merge.yml"):
         text = (ROOT / ".github/workflows" / name).read_text(encoding="utf-8")
         assert "gh workflow run deploy.yml" in text, (
             f"{name} commits and pushes but never dispatches a deploy, so its "
