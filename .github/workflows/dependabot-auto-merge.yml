@@ -226,13 +226,32 @@ jobs:
         if: steps.decide.outputs.verdict == 'merge'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
           PR_URL: ${{ github.event.pull_request.html_url }}
           REASON: ${{ steps.decide.outputs.reason }}
         run: |
           set -euo pipefail
-          gh pr merge --squash --delete-branch "$PR_URL"
+          # D-65. Two faults on the first live run, 2026-08-25. (1) `main` moved
+          # between the check wait and the merge, and GitHub refused with "Base
+          # branch was modified. Review and try the merge again"; it recomputes
+          # mergeability on its own schedule, so the merge is retried a few
+          # times with a pause, and only that message is retried. (2) Nothing
+          # is checked out here, so `gh workflow run` could not infer the
+          # repository from git and failed AFTER the merge; `--repo` names it.
+          merged=0
+          for attempt in 1 2 3 4 5 6; do
+            if out=$(gh pr merge --squash --delete-branch "$PR_URL" 2>&1); then
+              merged=1; break
+            fi
+            echo "merge attempt $attempt: $out"
+            case "$out" in
+              *"Base branch was modified"*) sleep 20 ;;
+              *) exit 1 ;;
+            esac
+          done
+          [ "$merged" -eq 1 ] || { echo "held: base branch kept moving across 6 attempts"; exit 1; }
           echo "merged: $REASON"
-          gh workflow run deploy.yml --ref main
+          gh workflow run deploy.yml --ref main --repo "$REPO"
           echo "deploy dispatched: the gate wall runs on main before anything publishes"
 
       - name: Say plainly why an update is held

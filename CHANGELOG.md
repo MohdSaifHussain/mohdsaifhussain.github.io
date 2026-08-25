@@ -45,6 +45,9 @@ somewhere in this repository. Where a condition is unmet it says so.
   SHA-only bump). It now waits for the PR's checks itself, verifies a SHA-only
   Actions bump against the upstream tag, merges, and dispatches the deploy
   (D-63, 5.3.5).
+- Its first live run merged #2 without dispatching the deploy and lost #3 to
+  a base-branch race; the dispatch names the repository and the merge retries
+  (D-65).
 - Two `codeql-action` pins were the annotated-tag object's SHA rather than the
   commit's; Dependabot's corrections (#2, #3) now merge on evidence (D-62).
 
