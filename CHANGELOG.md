@@ -14,6 +14,9 @@ somewhere in this repository. Where a condition is unmet it says so.
 
 ### Added
 
+- **finding-bridge**, the seventh project entry and fourth flagship, every field
+  quoted from its own README at origin/master `41a33ed`, anchored to release
+  v1.0.0 on the REPO-STATED basis (CU-5).
 - **Switchyard**, the sixth project entry, sourced from its own README and
   showcase at v1.0.0; **TS-Sentry** re-sourced to its README and CI log.
   A fourth metrics basis, **REPO-STATED**, defined and guarded (CU-1, CU-4).
