@@ -365,6 +365,15 @@ footer { padding: var(--pad-row) var(--gutter) 38px; border-top: var(--rule-mid-
   .quote-sm, .ledger-links { grid-column: 1 / -1; }
   .ledger-links { flex-direction: row; flex-wrap: wrap; gap: 14px; }
 
+  /* D-64. A wrapped row of links is a grid of tap targets, and at line-height
+     1 each is a 12px box: two wrapped lines sit 26px centre to centre, under
+     the 24px Lighthouse and WCAG 2.5.8 ask for. Every link in the two wrapping
+     rows gets a 24px minimum box, text centred, so the visible type does not
+     change. Mobile only; the desktop column never wraps and is unchanged. */
+  .ledger-links .mono-link, .card-links .mono-link {
+    display: inline-flex; align-items: center; min-height: 24px;
+  }
+
   .rule-strip { gap: 8px; }
   .truth-strip { gap: 10px 20px; padding: 14px var(--gutter); }
 

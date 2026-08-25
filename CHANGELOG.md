@@ -28,6 +28,9 @@ somewhere in this repository. Where a condition is unmet it says so.
 ### Changed
 
 - The footer's `VISITS —` is retired; A4.4 resolved (P5.2).
+- Links in the Home flagship rows and Projects card footers carry a 24px
+  minimum tap box at or below 900px; a five-link row wrapping on a phone
+  had dropped mobile accessibility to 95 (D-64, 5.3.6).
 - The three small mono type steps rise to 12px on viewports at or below
   900px, for Lighthouse's mobile legibility line; desktop unchanged (P5.3).
 - CSP `connect-src` is `'self'` rather than `'none'`: Lighthouse's robots.txt
