@@ -57,6 +57,12 @@ After these changes, `measure-live` run 32575042812 (2026-08-22): Lighthouse
 **100 / 100 / 100 / 100** worst median across both profiles, LCP 1.52 s,
 CLS 0.000, 147,557 B, 0 axe violations, 0 validator errors. C-01 MET.
 
+After finding-bridge and the D-64 tap-box fix, `measure-live` run 32860031607
+(2026-08-25 20:08 IST): Lighthouse **100 / 100 / 100 / 100** worst median
+across both profiles, LCP 1.53 s, CLS 0.000, 148,240 B, 0 axe violations,
+0 validator errors. C-01 MET. The run between them (2026-08-25 19:37 IST)
+read 100 / 95 / 100 / 100, which is D-64; it is the reason the fix exists.
+
 ### Declared, unchanged
 
 - **C-02** LCP 1.53 s against 1.5 s stays declared: the one lever left, an
