@@ -14,6 +14,12 @@ somewhere in this repository. Where a condition is unmet it says so.
 
 ### Added
 
+- **Newest push first, with the date** (P5.5). Projects and the Home
+  flagship rows render in order of the source repository's last push, from
+  the committed GitHub snapshot, with `PUSHED 2026-08-25` as an ISO 8601
+  `<time>` and the same instant as JSON-LD `dateModified`. Adding an entry
+  in any position renders it where its date puts it. Declared limit A4.11:
+  as current as the snapshot's stated "as of".
 - **Architecture diagrams on /projects/** (P5.4). Each live entry carries
   its own pipeline, transcribed from its README and cited by line, as inline
   SVG that draws itself as it reaches the reading edge (A3.7, the seventh

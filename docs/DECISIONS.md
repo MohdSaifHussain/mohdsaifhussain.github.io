@@ -126,6 +126,23 @@ Owner's direction, 2026-08-27: a graphical upgrade to the Projects page. Two dir
 | 5.4.4 | **Zoom controls (minus, plus, RESET) scale the drawing inside its own natively scrollable frame; reserved in the layout and revealed by JS with `visibility`, never `display`** | A lightbox; pinch-only | The owner asked for a zoom "like the README's". A lightbox is a new surface and a new animation; scaling inside the existing frame is native scrolling (C-14) and cannot shift the page (D-58) | `static/js/diagram.js` |
 | 5.4.5 | **Only the diagrams animate. The site-wide reveal built in the same session is withdrawn; A3.1 to A3.6 are unchanged** | Keep the reveal alongside | Owner's ruling: "we will skip the animations upgrade, we only do this upgrade today" | `data/audit-spec.json` A3.7 |
 
+## Phase P5.5: Newest push first, with the date (v1.2)
+
+Owner's direction, 2026-08-28: entries in order of latest update, automatically, on Projects and Home, with the push date shown; "highest standards" asked for and answered honestly. There is no standard that orders a portfolio. What applies, and is applied, is: ISO 8601 for the date and HTML's `<time datetime>` for its machine form; Schema.org `dateModified` in the existing ItemList JSON-LD so structured data and the visible page agree; reverse-chronological order as the convention of every professional record (Keep a Changelog, Atom/RSS, GitHub's own repository lists); WCAG 2.2 AA for the rendering, already gated.
+
+Sources, fetched 2026-08-28 rather than recalled (doctrine rule 3), with what each was checked for:
+- WHATWG HTML Living Standard, the `time` element, https://html.spec.whatwg.org/multipage/text-level-semantics.html#the-time-element : a valid global date and time string (`2011-11-18T14:54:39Z` in its examples) is permitted in `datetime`, and a valid date string (`2011-11-18`) as content.
+- Schema.org `dateModified`, https://schema.org/dateModified : "The date on which the CreativeWork was most recently modified", expected type Date or DateTime, on CreativeWork. Schema.org `SoftwareSourceCode`, https://schema.org/SoftwareSourceCode : Thing > CreativeWork > SoftwareSourceCode, so it inherits `dateModified` and `version`, and defines `codeRepository` and `programmingLanguage`, the four properties this site's JSON-LD uses.
+- Keep a Changelog 1.1.0, https://keepachangelog.com/en/1.1.0/ : "The latest version comes first" and dates in ISO 8601 `YYYY-MM-DD`, the two conventions applied to the entry order and the visible date.
+- GitHub REST API, Get a repository, https://docs.github.com/en/rest/repos/repos#get-a-repository : `pushed_at` is "string or null, format: date-time", the source of every date shown. The page names API version `2026-03-10`; `tools/fetch_stats.py` sends no version header and so receives GitHub's default, which is a follow-up to pin, not a change made blind here.
+- WCAG 2.2, https://www.w3.org/TR/WCAG22/ : W3C Recommendation, 12 December 2024, the current version; the browser audit already gates AA on every page in both themes.
+
+| # | Decision | Alternative(s) not taken | Reason | Recorded in |
+|---|---|---|---|---|
+| 5.5.1 | **Entries render newest `pushed_at` first on every page, sorted at build time by `build.order_by_push`; `projects.json` keeps its owner-verified order untouched** | (a) Reorder the data file by hand on each addition: a habit, and the D-60 shape (a rule that holds until nobody remembers it). (b) A typed `date` per entry: a claim with no source | The date is GitHub's own, fetched by `fetch_stats.py` and already committed in the snapshot; the build refuses an entry without one (`PUSH_DATE_MISSING`) rather than placing it | `build.py`, `tests/test_order.py` |
+| 5.5.2 | **The visible date is the ISO date (`PUSHED 2026-08-25`), inside `<time datetime>` carrying the full UTC instant; the same instant is the JSON-LD `dateModified`** | A relative "3 days ago" (needs JS or goes stale); a locale format (ambiguous 08/25 vs 25/08) | ISO 8601 is unambiguous in every locale and needs no script; a test proves the visible date, the machine date and the structured-data date agree | `templates/_macros.html.j2` `pushed`, `build.py` |
+| 5.5.3 | **The order is as current as the snapshot, and the page says so: refreshed every Monday by `refresh-stats.yml` and on every content update; declared as A4.11** | Fetch at build (contract 3.2 forbids it); fetch in the browser (C-35 forbids it) | An honest limit stated beats a live claim the build cannot make | `data/audit-spec.json` A4.11 |
+
 ## Content updates (after P4.2, SOP section 1)
 
 Not a phase. Recorded here because a content update extended a closed set that a gate guards.

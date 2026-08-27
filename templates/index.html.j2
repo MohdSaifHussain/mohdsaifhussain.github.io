@@ -60,6 +60,7 @@
       {% for label, url in p.links.items() %}
       <a class="mono-link" href="{{ url }}" rel="noopener noreferrer">{{ label | replace('_', ' ') | upper }} ↗</a>
       {% endfor %}
+      {{ m.pushed(p) }}
       {{ m.anchor(p._anchor, 'AS OF') }}
     </div>
 

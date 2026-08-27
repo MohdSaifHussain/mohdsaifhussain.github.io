@@ -53,6 +53,13 @@
 <a class="anchor" href="{{ a.anchor_url }}" rel="noopener noreferrer">{% if label %}{{ label }} {% endif %}{{ a.anchor }} ↗</a>
 {%- endmacro %}
 
+{# P5.5: when the source repository was last pushed, from the snapshot.
+   <time datetime> carries the full ISO 8601 instant GitHub reported; the
+   visible text is the ISO date, unambiguous in every locale. #}
+{% macro pushed(p) -%}
+<time class="pushed mono-meta" datetime="{{ p._pushed_iso }}">PUSHED {{ p._pushed_date }}</time>
+{%- endmacro %}
+
 {# Truth-strip live indicator. CSS-drawn; no glyph exists in either face. #}
 {% macro dot(extra='') -%}
 <span class="dot{% if extra %} {{ extra }}{% endif %}" aria-hidden="true"></span>

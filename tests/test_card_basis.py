@@ -22,6 +22,15 @@ def site() -> pathlib.Path:
     return build.OUT
 
 
+def rendered_order(entries: list[dict]) -> list[dict]:
+    """The order build.py renders: build.order_by_push over the snapshot."""
+    snap = json.loads((ROOT / "data/generated/github.json").read_text(encoding="utf-8"))
+    for e in entries:
+        name = e["links"]["repo"].rstrip("/").rsplit("/", 1)[-1]
+        e["_anchor"] = snap["repos"][name]
+    return build.order_by_push(entries)
+
+
 def test_every_card_sentence_matches_its_declared_basis(site):
     """Positive control over the real data: one sentence per card, and the
     sentence on card N is the one for entry N's basis. Also proves every basis
@@ -30,8 +39,10 @@ def test_every_card_sentence_matches_its_declared_basis(site):
     html = (site / "projects/index.html").read_text(encoding="utf-8")
     found = re.findall(r'<p class="mono-meta card-basis">(.*?)</p>', html, re.S)
     assert len(found) == len(data["projects"]), "one basis sentence per card"
+    # P5.5: cards render newest push first, so pair them in that order.
+    entries = rendered_order(data["projects"])
     bases_seen = set()
-    for entry, sentence in zip(data["projects"], found):
+    for entry, sentence in zip(entries, found):
         expected = build.BASIS_SENTENCES[entry["metrics_basis"]]
         assert sentence.replace("&#39;", "'") == expected, entry["id"]
         bases_seen.add(entry["metrics_basis"])

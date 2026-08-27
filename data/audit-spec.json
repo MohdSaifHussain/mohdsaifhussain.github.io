@@ -93,6 +93,11 @@
   ],
   "a4_limitations": [
     {
+      "id": "A4.11",
+      "limitation": "Project order and the PUSHED date are as current as the committed GitHub snapshot, not live",
+      "reason": "P5.5. The order and the date come from GitHub's pushed_at, fetched by tools/fetch_stats.py into data/generated/github.json every Monday (refresh-stats.yml) and on every content update (SOP section 1); build.py never reaches the network (contract 3.2) and the browser never fetches (C-35). A push to a source repository therefore appears here at the next refresh, up to a week later, and every page prints the snapshot's own \"as of\" stamp so the reader can see how current it is. Owner's ruling 2026-08-28, decision 5.5.3."
+    },
+    {
       "id": "A4.10",
       "limitation": "The theme toggle remembers your choice for this visit, and forgets it when you close the tab",
       "reason": "Per-visit by decision. C-21 reads: \"No cookies set by the site. No localStorage of personal data. No fingerprinting.\" No cookie is set. The storage ban is scoped to PERSONAL DATA, and one word naming a colour scheme identifies nobody and describes nothing about you beyond a preference you just expressed on screen — so sessionStorage carries it, which is the storage whose lifetime is exactly a visit. Applying it before first paint costs one small render-blocking request in the head, which is the only CSP-compliant way to avoid a visible flash of the wrong theme: this build refuses inline scripts and ships script-src 'self' with no nonce and no hash. Across visits your system setting decides again, live — prefers-color-scheme, which is what it is for. Owner's ruling, 2026-08-10; the first implementation stored nothing and was per-PAGE, recorded as defect D-59."

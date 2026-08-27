@@ -313,6 +313,42 @@ def gate_anchors(projects: list[dict], snapshot: dict) -> list[tuple[str, str]]:
     return out
 
 
+def order_by_push(projects: list[dict]) -> list[dict]:
+    """P5.5, owner's ruling 2026-08-28: entries render newest push first, on
+    every page, from the snapshot's `pushed_at` (GitHub's own timestamp for
+    the repository, fetched by tools/fetch_stats.py; never typed here).
+    Reverse-chronological is the convention of every professional record
+    (Keep a Changelog, Atom/RSS, GitHub's own repository lists), and the
+    order needs no hand: adding an entry to projects.json in any position
+    renders it where its date puts it.
+
+    The snapshot is refreshed weekly (refresh-stats.yml) and on every
+    content update (SOP section 1), so the order is as current as the
+    snapshot's "as of" stamp, which every page prints (A4.11).
+
+    Sources, fetched 2026-08-28: WHATWG HTML `time` element (a valid global
+    date and time string in `datetime`); Schema.org `dateModified` on
+    CreativeWork, inherited by SoftwareSourceCode; Keep a Changelog 1.1.0
+    ("The latest version comes first", ISO dates); GitHub REST `pushed_at`
+    ("format: date-time"). URLs in docs/DECISIONS.md, P5.5.
+
+    Refuses an entry with no push date rather than guessing a position: an
+    unordered entry silently placed last would be a claim about recency with
+    no source, the D-02 shape.
+    """
+    for p in projects:
+        pushed = (p.get("_anchor") or {}).get("pushed_at")
+        if not pushed:
+            raise BuildRefused("PUSH_DATE_MISSING",
+                               f"{p['id']}: the snapshot carries no pushed_at; "
+                               f"run tools\\fetch_stats.py")
+        # ISO 8601 both ways: the machine form for <time datetime>, the date
+        # part for the eye. UTC as GitHub gives it; no timezone arithmetic.
+        p["_pushed_iso"] = pushed
+        p["_pushed_date"] = pushed[:10]
+    return sorted(projects, key=lambda p: p["_pushed_iso"], reverse=True)
+
+
 def attach_basis_sentences(projects: list[dict]) -> None:
     """P5.1 (STEP-10, defect D-60): the card's basis sentence is chosen per
     entry from the basis it declares. A basis with no sentence refuses the
@@ -546,6 +582,7 @@ def build() -> int:
             p["verified_metrics"] = [measured_metric] + p["verified_metrics"][1:]
 
     attach_basis_sentences(projects)
+    projects = order_by_push(projects)
 
     ctx_common = {
         "profile": data["profile"],
@@ -626,7 +663,8 @@ def build() -> int:
                       "codeRepository": p["links"]["repo"],
                       "programmingLanguage": "Python",
                       "author": {"@type": "Person", "name": profile["name"]},
-                      "version": p["_anchor"]["anchor"]}}
+                      "version": p["_anchor"]["anchor"],
+                      "dateModified": p["_pushed_iso"]}}
             for i, p in enumerate(projects, 1)],
     }
     ctx_common["person_jsonld"] = Markup(json.dumps(person_ld, indent=2))

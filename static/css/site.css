@@ -179,6 +179,9 @@ nav {
 .ledger-links { display: flex; flex-direction: column; gap: 8px; }
 
 .anchor { font: var(--type-mono-link); color: var(--dim); text-decoration: none; }
+/* P5.5: the push date sits in the links row at the link's size so the row
+   keeps one rhythm; it is text, not a control, so no hover state. */
+.pushed { font: var(--type-mono-link); font-weight: 400; color: var(--dim); white-space: nowrap; }
 .anchor:hover, .anchor:focus-visible { color: var(--accent); }
 
 /* --- Truth strip -------------------------------------------------------- */

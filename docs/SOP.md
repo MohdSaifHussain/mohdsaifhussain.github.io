@@ -60,6 +60,11 @@ a defect in this build (D-39) came from filtering output and hiding a failure.
 Counts update themselves — `05 ENTRIES`, the `01 / 05` positions, the home
 flagship count. Never type a number.
 
+**Order is automatic (P5.5).** Entries render newest push first on Projects
+and Home, from the snapshot's `pushed_at`, so the position of an entry in
+`projects.json` does not matter; step 3 is what gives the new entry its
+date, and the build refuses (`REASON=PUSH_DATE_MISSING`) if it is skipped.
+
 ## 1a. Add or change a project's architecture diagram
 
 1. Open `tools\gen_diagrams.py`. Each diagram is a function: nodes with the
