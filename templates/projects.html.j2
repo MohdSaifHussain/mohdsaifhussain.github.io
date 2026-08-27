@@ -81,13 +81,16 @@
     <figure class="diagram-wrap">
       <div class="diagram-head">
         <figcaption class="mono-label">ARCHITECTURE — FROM THE README</figcaption>
-        <span class="diagram-zoom" role="group" aria-label="Zoom the diagram">
+        <span class="diagram-zoom" role="group" aria-label="Zoom the {{ p.name }} diagram">
           <button type="button" class="d-zoom" data-zoom="out" aria-label="Zoom out">−</button>
           <button type="button" class="d-zoom" data-zoom="in" aria-label="Zoom in">+</button>
           <button type="button" class="d-zoom" data-zoom="reset">RESET</button>
         </span>
       </div>
-      <div class="diagram-scroll" tabindex="0" role="region" aria-label="Architecture diagram, scrollable">
+      {# The accessible name carries the project name: six regions named alike are
+         one landmark six times to a screen reader, and axe refused the deploy
+         for it (D-66). #}
+      <div class="diagram-scroll" tabindex="0" role="region" aria-label="{{ p.name }} architecture diagram, scrollable">
         {% include 'diagrams/' ~ p.diagram ~ '.svg.j2' %}
       </div>
     </figure>
