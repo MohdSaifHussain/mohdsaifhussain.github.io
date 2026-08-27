@@ -79,14 +79,17 @@
        the zoom controls, revealed by diagram.js, scale the drawing inside that
        same frame. #}
     <figure class="diagram-wrap">
-      <div class="diagram-head">
-        <figcaption class="mono-label">ARCHITECTURE — FROM THE README</figcaption>
+      {# figcaption must be a direct child of figure (HTML content model); the
+         W3C validator refused a div-wrapped one six times (D-67). The caption
+         itself is the head row: label left, zoom controls right. #}
+      <figcaption class="diagram-head">
+        <span class="mono-label">ARCHITECTURE — FROM THE README</span>
         <span class="diagram-zoom" role="group" aria-label="Zoom the {{ p.name }} diagram">
           <button type="button" class="d-zoom" data-zoom="out" aria-label="Zoom out">−</button>
           <button type="button" class="d-zoom" data-zoom="in" aria-label="Zoom in">+</button>
           <button type="button" class="d-zoom" data-zoom="reset">RESET</button>
         </span>
-      </div>
+      </figcaption>
       {# The accessible name carries the project name: six regions named alike are
          one landmark six times to a screen reader, and axe refused the deploy
          for it (D-66). #}
