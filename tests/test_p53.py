@@ -26,15 +26,16 @@ def test_small_mono_steps_are_12px_at_or_below_900px():
     css = (ROOT / "static/css/tokens.css").read_text(encoding="utf-8")
     mobile = _block(css, "@media (max-width: 900px)")
     for token in ("--type-mono-meta:", "--type-mono-meta-sm:", "--type-mono-link:"):
-        m = re.search(rf"{re.escape(token)}\s+\d+\s+(\d+(?:\.\d+)?)px", mobile)
+        # P5.7: the weight may be a literal or the --w-mono token.
+        m = re.search(rf"{re.escape(token)}\s+(?:\d+|var\(--w-mono\))\s+(\d+(?:\.\d+)?)px", mobile)
         assert m, f"{token} not redefined in the 900px block"
         assert float(m.group(1)) >= 12, token
 
 
 def test_desktop_scale_unchanged():
     css = (ROOT / "static/css/tokens.css").read_text(encoding="utf-8")
-    root = css[: css.index("@media")]
-    assert "--type-mono-meta:    400 11.5px/1.6" in root
+    root = css[: css.index("\n@media")]   # first at-rule at line start; a URL in a comment may contain "@media"
+    assert "--type-mono-meta:    var(--w-mono) 11.5px/1.6" in root   # weight is a token since P5.7
     assert "--type-mono-link:    600 11px/1" in root
 
 

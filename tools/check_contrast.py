@@ -56,7 +56,10 @@ PAIRS = [
 ]
 
 
-THEMES = ("dark", "light")
+THEMES = ("dark", "light", "dark-hc", "light-hc")
+# P5.7: the two high-contrast palettes are the colour palettes with the
+# --<theme>-hc-* tokens laid over them, exactly as the CSS mapping does it.
+HC_OVERLAY = {"--body": "--hc-body", "--dim": "--hc-dim", "--accent": "--hc-accent"}
 
 # P4.2. Each palette declares its own prefixed tokens, so the two are read as
 # two. The previous parser regexed `--name: #hex;` flat across the whole file
@@ -79,6 +82,12 @@ def parse_palettes() -> dict[str, dict[str, str]]:
     out: dict[str, dict[str, str]] = {t: {} for t in THEMES}
     for theme, name, hex_value in PALETTE_TOKEN.findall(text):
         out[theme][f"--{name}"] = hex_value
+    for base in ("dark", "light"):
+        hc = dict(out[base])
+        for semantic, source in HC_OVERLAY.items():
+            if source in out[base]:
+                hc[semantic] = out[base][source]
+        out[f"{base}-hc"] = hc
     return out
 
 
@@ -151,6 +160,15 @@ def evaluate(palettes: dict[str, dict[str, str]] | None = None
                                  f"{'large' if large else 'normal'}-text AA floor"))
         per_theme[theme] = theme_rows
         rows.extend(theme_rows)
+        # P5.7: a high-contrast palette must reach AAA on every pair, which is
+        # the whole promise the toggle and the OS setting make.
+        if theme.endswith("-hc"):
+            for r in theme_rows:
+                if not r["aaa"]:
+                    problems.append(("HC_BELOW_AAA",
+                                     f"[{theme}] {r['fg']} on {r['bg']} at {r['px']}px = "
+                                     f"{r['ratio']:.2f}:1, below WCAG 1.4.6 (7:1 normal, "
+                                     f"4.5:1 large) in a high-contrast palette"))
 
     # --- cross-theme constraints -----------------------------------------
     # Both lists walk PAIRS in the same order, so they pair up positionally.
@@ -199,7 +217,7 @@ def run(json_out: pathlib.Path | None = None) -> int:
     rows, problems = evaluate()
 
     print("C-09 contrast, recomputed from tokens.css (WCAG 2.2 relative luminance)")
-    print("Both themes. Dark is the default; light is the guest mode (P4.2).\n")
+    print("Four palettes: dark, light, and each with high contrast (P4.2, P5.7).\n")
     print(f"{'theme':<7}{'token':<10}{'hex':<10}{'on':<10}{'size':<12}"
           f"{'measured':>10}  {'AA':<5}{'7:1':<6}usage")
     print("-" * 118)
@@ -248,8 +266,8 @@ def run(json_out: pathlib.Path | None = None) -> int:
             print(f"  REASON={reason}  {detail}")
         return 1
     print("\nCONTRAST OK — every pair meets AA at the size it is used, in BOTH "
-          "themes;\n              light loses no 7:1 the dark theme reaches, and "
-          "--dim does not worsen")
+          "themes;\n              light loses no 7:1 the dark theme reaches, --dim "
+          "does not worsen,\n              and both high-contrast palettes reach AAA on every pair")
     return 0
 
 

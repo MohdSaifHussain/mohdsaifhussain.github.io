@@ -683,6 +683,21 @@ main   { view-transition-name: page-content; }
   background: var(--accent);
   color: var(--bg);
 }
+.display-controls { display: inline-flex; gap: 8px; flex-wrap: wrap; }
+
+/* P5.7: forced colours (Windows High Contrast / Contrast Themes). The browser
+   replaces every author colour with system colours and drops backgrounds, so
+   the two things drawn WITH a background need a shape that survives: the
+   truth-strip dot becomes a ring of currentColor, and a pressed toggle keeps
+   its state visible with an outline instead of a fill. Everything else is
+   text, rules and currentColor SVG, which forced colours handle on their own.
+   Ref, fetched 2026-08-28:
+   https://developer.mozilla.org/en-US/docs/Web/CSS/@media/forced-colors */
+@media (forced-colors: active) {
+  .dot { background: none; border: calc(var(--dot-size) / 2) solid currentColor; }
+  .theme-toggle[aria-pressed="true"] { outline: 2px solid ButtonText; outline-offset: -5px; }
+  .d-shape { fill: Canvas; }
+}
 
 /* ===========================================================================
    @ships A3.7 — Projects: the architecture diagram posts itself.  v1.2 / P5.4.

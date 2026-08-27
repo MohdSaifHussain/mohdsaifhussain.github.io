@@ -136,6 +136,12 @@
   "_a4_resolved_note": "Limitations that CLOSED. Kept and published rather than deleted: a register showing only what is currently broken teaches nothing about how the posture got here, and silently dropping a declaration is indistinguishable from never having made it. A limit leaves the active list only when it genuinely narrowed, with what closed it recorded.",
   "a4_resolved": [
     {
+      "id": "A4.12",
+      "limitation": "--dim was the one token below 7:1 (5.78:1 dark, 5.79:1 light), so A1.3 read 'AIM 7:1' rather than 'met'",
+      "closed": "2026-08-28",
+      "closed_by": "P5.7 (decision 5.7.1): dark dim to #9f9c92 and light dim to #57554f, both 7.08:1, recomputed by check_contrast.py on every build. Every text pair in both colour themes now reaches WCAG 1.4.6 AAA, and the two high-contrast palettes are gated to AAA on every pair as well."
+    },
+    {
       "id": "A4.4",
       "limitation": "The visit counter shows a dash, not a count",
       "closed": "2026-08-22",

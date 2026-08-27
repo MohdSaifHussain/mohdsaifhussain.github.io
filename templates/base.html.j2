@@ -94,8 +94,16 @@
        "Dark" is ambiguous about whether it names the current mode or the one
        you would get. Ref, checked 2026-08-10:
        https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Attributes/aria-pressed #}
-    <button type="button" class="theme-toggle" data-theme-toggle
-            aria-pressed="false" hidden>Light mode</button>
+    <span class="display-controls">
+      <button type="button" class="theme-toggle" data-theme-toggle
+              aria-pressed="false" hidden>Light mode</button>
+      {# P5.7. Same pattern: constant label, state in aria-pressed, hidden
+         until theme.js can act. Pressed = every text pair at WCAG 1.4.6 AAA
+         and heavier mono text; the OS "increase contrast" setting turns it on
+         by itself, and this button lets a visitor choose either way. #}
+      <button type="button" class="theme-toggle" data-contrast-toggle
+              aria-pressed="false" hidden>High contrast</button>
+    </span>
   </nav>
 </header>
 

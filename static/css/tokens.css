@@ -41,7 +41,7 @@
   --dark-ink:     #f2f0eb;             /* display text, strong rules         */
   --dark-body:    #cfccc3;             /* body / receipt text                */
   --dark-bright:  #e8e5dd;             /* evidence text                      */
-  --dark-dim:     #8f8c83;             /* metadata, labels                   */
+  --dark-dim:     #9f9c92;             /* metadata, labels; 7:1 since P5.7   */
   --dark-accent:  #e8b64c;             /* THE one accent                     */
 
   /* --- Light palette (P4.2, derived; measured ratios vs --light-bg) -------
@@ -52,10 +52,25 @@
      WCAG-meaningful ratio, and the ruling chose legibility over the hue. */
   --light-bg:     #faf9f6;             /* off-white (charter §5)             */
   --light-ink:    #0d0d0c;             /* 18.47:1                            */
-  --light-body:   #333230;             /* 12.16:1  (dark measures 12.11)     */
+  --light-body:   #2b2a28;             /* 13.62:1  (P5.7: dark 12.11, deeper */
+                                       /*  because dark-on-light renders thin) */
   --light-bright: #21201f;             /* 15.45:1  (dark measures 15.45)     */
-  --light-dim:    #64625c;             /*  5.79:1  (dark measures 5.78)      */
-  --light-accent: #695222;             /*  7.05:1  (dark measures 10.40)     */
+  --light-dim:    #57554f;             /*  7.08:1  (P5.7: dark reaches 7.08) */
+  --light-accent: #4f3c14;             /* 10.03:1  (P5.7: dark measures 10.40)*/
+
+  /* --- High-contrast palette (P5.7). Reached two ways, the OS setting
+     (prefers-contrast: more) and the visible toggle, through one mapping
+     block each at the end of this file. Every text pair must reach WCAG 1.4.6
+     AAA, 7:1 normal / 4.5:1 large, in BOTH colour themes; check_contrast.py
+     evaluates these as two further palettes and refuses HC_BELOW_AAA.
+     Refs, fetched 2026-08-28: https://www.w3.org/WAI/WCAG22/Understanding/contrast-enhanced.html
+     https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-contrast */
+  --dark-hc-body:    #e8e5dd;           /* 15.45:1, the bright step           */
+  --dark-hc-dim:     #a6a399;           /*  7.70:1                            */
+  --dark-hc-accent:  #e8b64c;           /* 10.40:1, unchanged                 */
+  --light-hc-body:   #21201f;           /* 15.45:1, the bright step           */
+  --light-hc-dim:    #4f4d47;           /*  8.03:1                            */
+  --light-hc-accent: #3f3010;           /* 12.15:1                            */
 
   /* Every ratio in the comments above is RE-DERIVED from these hex values by
      tools/check_contrast.py on every build and reported from that computation,
@@ -70,6 +85,21 @@
   --dim:         var(--dark-dim);
   --accent:      var(--dark-accent);
 
+  /* P5.7 pointer layer for high contrast: which palette's HC values apply is
+     decided by the colour theme; whether they apply at all by the contrast
+     mapping at the end of this file. --w-mono is the mono text weight: 400 in
+     dark, 500 in light and in high contrast, on WCAG's own 1.4.3 guidance
+     that thin-rendering text should get "a font with stronger/thicker lines"
+     (https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html,
+     fetched 2026-08-28). Plex Mono is monospaced, so the weight change
+     reflows nothing. */
+  --w-mono:        400;
+  --hc-body:       var(--dark-hc-body);
+  --hc-dim:        var(--dark-hc-dim);
+  --hc-accent:     var(--dark-hc-accent);
+  --hc-rule-mid:   var(--dark-hc-rule-mid);
+  --hc-rule-faint: var(--dark-hc-rule-faint);
+
   /* The rule and tint system is the ink at low alpha. It has to be themed too:
      these rgba() values hard-code the DARK ink's channels, so on a light
      background they would be near-invisible. Stated in channels rather than
@@ -81,6 +111,10 @@
   --light-rule-mid:   rgba( 13,  13,  12, .34);
   --light-rule-faint: rgba( 13,  13,  12, .20);
   --light-row-tint:   rgba( 13,  13,  12, .045);
+  --dark-hc-rule-mid:    rgba(242, 240, 235, .7);
+  --dark-hc-rule-faint:  rgba(242, 240, 235, .5);
+  --light-hc-rule-mid:   rgba( 13,  13,  12, .65);
+  --light-hc-rule-faint: rgba( 13,  13,  12, .45);
 
   --rule-strong: var(--ink);                    /* 2px — opens a section     */
   --rule-mid:    var(--dark-rule-mid);          /* 1px — separates rows      */
@@ -115,10 +149,10 @@
   --type-wordmark-foot:400 13px/1    var(--font-serif);
   --type-quote:        italic 400 17px/1.5 var(--font-serif);
   --type-quote-sm:     italic 400 15px/1.5 var(--font-serif);
-  --type-mono-body:    400 13px/1.6  var(--font-mono);
-  --type-mono-body-sm: 400 12.5px/1.6 var(--font-mono);  /* floor, see D-12  */
-  --type-mono-meta:    400 11.5px/1.6 var(--font-mono);
-  --type-mono-meta-sm: 400 11px/1.6  var(--font-mono);
+  --type-mono-body:    var(--w-mono) 13px/1.6  var(--font-mono);
+  --type-mono-body-sm: var(--w-mono) 12.5px/1.6 var(--font-mono);  /* floor, see D-12  */
+  --type-mono-meta:    var(--w-mono) 11.5px/1.6 var(--font-mono);
+  --type-mono-meta-sm: var(--w-mono) 11px/1.6  var(--font-mono);
   --type-mono-label:   600 10px/1    var(--font-mono);
   --type-mono-link:    600 11px/1    var(--font-mono);
 
@@ -199,8 +233,8 @@
        is untouched: it measured 100 already, and the handoff's scale stands
        there. Same mechanism as the display steps below: redefine, never
        duplicate a rule. */
-    --type-mono-meta:    400 12px/1.6 var(--font-mono);
-    --type-mono-meta-sm: 400 12px/1.6 var(--font-mono);
+    --type-mono-meta:    var(--w-mono) 12px/1.6 var(--font-mono);
+    --type-mono-meta-sm: var(--w-mono) 12px/1.6 var(--font-mono);
     --type-mono-link:    600 12px/1   var(--font-mono);
     --type-display-xl: 400 38px/1.18 var(--font-serif);  /* was 62 */
     --type-display-lg: 400 34px/1.05 var(--font-serif);  /* was 54 */
@@ -314,6 +348,12 @@
     --rule-mid:   var(--light-rule-mid);
     --rule-faint: var(--light-rule-faint);
     --row-tint:   var(--light-row-tint);
+    --w-mono:     500;
+    --hc-body:    var(--light-hc-body);
+    --hc-dim:     var(--light-hc-dim);
+    --hc-accent:  var(--light-hc-accent);
+    --hc-rule-mid:   var(--light-hc-rule-mid);
+    --hc-rule-faint: var(--light-hc-rule-faint);
   }
 }
 
@@ -328,4 +368,43 @@
   --rule-mid:   var(--light-rule-mid);
   --rule-faint: var(--light-rule-faint);
   --row-tint:   var(--light-row-tint);
+  --w-mono:     500;
+  --hc-body:    var(--light-hc-body);
+  --hc-dim:     var(--light-hc-dim);
+  --hc-accent:  var(--light-hc-accent);
+  --hc-rule-mid:   var(--light-hc-rule-mid);
+  --hc-rule-faint: var(--light-hc-rule-faint);
+}
+
+/* === HIGH CONTRAST (P5.7) ==================================================
+   Reached by the OS setting (prefers-contrast: more; Windows "Increase
+   contrast", macOS "Increase contrast") or by the visible toggle, and THE
+   MANUAL CHOICE WINS: `data-contrast="normal"` opts out of the OS setting,
+   `data-contrast="more"` opts in without it. Same shape as the theme blocks:
+   the mapping is stated twice, of pointers only, and a test holds the two
+   identical. These blocks come LAST so they win over the theme blocks at
+   equal specificity.
+
+   Under forced colours (Windows High Contrast) none of this applies: the
+   browser paints its own palette, and site.css carries the small
+   forced-colors adjustments that mode needs. */
+
+@media (prefers-contrast: more) {
+  :root:not([data-contrast="normal"]) {
+    --body:       var(--hc-body);
+    --dim:        var(--hc-dim);
+    --accent:     var(--hc-accent);
+    --rule-mid:   var(--hc-rule-mid);
+    --rule-faint: var(--hc-rule-faint);
+    --w-mono:     500;
+  }
+}
+
+:root[data-contrast="more"] {
+  --body:       var(--hc-body);
+  --dim:        var(--hc-dim);
+  --accent:     var(--hc-accent);
+  --rule-mid:   var(--hc-rule-mid);
+  --rule-faint: var(--hc-rule-faint);
+  --w-mono:     500;
 }

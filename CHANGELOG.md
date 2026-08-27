@@ -14,6 +14,11 @@ somewhere in this repository. Where a condition is unmet it says so.
 
 ### Added
 
+- **High contrast** (P5.7): a second display toggle beside Light mode, and
+  the OS "increase contrast" setting honoured automatically
+  (`prefers-contrast: more`). Every text pair in the high-contrast palettes
+  reaches WCAG 1.4.6 AAA, gated (`HC_BELOW_AAA`). Windows High Contrast
+  (`forced-colors`) handled for the three elements that needed it.
 - **The record block** (P5.6): every entry shows ISSUED, the latest formal
   release of its anchored version with the date it was made public, and
   MODIFIED, the last push; DCMI terms, ISO 8601 `<time>`, Schema.org
@@ -44,6 +49,12 @@ somewhere in this repository. Where a condition is unmet it says so.
 
 ### Changed
 
+- **Light mode re-derived with dark as the base** (P5.7): accent 7.05:1 to
+  10.03:1, body 12.16:1 to 13.62:1, dim 5.79:1 to 7.08:1, and mono text at
+  Medium weight in light (WCAG 1.4.3 guidance on thin-rendering text). Dark
+  dim raised 5.78:1 to 7.08:1, so 7:1 is met in full in both themes; the
+  A1.3 line that read "7:1 met except --dim" since v1.0.0 now reads
+  "7:1 met in full".
 - The footer's `VISITS —` is retired; A4.4 resolved (P5.2).
 - Links in the Home flagship rows and Projects card footers carry a 24px
   minimum tap box at or below 900px; a five-link row wrapping on a phone
