@@ -82,6 +82,11 @@ page the change did not touch). After the fix, `measure-live` at 22:52 IST:
 Lighthouse **100 / 100 / 100 / 100** worst median across both profiles, LCP
 1.53 s, CLS 0.000, 148,942 B, 0 axe violations, 0 validator errors. C-01 MET.
 
+After newest-push-first with the date (P5.5), `measure-live` at 2026-08-28
+00:12 IST: Lighthouse **100 / 100 / 100 / 100** worst median across both
+profiles, LCP 1.52 s, CLS 0.000, 149,197 B, 0 axe violations, 0 validator
+errors. C-01 MET.
+
 ### Declared, unchanged
 
 - **C-02** LCP 1.53 s against 1.5 s stays declared: the one lever left, an
