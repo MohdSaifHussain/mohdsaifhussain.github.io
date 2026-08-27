@@ -69,6 +69,13 @@ across both profiles, LCP 1.53 s, CLS 0.000, 148,240 B, 0 axe violations,
 0 validator errors. C-01 MET. The run between them (2026-08-25 19:37 IST)
 read 100 / 95 / 100 / 100, which is D-64; it is the reason the fix exists.
 
+After the architecture diagrams (P5.4), two readings: the first, at
+2026-08-27 22:43 IST, 99 / 100 / 100 / 100 with **6 validator errors** (D-67,
+the div-wrapped figcaption; the 99 was Home on mobile, runs 84 / 100 / 99, a
+page the change did not touch). After the fix, `measure-live` at 22:52 IST:
+Lighthouse **100 / 100 / 100 / 100** worst median across both profiles, LCP
+1.53 s, CLS 0.000, 148,942 B, 0 axe violations, 0 validator errors. C-01 MET.
+
 ### Declared, unchanged
 
 - **C-02** LCP 1.53 s against 1.5 s stays declared: the one lever left, an
