@@ -60,6 +60,11 @@ a defect in this build (D-39) came from filtering output and hiding a failure.
 Counts update themselves — `05 ENTRIES`, the `01 / 05` positions, the home
 flagship count. Never type a number.
 
+**Two dates render per entry (P5.6).** ISSUED is the latest formal
+release (publish a GitHub release, or push a semver tag, and the next
+refresh picks it up); MODIFIED is the last push. A repository with neither
+release nor tag shows "no release yet".
+
 **Order is automatic (P5.5).** Entries render newest push first on Projects
 and Home, from the snapshot's `pushed_at`, so the position of an entry in
 `projects.json` does not matter; step 3 is what gives the new entry its

@@ -94,8 +94,8 @@
   "a4_limitations": [
     {
       "id": "A4.11",
-      "limitation": "Project order and the PUSHED date are as current as the committed GitHub snapshot, not live",
-      "reason": "P5.5. The order and the date come from GitHub's pushed_at, fetched by tools/fetch_stats.py into data/generated/github.json every Monday (refresh-stats.yml) and on every content update (SOP section 1); build.py never reaches the network (contract 3.2) and the browser never fetches (C-35). A push to a source repository therefore appears here at the next refresh, up to a week later, and every page prints the snapshot's own \"as of\" stamp so the reader can see how current it is. Owner's ruling 2026-08-28, decision 5.5.3."
+      "limitation": "Project order and the ISSUED / MODIFIED dates are as current as the committed GitHub snapshot, not live",
+      "reason": "P5.5. The order and MODIFIED come from GitHub's pushed_at, ISSUED from the release's published_at or the tag commit's date, fetched by tools/fetch_stats.py into data/generated/github.json every Monday (refresh-stats.yml) and on every content update (SOP section 1); build.py never reaches the network (contract 3.2) and the browser never fetches (C-35). A push to a source repository therefore appears here at the next refresh, up to a week later, and every page prints the snapshot's own \"as of\" stamp so the reader can see how current it is. Owner's ruling 2026-08-28, decision 5.5.3."
     },
     {
       "id": "A4.10",

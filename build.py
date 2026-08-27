@@ -346,6 +346,17 @@ def order_by_push(projects: list[dict]) -> list[dict]:
         # part for the eye. UTC as GitHub gives it; no timezone arithmetic.
         p["_pushed_iso"] = pushed
         p["_pushed_date"] = pushed[:10]
+        # P5.6: the issuance date of the anchored version (DCMI `issued`), or
+        # None for a repository that has never released. The key must EXIST in
+        # the snapshot: an absent key means an old snapshot, and that refuses
+        # rather than rendering a silent blank.
+        if "issued_at" not in p["_anchor"]:
+            raise BuildRefused("ISSUED_DATE_MISSING",
+                               f"{p['id']}: the snapshot predates P5.6; "
+                               f"run tools\\fetch_stats.py")
+        issued = p["_anchor"]["issued_at"]
+        p["_issued_iso"] = issued
+        p["_issued_date"] = issued[:10] if issued else None
     return sorted(projects, key=lambda p: p["_pushed_iso"], reverse=True)
 
 
@@ -664,6 +675,11 @@ def build() -> int:
                       "programmingLanguage": "Python",
                       "author": {"@type": "Person", "name": profile["name"]},
                       "version": p["_anchor"]["anchor"],
+                      # P5.6: datePublished is the anchored version's issuance
+                      # (Schema.org: "Date of first publication"; for a version,
+                      # the date it was made public), dateModified the last push.
+                      # A never-released repository carries no datePublished.
+                      **({"datePublished": p["_issued_iso"]} if p["_issued_iso"] else {}),
                       "dateModified": p["_pushed_iso"]}}
             for i, p in enumerate(projects, 1)],
     }

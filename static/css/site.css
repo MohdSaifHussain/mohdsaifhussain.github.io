@@ -179,9 +179,17 @@ nav {
 .ledger-links { display: flex; flex-direction: column; gap: 8px; }
 
 .anchor { font: var(--type-mono-link); color: var(--dim); text-decoration: none; }
-/* P5.5: the push date sits in the links row at the link's size so the row
-   keeps one rhythm; it is text, not a control, so no hover state. */
+/* P5.6: the record block. A definition list, two rows: ISSUED (the anchored
+   version and its issuance date, linked) and MODIFIED (the last push). Dates
+   are text, not controls: no hover state. Rows wrap on narrow screens; the
+   link keeps its 24px tap box from the 900px rule. */
 .pushed { font: var(--type-mono-link); font-weight: 400; color: var(--dim); white-space: nowrap; }
+.record { margin: 0; display: flex; flex-direction: column; gap: 6px; }
+.record-row { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.record-row dt { min-width: 72px; }
+.record-row dd { margin: 0; display: inline-flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.record-legend { max-width: 72ch; margin-top: 10px; }
+.card-foot .record { min-width: 260px; }
 .anchor:hover, .anchor:focus-visible { color: var(--accent); }
 
 /* --- Truth strip -------------------------------------------------------- */

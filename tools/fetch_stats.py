@@ -48,6 +48,7 @@ PROJECTS = ROOT / "data" / "projects.json"
 OUT = ROOT / "data" / "generated" / "github.json"
 
 API = "https://api.github.com"
+API_VERSION = "2026-03-10"
 OWNER = "MohdSaifHussain"
 
 # Q2 ruling: staleness never fails the build; warn above this, in build output
@@ -60,6 +61,14 @@ def _get(url: str) -> dict | None:
     error: most of these repos have no releases, and that is the fact we want."""
     req = urllib.request.Request(url, headers={
         "Accept": "application/vnd.github+json",
+        # Pinned, owner's ruling 2026-08-28 (decision 5.6.1). Unpinned requests
+        # get GitHub's default, 2022-11-28 (supported to 2028-03-10); pinning
+        # means the Monday refresh changes shape only when this line does. The
+        # 2026-03-10 breaking-changes list was read against every field this
+        # tool uses (tag_name, name, sha, html_url, pushed_at, published_at,
+        # default_branch, commit.committer.date): none is affected.
+        # https://docs.github.com/en/rest/about-the-rest-api/api-versions
+        "X-GitHub-Api-Version": API_VERSION,
         "User-Agent": "mohdsaifhussain.github.io-build",
     })
     token = os.environ.get("GITHUB_TOKEN")
@@ -181,12 +190,21 @@ def anchor_for(repo: str) -> dict:
                  and semver_key(newest_tag) > semver_key(release_tag)))
     )
 
+    # P5.6: `issued_at` is the DCMI `issued` date of the anchored version,
+    # "Date of formal issuance of the resource". For a release it is GitHub's
+    # published_at (when the release was made public; created_at is the
+    # commit's date, a different thing). For a bare tag it is the committer
+    # date of the commit the tag names, the closest thing a tag has to an
+    # issuance. A commit anchor has no issuance: the repo has never released,
+    # and the site says so rather than borrowing the push date.
     if tag_leads:
+        tag_commit = _get(f"{API}/repos/{OWNER}/{repo}/commits/{newest_tag}")
         return {
             "anchor": newest_tag,
             "anchor_type": "tag",
             "anchor_url": f"{meta['html_url']}/tree/{newest_tag}",
             "release_lag": release_tag,   # what the release said, for the record
+            "issued_at": tag_commit["commit"]["committer"]["date"],
             "pushed_at": meta["pushed_at"],
             "repo_url": meta["html_url"],
         }
@@ -196,6 +214,7 @@ def anchor_for(repo: str) -> dict:
             "anchor": release["tag_name"],
             "anchor_type": "release",
             "anchor_url": release["html_url"],
+            "issued_at": release["published_at"],
             "pushed_at": meta["pushed_at"],
             "repo_url": meta["html_url"],
         }
@@ -206,6 +225,7 @@ def anchor_for(repo: str) -> dict:
         "anchor": sha[:7],
         "anchor_type": "commit",
         "anchor_url": f"{meta['html_url']}/commit/{sha}",
+        "issued_at": None,
         "pushed_at": meta["pushed_at"],
         "repo_url": meta["html_url"],
     }

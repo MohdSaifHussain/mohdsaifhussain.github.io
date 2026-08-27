@@ -30,6 +30,9 @@
     <h1 class="display-lg">Projects</h1>
     <span class="mono-meta">{{ '%02d' % (projects | length) }} ENTRIES · SCROLL →</span>
   </div>
+  {# P5.6 legend: the two dates every card carries, named by DCMI terms and
+     sourced from the snapshot whose "as of" the footer prints. #}
+  <p class="mono-meta record-legend">Newest MODIFIED first. ISSUED is the latest formal release of the anchored version (GitHub's published date). MODIFIED is the last push to the repository. Both from the snapshot as of {{ github.as_of_display }}.</p>
 </section>
 
 <div class="slider" tabindex="0" role="region" aria-label="Project case studies, scrollable">
@@ -107,9 +110,8 @@
         {% for label, url in p.links.items() %}
         <a class="mono-link" href="{{ url }}" rel="noopener noreferrer">{{ label | replace('_', ' ') | upper }} ↗</a>
         {% endfor %}
-        {{ m.pushed(p) }}
-        {{ m.anchor(p._anchor, 'AS OF') }}
       </div>
+      {{ m.record(p) }}
     </div>
 
   </article>

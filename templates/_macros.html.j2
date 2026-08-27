@@ -53,11 +53,34 @@
 <a class="anchor" href="{{ a.anchor_url }}" rel="noopener noreferrer">{% if label %}{{ label }} {% endif %}{{ a.anchor }} ↗</a>
 {%- endmacro %}
 
-{# P5.5: when the source repository was last pushed, from the snapshot.
-   <time datetime> carries the full ISO 8601 instant GitHub reported; the
-   visible text is the ISO date, unambiguous in every locale. #}
-{% macro pushed(p) -%}
-<time class="pushed mono-meta" datetime="{{ p._pushed_iso }}">PUSHED {{ p._pushed_date }}</time>
+{# P5.6: the record block. Two dates, named by DCMI Metadata Terms
+   (https://www.dublincore.org/specifications/dublin-core/dcmi-terms/,
+   fetched 2026-08-28):
+     ISSUED   dcterms:issued   "Date of formal issuance of the resource"
+              = the latest formal release of the anchored version, linked.
+     MODIFIED dcterms:modified "Date on which the resource was changed"
+              = the last push to the repository, fetched by the snapshot.
+   Each <time datetime> carries the full ISO 8601 instant; the visible text is
+   the ISO date. A repository that has never released says so. #}
+{% macro record(p) -%}
+<dl class="record">
+  <div class="record-row">
+    <dt class="mono-label">Issued</dt>
+    <dd>
+      {%- if p._issued_iso -%}
+      <a class="anchor" href="{{ p._anchor.anchor_url }}" rel="noopener noreferrer">{{ p._anchor.anchor }} ↗</a>
+      <time class="pushed mono-meta" datetime="{{ p._issued_iso }}">{{ p._issued_date }}</time>
+      {%- else -%}
+      <span class="mono-meta">no release yet</span>
+      <a class="anchor" href="{{ p._anchor.anchor_url }}" rel="noopener noreferrer">at {{ p._anchor.anchor }} ↗</a>
+      {%- endif -%}
+    </dd>
+  </div>
+  <div class="record-row">
+    <dt class="mono-label">Modified</dt>
+    <dd><time class="pushed mono-meta" datetime="{{ p._pushed_iso }}">{{ p._pushed_date }}</time></dd>
+  </div>
+</dl>
 {%- endmacro %}
 
 {# Truth-strip live indicator. CSS-drawn; no glyph exists in either face. #}

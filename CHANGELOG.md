@@ -14,6 +14,11 @@ somewhere in this repository. Where a condition is unmet it says so.
 
 ### Added
 
+- **The record block** (P5.6): every entry shows ISSUED, the latest formal
+  release of its anchored version with the date it was made public, and
+  MODIFIED, the last push; DCMI terms, ISO 8601 `<time>`, Schema.org
+  `datePublished` / `dateModified`. A never-released repository says so.
+  The GitHub fetch is pinned to API version 2026-03-10.
 - **Newest push first, with the date** (P5.5). Projects and the Home
   flagship rows render in order of the source repository's last push, from
   the committed GitHub snapshot, with `PUSHED 2026-08-25` as an ISO 8601
