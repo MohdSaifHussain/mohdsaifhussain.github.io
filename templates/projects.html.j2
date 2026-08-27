@@ -1,6 +1,10 @@
 {% extends 'base.html.j2' %}
 {% import '_macros.html.j2' as m %}
 
+{% block scripts %}
+<script src="/js/diagram.js" defer></script>
+{% endblock %}
+
 {% block jsonld %}
 <script type="application/ld+json">{{ projects_jsonld }}</script>
 {% endblock %}
@@ -66,6 +70,28 @@
         <p class="mono-meta card-basis">{{ p._basis_sentence }}</p>
       </div>
     </div>
+
+    {% if p.get('diagram') %}
+    {# v1.2 (P5.4): the project's own architecture, transcribed from its README
+       by tools/gen_diagrams.py, posts node by node and draws its edges as the
+       figure reaches the reading edge (A3.7). The figure scrolls sideways
+       inside its own frame when it is wider than the card (native, C-14), and
+       the zoom controls, revealed by diagram.js, scale the drawing inside that
+       same frame. #}
+    <figure class="diagram-wrap">
+      <div class="diagram-head">
+        <figcaption class="mono-label">ARCHITECTURE — FROM THE README</figcaption>
+        <span class="diagram-zoom" role="group" aria-label="Zoom the diagram">
+          <button type="button" class="d-zoom" data-zoom="out" aria-label="Zoom out">−</button>
+          <button type="button" class="d-zoom" data-zoom="in" aria-label="Zoom in">+</button>
+          <button type="button" class="d-zoom" data-zoom="reset">RESET</button>
+        </span>
+      </div>
+      <div class="diagram-scroll" tabindex="0" role="region" aria-label="Architecture diagram, scrollable">
+        {% include 'diagrams/' ~ p.diagram ~ '.svg.j2' %}
+      </div>
+    </figure>
+    {% endif %}
 
     <div class="card-foot">
       {% if p.get('ai_collaboration') %}

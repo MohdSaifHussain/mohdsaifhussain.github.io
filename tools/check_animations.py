@@ -686,9 +686,10 @@ def selftest() -> int:
              "/* A3.6 is scrubbed to scroll position, unlike A3.1 */"),
          "UNSHIPPED_ANIMATION", True),
         ("an id marked '@ships' MUST count as shipped (D-49)",
+         # Derived from the declared list, not typed: a fixture naming six ids
+         # broke the moment A3.7 was declared (2026-08-27).
          lambda: [p for p in check_list_agreement(
-             "/* @ships A3.1 @ships A3.2 @ships A3.3 "
-             "@ships A3.4 @ships A3.5 @ships A3.6 */")],
+             "/* " + " ".join(f"@ships {i}" for i in declared_ids()) + " */")],
          "UNSHIPPED_ANIMATION", False),
     ]
     for label, fn, reason, must_trip in cases:

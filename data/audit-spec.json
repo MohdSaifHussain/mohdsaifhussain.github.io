@@ -1,51 +1,228 @@
 {
   "_status": "Design-authority transcription, not portfolio content. A1/A2 row LABELS and TARGETS come from STEP-01-CHARTER §3/§4 and STEP-02-HANDOFF §3 (3d). A3 comes from HANDOFF §5, which is the complete list — nothing else ships (C-12).",
   "_measured_values": "This file carries NO measured values and NO pass/fail statuses. Those are written by CI into data/generated/audit.json and rendered from there (C-30, C-35). When that file is absent — as on any first deploy — the measured column reads '— AT DEPLOY'. Hand-entering a score here would be the exact thing C-35 forbids.",
-
   "a1_standards": [
-    { "id": "A1.1", "standard": "Lighthouse — Performance / Accessibility / Best Practices / SEO", "target": "100 × 4", "key": "lighthouse" },
-    { "id": "A1.2", "standard": "WCAG 2.2 AA — axe violations", "target": "0", "key": "axe" },
-    { "id": "A1.3", "standard": "Body text contrast vs page background", "target": "≥ 4.5:1 · AIM 7:1", "key": "contrast" },
-    { "id": "A1.4", "standard": "W3C Nu validator errors", "target": "0", "key": "validator" },
-    { "id": "A1.5", "standard": "Home first-view transfer", "target": "≤ 500 KB", "key": "transfer" }
+    {
+      "id": "A1.1",
+      "standard": "Lighthouse — Performance / Accessibility / Best Practices / SEO",
+      "target": "100 × 4",
+      "key": "lighthouse"
+    },
+    {
+      "id": "A1.2",
+      "standard": "WCAG 2.2 AA — axe violations",
+      "target": "0",
+      "key": "axe"
+    },
+    {
+      "id": "A1.3",
+      "standard": "Body text contrast vs page background",
+      "target": "≥ 4.5:1 · AIM 7:1",
+      "key": "contrast"
+    },
+    {
+      "id": "A1.4",
+      "standard": "W3C Nu validator errors",
+      "target": "0",
+      "key": "validator"
+    },
+    {
+      "id": "A1.5",
+      "standard": "Home first-view transfer",
+      "target": "≤ 500 KB",
+      "key": "transfer"
+    }
   ],
-
   "a2_charter_checks": [
-    { "id": "A2.1", "check": "Motion uses transform / opacity only; micro 150–250ms; transitions ≤ 400ms", "key": "motion", "conditions": "C-15" },
-    { "id": "A2.2", "check": "Native scrolling only; slider is CSS scroll-snap with visible position", "key": "scroll", "conditions": "C-14" },
-    { "id": "A2.3", "check": "No preloaders, sound, trackers, cookies, third-party logos or assets", "key": "no_third_party", "conditions": "C-04, C-19, C-21" },
-    { "id": "A2.4", "check": "No contact-capable email or phone anywhere; contact via LinkedIn only", "key": "c33", "conditions": "C-33 + Amendments 1, 2" },
-    { "id": "A2.5", "check": "Interaction QA — no hover layer blocks or overlaps another interactive element", "key": "interaction_qa", "conditions": "handoff §6", "basis": "OBSERVED 2026-08-06", "basis_note": "A person looked. One slice of this is automated (test_evidence_layer_never_covers_the_links_column), but the claim across every page and state was established by observation, so it is published as an observation with its date rather than as a machine verdict.", "evidence_url": "https://github.com/MohdSaifHussain/mohdsaifhussain.github.io/blob/main/docs/INTERACTION-QA.md", "evidence_label": "INTERACTION-QA.md" },
-    { "id": "A2.6", "check": "All displayed values real; unverified items marked with an honest cross", "key": "honesty", "conditions": "C-27" },
-    { "id": "A2.7", "check": "Complete and coherent with prefers-reduced-motion", "key": "reduced_motion", "conditions": "C-10", "basis": "GATED + OBSERVED 2026-08-06", "basis_note": "The mechanical half is gated: tools/check_animations.py refuses the build (REASON=MOTION_NOT_REDUCED) if any timed transition cannot be switched off under prefers-reduced-motion. Whether the page remains COHERENT with motion off is a human judgement, observed and dated, so this row publishes the observation rather than a machine verdict for the whole claim.", "evidence_url": "https://github.com/MohdSaifHussain/mohdsaifhussain.github.io/blob/main/docs/INTERACTION-QA.md", "evidence_label": "INTERACTION-QA.md" },
-    { "id": "A2.8", "check": "Every figure carries a version anchor and an evidence link", "key": "anchored", "conditions": "C-27, C-35" }
+    {
+      "id": "A2.1",
+      "check": "Motion uses transform / opacity only; micro 150–250ms; transitions ≤ 400ms",
+      "key": "motion",
+      "conditions": "C-15"
+    },
+    {
+      "id": "A2.2",
+      "check": "Native scrolling only; slider is CSS scroll-snap with visible position",
+      "key": "scroll",
+      "conditions": "C-14"
+    },
+    {
+      "id": "A2.3",
+      "check": "No preloaders, sound, trackers, cookies, third-party logos or assets",
+      "key": "no_third_party",
+      "conditions": "C-04, C-19, C-21"
+    },
+    {
+      "id": "A2.4",
+      "check": "No contact-capable email or phone anywhere; contact via LinkedIn only",
+      "key": "c33",
+      "conditions": "C-33 + Amendments 1, 2"
+    },
+    {
+      "id": "A2.5",
+      "check": "Interaction QA — no hover layer blocks or overlaps another interactive element",
+      "key": "interaction_qa",
+      "conditions": "handoff §6",
+      "basis": "OBSERVED 2026-08-06",
+      "basis_note": "A person looked. One slice of this is automated (test_evidence_layer_never_covers_the_links_column), but the claim across every page and state was established by observation, so it is published as an observation with its date rather than as a machine verdict.",
+      "evidence_url": "https://github.com/MohdSaifHussain/mohdsaifhussain.github.io/blob/main/docs/INTERACTION-QA.md",
+      "evidence_label": "INTERACTION-QA.md"
+    },
+    {
+      "id": "A2.6",
+      "check": "All displayed values real; unverified items marked with an honest cross",
+      "key": "honesty",
+      "conditions": "C-27"
+    },
+    {
+      "id": "A2.7",
+      "check": "Complete and coherent with prefers-reduced-motion",
+      "key": "reduced_motion",
+      "conditions": "C-10",
+      "basis": "GATED + OBSERVED 2026-08-06",
+      "basis_note": "The mechanical half is gated: tools/check_animations.py refuses the build (REASON=MOTION_NOT_REDUCED) if any timed transition cannot be switched off under prefers-reduced-motion. Whether the page remains COHERENT with motion off is a human judgement, observed and dated, so this row publishes the observation rather than a machine verdict for the whole claim.",
+      "evidence_url": "https://github.com/MohdSaifHussain/mohdsaifhussain.github.io/blob/main/docs/INTERACTION-QA.md",
+      "evidence_label": "INTERACTION-QA.md"
+    },
+    {
+      "id": "A2.8",
+      "check": "Every figure carries a version anchor and an evidence link",
+      "key": "anchored",
+      "conditions": "C-27, C-35"
+    }
   ],
-
   "a4_limitations": [
-    { "id": "A4.10", "limitation": "The theme toggle remembers your choice for this visit, and forgets it when you close the tab", "reason": "Per-visit by decision. C-21 reads: \"No cookies set by the site. No localStorage of personal data. No fingerprinting.\" No cookie is set. The storage ban is scoped to PERSONAL DATA, and one word naming a colour scheme identifies nobody and describes nothing about you beyond a preference you just expressed on screen — so sessionStorage carries it, which is the storage whose lifetime is exactly a visit. Applying it before first paint costs one small render-blocking request in the head, which is the only CSP-compliant way to avoid a visible flash of the wrong theme: this build refuses inline scripts and ships script-src 'self' with no nonce and no hash. Across visits your system setting decides again, live — prefers-color-scheme, which is what it is for. Owner's ruling, 2026-08-10; the first implementation stored nothing and was per-PAGE, recorded as defect D-59." },
-    { "id": "A4.1", "limitation": "No clickjacking control is possible: neither X-Frame-Options nor CSP frame-ancestors, and no HSTS preload", "reason": "GitHub Pages serves no custom HTTP response headers (charter §7), so X-Frame-Options and HSTS cannot be set. CSP is applied via meta instead — but CSP Level 3 §3.3 states that report-uri, frame-ancestors and sandbox are IGNORED when delivered by meta, so frame-ancestors is unavailable too. Verified against the specification 2026-08-06, not assumed. This is a WIDER gap than this row originally described: the modern replacement is as unavailable as the legacy header. frame-ancestors is deliberately omitted from the policy rather than written and ignored, because a directive that looks like protection and provides none is worse than a declared absence. There is also no report-only mode via meta, so the policy is enforced from the first deploy." },
-    { "id": "A4.3", "limitation": "Certifications shows 00 entries", "reason": "Only entries carrying real credential verification are accepted (C-27). The empty state is the designed state, not a missing feature. Obligation O-2." },
-    { "id": "A4.5", "limitation": "C-05 (image formats, sizing, lazy-loading) reports MET-not-applicable", "reason": "The committed design is pure typography; no content images ship, so the condition is satisfied because nothing it governs exists — which is not the same as passing a test. The generated Open Graph image is out-of-scope metadata and is never rendered in-page." },
-    { "id": "A4.6", "limitation": "Some displayed project figures are resume-stated baselines rather than live counts", "reason": "NARROWED 2026-08-10, when defect D-02's recorded upgrade path landed. Three entries are now CI-MEASURED: delivery-engine, analystkit and opskit each publish a stats.json from their own CI, counted from the JUnit report of the run that executed the tests, and this site renders that count with the commit it was measured at and the timestamp it was measured. Those figures are no longer baselines. TS-Sentry and Switchyard are REPO-STATED since 2026-08-22, and finding-bridge since 2026-08-25: their figures are their own repos' published record (README lines, a CI log) cited at the anchored version, and OWNER-MEASURED is retired. Each card now states its own basis in its own sentence (P5.1, defect D-60: until 2026-08-22 every card printed the resume-baseline sentence regardless). What remains a resume-stated baseline is delivery-engine-fde, whose metrics are qualitative rather than counts and which publishes no stats.json. The label on measured entries is 'tests', not 'unit tests': the measurement counts what pytest executed and does not establish that every one of them is a unit test, and claiming the narrower category would be asserting past the evidence. Every entry, on every basis, still renders a version anchor and an evidence link. Decision D-02; DECISIONS 3.1.3a. This limitation is narrowed rather than deleted because it genuinely narrowed — it did not disappear." },
-    { "id": "A4.7", "limitation": "One historical commit in this repo contains a contact-capable address", "reason": "Defect D-21: the defect log briefly reproduced the address that defect D-01 was about. The working tree is clean and every commit is authored by a noreply identity, but commit e967e22 retains the string. Owner's decision, 2026-08-06: published history is not rewritten — a force-push would invalidate the hand-verified P3.1 close and would not achieve removal, since force-pushed commits remain fetchable by SHA. Declared here rather than hidden. The ledger records; it does not rewrite." },
-    { "id": "A4.9", "limitation": "Screen-reader verification covers the Home page only; Projects, Experience, Certifications and Audit are unverified by screen reader", "reason": "C-08 is MET IN PART, declared under charter §8. An NVDA pass against a five-point checklist — title and heading walk, meaningful link names, marks silent, nav announces current page, clock silent over a one-minute listen — was performed on Home and passed all five. The other four pages were not examined. They share the same nav, footer, mark macros and heading structure, so there is a reasonable expectation they behave alike, but an expectation is not an observation and this site does not publish one as the other. The remaining pages are re-offered at every release under the same checklist; the limit narrows only when a page is actually examined. Note also that zero axe violations is not the same as accessible: automated tooling catches a minority of real barriers, which is why the screen-reader pass exists as a separate condition at all." }
+    {
+      "id": "A4.10",
+      "limitation": "The theme toggle remembers your choice for this visit, and forgets it when you close the tab",
+      "reason": "Per-visit by decision. C-21 reads: \"No cookies set by the site. No localStorage of personal data. No fingerprinting.\" No cookie is set. The storage ban is scoped to PERSONAL DATA, and one word naming a colour scheme identifies nobody and describes nothing about you beyond a preference you just expressed on screen — so sessionStorage carries it, which is the storage whose lifetime is exactly a visit. Applying it before first paint costs one small render-blocking request in the head, which is the only CSP-compliant way to avoid a visible flash of the wrong theme: this build refuses inline scripts and ships script-src 'self' with no nonce and no hash. Across visits your system setting decides again, live — prefers-color-scheme, which is what it is for. Owner's ruling, 2026-08-10; the first implementation stored nothing and was per-PAGE, recorded as defect D-59."
+    },
+    {
+      "id": "A4.1",
+      "limitation": "No clickjacking control is possible: neither X-Frame-Options nor CSP frame-ancestors, and no HSTS preload",
+      "reason": "GitHub Pages serves no custom HTTP response headers (charter §7), so X-Frame-Options and HSTS cannot be set. CSP is applied via meta instead — but CSP Level 3 §3.3 states that report-uri, frame-ancestors and sandbox are IGNORED when delivered by meta, so frame-ancestors is unavailable too. Verified against the specification 2026-08-06, not assumed. This is a WIDER gap than this row originally described: the modern replacement is as unavailable as the legacy header. frame-ancestors is deliberately omitted from the policy rather than written and ignored, because a directive that looks like protection and provides none is worse than a declared absence. There is also no report-only mode via meta, so the policy is enforced from the first deploy."
+    },
+    {
+      "id": "A4.3",
+      "limitation": "Certifications shows 00 entries",
+      "reason": "Only entries carrying real credential verification are accepted (C-27). The empty state is the designed state, not a missing feature. Obligation O-2."
+    },
+    {
+      "id": "A4.5",
+      "limitation": "C-05 (image formats, sizing, lazy-loading) reports MET-not-applicable",
+      "reason": "The committed design is pure typography; no content images ship, so the condition is satisfied because nothing it governs exists — which is not the same as passing a test. The generated Open Graph image is out-of-scope metadata and is never rendered in-page."
+    },
+    {
+      "id": "A4.6",
+      "limitation": "Some displayed project figures are resume-stated baselines rather than live counts",
+      "reason": "NARROWED 2026-08-10, when defect D-02's recorded upgrade path landed. Three entries are now CI-MEASURED: delivery-engine, analystkit and opskit each publish a stats.json from their own CI, counted from the JUnit report of the run that executed the tests, and this site renders that count with the commit it was measured at and the timestamp it was measured. Those figures are no longer baselines. TS-Sentry and Switchyard are REPO-STATED since 2026-08-22, and finding-bridge since 2026-08-25: their figures are their own repos' published record (README lines, a CI log) cited at the anchored version, and OWNER-MEASURED is retired. Each card now states its own basis in its own sentence (P5.1, defect D-60: until 2026-08-22 every card printed the resume-baseline sentence regardless). What remains a resume-stated baseline is delivery-engine-fde, whose metrics are qualitative rather than counts and which publishes no stats.json. The label on measured entries is 'tests', not 'unit tests': the measurement counts what pytest executed and does not establish that every one of them is a unit test, and claiming the narrower category would be asserting past the evidence. Every entry, on every basis, still renders a version anchor and an evidence link. Decision D-02; DECISIONS 3.1.3a. This limitation is narrowed rather than deleted because it genuinely narrowed — it did not disappear."
+    },
+    {
+      "id": "A4.7",
+      "limitation": "One historical commit in this repo contains a contact-capable address",
+      "reason": "Defect D-21: the defect log briefly reproduced the address that defect D-01 was about. The working tree is clean and every commit is authored by a noreply identity, but commit e967e22 retains the string. Owner's decision, 2026-08-06: published history is not rewritten — a force-push would invalidate the hand-verified P3.1 close and would not achieve removal, since force-pushed commits remain fetchable by SHA. Declared here rather than hidden. The ledger records; it does not rewrite."
+    },
+    {
+      "id": "A4.9",
+      "limitation": "Screen-reader verification covers the Home page only; Projects, Experience, Certifications and Audit are unverified by screen reader",
+      "reason": "C-08 is MET IN PART, declared under charter §8. An NVDA pass against a five-point checklist — title and heading walk, meaningful link names, marks silent, nav announces current page, clock silent over a one-minute listen — was performed on Home and passed all five. The other four pages were not examined. They share the same nav, footer, mark macros and heading structure, so there is a reasonable expectation they behave alike, but an expectation is not an observation and this site does not publish one as the other. The remaining pages are re-offered at every release under the same checklist; the limit narrows only when a page is actually examined. Note also that zero axe violations is not the same as accessible: automated tooling catches a minority of real barriers, which is why the screen-reader pass exists as a separate condition at all."
+    }
   ],
-
   "_a4_resolved_note": "Limitations that CLOSED. Kept and published rather than deleted: a register showing only what is currently broken teaches nothing about how the posture got here, and silently dropping a declaration is indistinguishable from never having made it. A limit leaves the active list only when it genuinely narrowed, with what closed it recorded.",
   "a4_resolved": [
-    { "id": "A4.4", "limitation": "The visit counter shows a dash, not a count", "closed": "2026-08-22", "closed_by": "The element was retired in P5.2 (decision 5.2.1) on the owner's ruling, option (b) of three. The dash was decision D-03's designed state for v1.0.0; read on the live page it looked like a counter with nothing in it. No counter replaces it: one would be a third-party resource, and the zero-third-party claim stands. Traffic is read privately from the repository's own Insights, which needs no script." },
-    { "id": "A4.8", "limitation": "Light mode is not shipped", "closed": "2026-08-10", "closed_by": "Light mode shipped in P4.2, closing reading R-11. The palette is DERIVED from the dark one rather than invented — the light ink is the dark background inverted, and --body, --bright and --dim mirror their dark measured ratios — with the derivation rule and solved values published in STEP-09-P4.2-LIGHT-DERIVATION.md. Every pair meets AA in both themes at the size it is used; light loses no 7:1 the dark theme reaches; --dim does not worsen (5.78:1 dark, 5.79:1 light). All three are gated with their own reason codes, and axe runs on every page in BOTH themes with a rendered-background witness proving each theme actually rendered. The visible cost is the accent: no amber survives a light ground at any WCAG-meaningful ratio, so light mode carries a bronze at 7.05:1 by the owner's ruling. Dark remains the default; light is the guest mode." },
-    { "id": "A4.2", "limitation": "TS-Sentry test, defect and version metrics were unverified", "closed": "2026-08-06", "closed_by": "Owner supplied measured figures — 1,230 tests at v1.0.0, 93.16% coverage against a 90% CI floor, mypy --strict clean across 164 files — from a local run corroborated by the repo's pinned CI and coverage badges. Obligation O-1 discharged; the card now renders a verification mark rather than an honest cross." }
+    {
+      "id": "A4.4",
+      "limitation": "The visit counter shows a dash, not a count",
+      "closed": "2026-08-22",
+      "closed_by": "The element was retired in P5.2 (decision 5.2.1) on the owner's ruling, option (b) of three. The dash was decision D-03's designed state for v1.0.0; read on the live page it looked like a counter with nothing in it. No counter replaces it: one would be a third-party resource, and the zero-third-party claim stands. Traffic is read privately from the repository's own Insights, which needs no script."
+    },
+    {
+      "id": "A4.8",
+      "limitation": "Light mode is not shipped",
+      "closed": "2026-08-10",
+      "closed_by": "Light mode shipped in P4.2, closing reading R-11. The palette is DERIVED from the dark one rather than invented — the light ink is the dark background inverted, and --body, --bright and --dim mirror their dark measured ratios — with the derivation rule and solved values published in STEP-09-P4.2-LIGHT-DERIVATION.md. Every pair meets AA in both themes at the size it is used; light loses no 7:1 the dark theme reaches; --dim does not worsen (5.78:1 dark, 5.79:1 light). All three are gated with their own reason codes, and axe runs on every page in BOTH themes with a rendered-background witness proving each theme actually rendered. The visible cost is the accent: no amber survives a light ground at any WCAG-meaningful ratio, so light mode carries a bronze at 7.05:1 by the owner's ruling. Dark remains the default; light is the guest mode."
+    },
+    {
+      "id": "A4.2",
+      "limitation": "TS-Sentry test, defect and version metrics were unverified",
+      "closed": "2026-08-06",
+      "closed_by": "Owner supplied measured figures — 1,230 tests at v1.0.0, 93.16% coverage against a 90% CI floor, mypy --strict clean across 164 files — from a local run corroborated by the repo's pinned CI and coverage badges. Obligation O-1 discharged; the card now renders a verification mark rather than an honest cross."
+    }
   ],
-
   "a3_animations": [
-    { "id": "A3.1", "animation": "Home — flagship row evidence reveal (pointer-events:none layer)", "properties": "opacity", "duration": "200ms", "duration_type": "ms", "keyframes": [], "answers": "WHAT JUST HAPPENED" },
-    { "id": "A3.2", "animation": "Projects — case slider, native CSS scroll-snap with visible scrollbar", "properties": "native scroll", "duration": "—", "duration_type": "none", "keyframes": [], "answers": "WHERE AM I" },
-    { "id": "A3.3", "animation": "All pages — link and nav hover state (instant colour swap, no transition)", "properties": "colour (static)", "duration": "0ms", "duration_type": "ms", "keyframes": [], "answers": "WHAT CAN I DO" },
-    { "id": "A3.4", "animation": "Experience — receipts row reading state on hover and focus-within (background tint, body → bright text, instant)", "properties": "background-color, colour (static)", "duration": "0ms", "duration_type": "ms", "keyframes": [], "answers": "WHERE AM I", "note": "Owner-directed addition to the handoff §5 list, 2026-08-06. Declared WHERE AM I, not WHAT CAN I DO: the rows carry no control, and claiming an affordance that does not exist is what C-12 exists to catch. Keyboard parity is :focus-within, never tabindex — dead tab stops would cost more against C-07 and C-08 than they gain. HONEST LIMIT: no receipts row currently contains a focusable element, so the focus half is inert until one does." },
-    { "id": "A3.5", "animation": "All pages — cross-document view transition, vertical ledger-turn (header and footer persist; main turns out and in)", "properties": "transform, opacity", "duration": "250ms", "duration_type": "ms", "keyframes": ["vt-turn-out", "vt-turn-in"], "answers": "WHERE AM I", "note": "Added by the v1.1 motion amendment (MOTION_SPEC_v1_1.md, M-1), owner ruling 2026-08-10. Native CSS cross-document View Transitions: zero JS and zero library bytes (C-19). Duration is driven by --motion-vt so the single C-10 lever reaches it; the spec's prose governs over its illustrative code block, which showed a 250ms literal (reading R-13). Browsers without @view-transition ignore the at-rule and navigate normally — content is never hidden behind an API the browser lacks." },
-    { "id": "A3.6", "animation": "Experience — register rows and receipt rules surface on scroll, scrubbed to scroll position (/experience/ only)", "properties": "transform", "duration": "scroll-scrubbed", "duration_type": "scrubbed", "keyframes": ["xp-surface", "xp-rule"], "answers": "WHERE AM I", "note": "Added by the v1.1 motion amendment (MOTION_SPEC_v1_1.md, M-2), owner ruling 2026-08-10. CSS animation-timeline: view() — no JS and no scroll listeners (C-19, C-14). Duration is SCRUBBED, not timed: progress is bound to scroll position, so C-15's time caps do not bind and no millisecond value is invented for it. Wrapped in @supports so non-supporting browsers see every row and rule statically from first paint. Earns WHERE AM I because the reveal frontier is the reader's own position in the six-role register. ERRATUM 1 against the spec (defect D-51): the opacity channel the spec's illustrative keyframe showed was REMOVED. Every point in a scrubbed range is a resting state, so intermediate alpha is where text sits for as long as the reader leaves the scroll there — and --dim drops below AA at any alpha under 0.854. The reveal is translateY only; .receipt-rule keeps scaleX because a rule carries no text." }
+    {
+      "id": "A3.1",
+      "animation": "Home — flagship row evidence reveal (pointer-events:none layer)",
+      "properties": "opacity",
+      "duration": "200ms",
+      "duration_type": "ms",
+      "keyframes": [],
+      "answers": "WHAT JUST HAPPENED"
+    },
+    {
+      "id": "A3.2",
+      "animation": "Projects — case slider, native CSS scroll-snap with visible scrollbar",
+      "properties": "native scroll",
+      "duration": "—",
+      "duration_type": "none",
+      "keyframes": [],
+      "answers": "WHERE AM I"
+    },
+    {
+      "id": "A3.3",
+      "animation": "All pages — link and nav hover state (instant colour swap, no transition)",
+      "properties": "colour (static)",
+      "duration": "0ms",
+      "duration_type": "ms",
+      "keyframes": [],
+      "answers": "WHAT CAN I DO"
+    },
+    {
+      "id": "A3.4",
+      "animation": "Experience — receipts row reading state on hover and focus-within (background tint, body → bright text, instant)",
+      "properties": "background-color, colour (static)",
+      "duration": "0ms",
+      "duration_type": "ms",
+      "keyframes": [],
+      "answers": "WHERE AM I",
+      "note": "Owner-directed addition to the handoff §5 list, 2026-08-06. Declared WHERE AM I, not WHAT CAN I DO: the rows carry no control, and claiming an affordance that does not exist is what C-12 exists to catch. Keyboard parity is :focus-within, never tabindex — dead tab stops would cost more against C-07 and C-08 than they gain. HONEST LIMIT: no receipts row currently contains a focusable element, so the focus half is inert until one does."
+    },
+    {
+      "id": "A3.5",
+      "animation": "All pages — cross-document view transition, vertical ledger-turn (header and footer persist; main turns out and in)",
+      "properties": "transform, opacity",
+      "duration": "250ms",
+      "duration_type": "ms",
+      "keyframes": [
+        "vt-turn-out",
+        "vt-turn-in"
+      ],
+      "answers": "WHERE AM I",
+      "note": "Added by the v1.1 motion amendment (MOTION_SPEC_v1_1.md, M-1), owner ruling 2026-08-10. Native CSS cross-document View Transitions: zero JS and zero library bytes (C-19). Duration is driven by --motion-vt so the single C-10 lever reaches it; the spec's prose governs over its illustrative code block, which showed a 250ms literal (reading R-13). Browsers without @view-transition ignore the at-rule and navigate normally — content is never hidden behind an API the browser lacks."
+    },
+    {
+      "id": "A3.6",
+      "animation": "Experience — register rows and receipt rules surface on scroll, scrubbed to scroll position (/experience/ only)",
+      "properties": "transform",
+      "duration": "scroll-scrubbed",
+      "duration_type": "scrubbed",
+      "keyframes": [
+        "xp-surface",
+        "xp-rule"
+      ],
+      "answers": "WHERE AM I",
+      "note": "Added by the v1.1 motion amendment (MOTION_SPEC_v1_1.md, M-2), owner ruling 2026-08-10. CSS animation-timeline: view() — no JS and no scroll listeners (C-19, C-14). Duration is SCRUBBED, not timed: progress is bound to scroll position, so C-15's time caps do not bind and no millisecond value is invented for it. Wrapped in @supports so non-supporting browsers see every row and rule statically from first paint. Earns WHERE AM I because the reveal frontier is the reader's own position in the six-role register. ERRATUM 1 against the spec (defect D-51): the opacity channel the spec's illustrative keyframe showed was REMOVED. Every point in a scrubbed range is a resting state, so intermediate alpha is where text sits for as long as the reader leaves the scroll there — and --dim drops below AA at any alpha under 0.854. The reveal is translateY only; .receipt-rule keeps scaleX because a rule carries no text."
+    },
+    {
+      "id": "A3.7",
+      "animation": "Projects — each entry's architecture diagram posts itself: region labels, then nodes rising into place and edges drawing out from their source, left to right, once, the first time the figure reaches the reading edge",
+      "properties": "transform, opacity",
+      "duration": "260ms",
+      "duration_type": "ms",
+      "keyframes": [],
+      "answers": "WHAT JUST HAPPENED",
+      "note": "Added 2026-08-27 by the owner's ruling (P5.4, decision 5.4.1). The drawings are transcribed from each project's README by tools/gen_diagrams.py, which refuses any drawing in which text overlaps a node or another text (REASON=DIAGRAM_OVERLAP). TIMED, not scrubbed (D-51). Only a diagram entirely below the viewport when diagram.js runs is ever hidden, so first paint, no-JS and reduced-motion visitors see every drawing from the first frame; the above-fold gate, LCP and CLS are untouched by construction. Edges are straight lines drawn by scale() from their start point, so the whole drawing stays inside C-15 without amendment. 45ms stagger per item, capped at the fortieth. Zeroed by the single reduced-motion lever. Zoom controls (instant, A3.3 family) scale the drawing inside its own natively scrollable frame."
+    }
   ],
-
-  "_a3_list_governance": "Handoff §5 called this list complete at three. It is now four. 'Nothing else ships' is preserved as: THE LIST CHANGES ONLY BY RECORDED RULING, NEVER SILENTLY. tools/check_animations.py compares what actually ships against this declared list in both directions — shipping an undeclared animation fails the build, and declaring one that does not ship fails too."
+  "_a3_list_governance": "Handoff §5 called this list complete at three. It is now four, six (v1.1), and seven (v1.2, A3.7). 'Nothing else ships' is preserved as: THE LIST CHANGES ONLY BY RECORDED RULING, NEVER SILENTLY. tools/check_animations.py compares what actually ships against this declared list in both directions — shipping an undeclared animation fails the build, and declaring one that does not ship fails too."
 }

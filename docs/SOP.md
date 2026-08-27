@@ -60,6 +60,24 @@ a defect in this build (D-39) came from filtering output and hiding a failure.
 Counts update themselves — `05 ENTRIES`, the `01 / 05` positions, the home
 flagship count. Never type a number.
 
+## 1a. Add or change a project's architecture diagram
+
+1. Open `tools\gen_diagrams.py`. Each diagram is a function: nodes with the
+   README's own labels, edges between them, explicit `label_at` positions
+   for edge labels. Add a function and append it to `DIAGRAMS`.
+2. Generate. The generator **refuses** a drawing in which any text overlaps a
+   node or another text, and names the pair:
+   ```powershell
+   python tools\gen_diagrams.py;   "diagrams exit=$LASTEXITCODE"
+   ```
+   Move the named label (`label_at`) or node until it prints `DIAGRAMS OK`.
+3. In `data\projects.json`, set the entry's `diagram` to the function's name
+   and `diagram_source` to the README lines it was transcribed from.
+4. Never edit a file under `templates\diagrams\` by hand: the test suite
+   compares each one to the generator's output and fails on any difference.
+5. Six checks, commit `tools\gen_diagrams.py`, `templates\diagrams\`,
+   `data\projects.json`, push.
+
 ## 2. Add a certification or completed course
 
 1. Open `data\certifications.json`, add an entry to `certifications`:

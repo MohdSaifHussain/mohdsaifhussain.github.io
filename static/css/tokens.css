@@ -176,6 +176,8 @@
   --ease-reveal:   ease;
   --motion-vt:     250ms;   /* A3.5 view transition, transform + opacity     */
   --ease-vt:       cubic-bezier(.22, .61, .36, 1);   /* ease-out, per spec   */
+  --motion-draw:   260ms;   /* A3.7 diagram: nodes post, edges draw by scale  */
+  --motion-draw-step: 45ms; /* A3.7 diagram stagger, per item                 */
 }
 
 /* ---------------------------------------------------------------------------
@@ -256,7 +258,12 @@
   :root {
     --motion-reveal: 0ms;
     --motion-vt:     0ms;
+    --motion-draw:   0ms;
+    --motion-draw-step: 0ms;
   }
+  /* A3.7: the diagram's pending state must not hide anything either.
+     diagram.js also declines to arm under this query; this is the CSS half. */
+  .diagram.post-pending > * { opacity: 1; transform: none; }
 
   /* A3.6 is scrubbed to scroll position, not to a clock, so it has no duration
      token to zero. It is switched off by rule instead — which is why the gate

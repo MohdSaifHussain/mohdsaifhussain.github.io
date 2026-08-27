@@ -1,5 +1,5 @@
 {
-  "_status": "Owner-verified 2026-08-05 at Phase 1 close (chat record), covering the fields as they stood on that date. OPEN EXCEPTION: TS-Sentry metrics unverified — renders as an honest ✗ pending owner supply. SUPERSEDED FIELDS: the promise strings and per-count version anchoring rewritten under decision D-02 are new text, pending owner re-verification at the P3.2 review stop. C-27 does not report MET until that re-verification is recorded. CLOSED 2026-08-22: the TS-Sentry exception is discharged; its description and metrics are re-sourced to the repo's own README and CI logs (DECISIONS CU-4). EXTENDED 2026-08-25: finding-bridge added as the seventh entry and fourth flagship, every field quoted from its README at origin/master 41a33ed with markup dropped and no rewording, on the owner's direction (DECISIONS CU-5).",
+  "_status": "Owner-verified 2026-08-05 at Phase 1 close (chat record), covering the fields as they stood on that date. OPEN EXCEPTION: TS-Sentry metrics unverified — renders as an honest ✗ pending owner supply. SUPERSEDED FIELDS: the promise strings and per-count version anchoring rewritten under decision D-02 are new text, pending owner re-verification at the P3.2 review stop. C-27 does not report MET until that re-verification is recorded. CLOSED 2026-08-22: the TS-Sentry exception is discharged; its description and metrics are re-sourced to the repo's own README and CI logs (DECISIONS CU-4). EXTENDED 2026-08-25: finding-bridge added as the seventh entry and fourth flagship, every field quoted from its README at origin/master 41a33ed with markup dropped and no rewording, on the owner's direction (DECISIONS CU-5). EXTENDED 2026-08-27 (P5.4): each live entry carries `diagram`, the name of its architecture drawing under templates/diagrams/, and `diagram_source`, the README lines it was transcribed from; the archived FDE case study has none.",
   "_metrics_basis": "Owner-signed 2026-08-06 (O-3 discharged). FOUR BASES ARE DEFINED, three in use, and each entry declares its own in metrics_basis. (1) CI-MEASURED — delivery-engine, analystkit and opskit: their CI publishes a stats.json counted from the JUnit report of the run that executed the tests, and the site renders that count with the commit it was measured at and the timestamp of that measurement. The timestamp means WHEN THE MEASUREMENT LAST CHANGED, not when CI last ran: each repo commits its stats.json only when the count or the release anchor differs, so a run that measures the same number leaves the file alone (owner's ruling 2026-08-10). This is defect D-02's recorded upgrade path (DECISIONS 3.1.3a), landed 2026-08-10. The label is 'tests', not 'unit tests': the measurement counts what pytest executed and does not establish that every one is a unit test. The resume-stated baseline each replaced is retained in verified_metrics in this file and is NOT rewritten — only the rendered figure changed. (2) OWNER-MEASURED — retired 2026-08-22, no entry declares it. TS-Sentry carried it from 2026-08-06 (figures from a local run, corroborated by the repo's pinned CI and coverage badges) until its figures were re-sourced under (4). Kept here so the record shows the basis existed. (3) RESUME-STATED BASELINES — delivery-engine-fde, whose metrics are qualitative rather than counts and which publishes no stats.json. (4) REPO-STATED - Switchyard: the count is the source repository's own published figure (README, v1.0.0), with its stated definition of passed plus skipped; adopted by owner's ruling 2026-08-22. TS-Sentry: the test count is the CI log at the v1.0.0 commit (run 30718834429: 1,229 passed, 1 skipped, 1,230 collected), and the coverage and mypy figures are the README's own (lines 143-144, identical at the tag and on main); adopted by owner's ruling 2026-08-22. The repo publishes no stats.json yet, so its CI-MEASURED upgrade via the D-02 path is a named follow-up in that repo, not a claim made here. finding-bridge: every figure is the README's own at origin/master 41a33ed (the Honest numbers and How this project was built sections), quoted without rewording; adopted by owner's direction 2026-08-25 (CU-5). Every entry still renders a version anchor and an evidence link, so no figure travels without its source.",
   "projects": [
     {
@@ -20,7 +20,9 @@
       "links": {
         "repo": "https://github.com/MohdSaifHussain/delivery-engine",
         "container": "https://ghcr.io/mohdsaifhussain/delivery-engine"
-      }
+      },
+      "diagram": "delivery-engine",
+      "diagram_source": "README.md:57-82 (The architecture, mermaid flowchart TD) at origin/main 4d40293; node labels are the flowchart's, shortened only by dropping list items that would not fit a node"
     },
     {
       "id": "delivery-engine-fde",
@@ -57,7 +59,9 @@
         "case_study": "https://github.com/MohdSaifHussain/ts-sentry-case-study",
         "case_study_site": "https://mohdsaifhussain.github.io/ts-sentry-case-study/",
         "examples": "https://github.com/MohdSaifHussain/ts-sentry/tree/main/examples"
-      }
+      },
+      "diagram": "ts-sentry",
+      "diagram_source": "README.md:29-47 (mermaid flowchart LR) at origin/main 977d520; node and edge labels verbatim"
     },
     {
       "id": "analystkit",
@@ -73,7 +77,9 @@
       ],
       "links": {
         "repo": "https://github.com/MohdSaifHussain/analystkit"
-      }
+      },
+      "diagram": "analystkit",
+      "diagram_source": "README.md:185-208 (Security architecture) at origin/main 3a516af; the three stacked defences, the audit boundary and the AI layer, phrases verbatim"
     },
     {
       "id": "opskit",
@@ -88,7 +94,9 @@
       ],
       "links": {
         "repo": "https://github.com/MohdSaifHussain/OpsKit"
-      }
+      },
+      "diagram": "opskit",
+      "diagram_source": "README.md:130-171 (The sequence; The conditional drill-down) at origin/main 959b352; playbook names, the six steps and the worked drill quoted"
     },
     {
       "id": "switchyard",
@@ -108,7 +116,9 @@
         "repo": "https://github.com/MohdSaifHussain/switchyard",
         "see_it_running": "https://github.com/MohdSaifHussain/switchyard#see-it-running",
         "showcase": "https://github.com/MohdSaifHussain/switchyard/blob/main/docs/showcase/README.md"
-      }
+      },
+      "diagram": "switchyard",
+      "diagram_source": "docs/showcase/README.md:18-43 (mermaid flowchart TB) at origin/main 560c107; node and edge labels verbatim, HTML breaks dropped"
     },
     {
       "id": "finding-bridge",
@@ -132,7 +142,9 @@
         "examples": "https://github.com/MohdSaifHussain/finding-bridge/tree/master/examples",
         "showcase": "https://github.com/MohdSaifHussain/finding-bridge/tree/master/docs/showcase",
         "usage": "https://github.com/MohdSaifHussain/finding-bridge/blob/master/docs/USAGE.md"
-      }
+      },
+      "diagram": "finding-bridge",
+      "diagram_source": "README.md:63-99 (Architecture, mermaid flowchart LR) at origin/master 41a33ed; node and edge labels verbatim"
     }
   ]
 }

@@ -1,0 +1,23 @@
+<svg class="diagram" data-post viewBox="0 0 1200 330" role="img" aria-labelledby="analystkit-diagram-title" xmlns="http://www.w3.org/2000/svg">
+<title id="analystkit-diagram-title">AnalystKit security architecture: three stacked injection defences in front of a deterministic engine, an audit boundary of SHA-256 hashed findings, and an optional AI layer that never touches data</title>
+<g class="d-item d-region"><text class="d-eyebrow" x="0" y="14">THREE STACKED INJECTION DEFENCES</text></g>
+<g class="d-item d-region"><rect class="d-boundary" x="650" y="60" width="260" height="120" rx="2"/><text class="d-eyebrow d-eyebrow--accent" x="662" y="76">AUDIT BOUNDARY</text></g>
+<g class="d-item d-node d-node--box"><rect class="d-shape" x="0" y="100" width="110" height="29" rx="1"/><text class="d-label" x="55" y="118" text-anchor="middle">Source data</text></g>
+<g class="d-item d-node d-node--box"><rect class="d-shape" x="160" y="40" width="208" height="55" rx="1"/><text class="d-label" x="264" y="58" text-anchor="middle">READ_ONLY attach:</text><text class="d-label" x="264" y="72" text-anchor="middle">even a successful injection</text><text class="d-label" x="264" y="84" text-anchor="middle">cannot write</text></g>
+<g class="d-item d-edge d-edge--up"><line class="d-line" x1="110" y1="114" x2="160" y2="68"/></g>
+<g class="d-item d-node d-node--box"><rect class="d-shape" x="160" y="120" width="215" height="55" rx="1"/><text class="d-label" x="267" y="138" text-anchor="middle">Prepared-statement parameter</text><text class="d-label" x="267" y="152" text-anchor="middle">binding: values can never</text><text class="d-label" x="267" y="164" text-anchor="middle">become SQL</text></g>
+<g class="d-item d-edge"><line class="d-line" x1="110" y1="114" x2="160" y2="148"/></g>
+<g class="d-item d-node d-node--box"><rect class="d-shape" x="160" y="200" width="242" height="42" rx="1"/><text class="d-label" x="281" y="218" text-anchor="middle">Validate-then-quote identifiers:</text><text class="d-label" x="281" y="232" text-anchor="middle">names can never become SQL</text></g>
+<g class="d-item d-edge"><line class="d-line" x1="110" y1="114" x2="160" y2="221"/></g>
+<g class="d-item d-node d-node--box"><rect class="d-shape" x="470" y="100" width="140" height="42" rx="1"/><text class="d-label" x="540" y="118" text-anchor="middle">deterministic</text><text class="d-label" x="540" y="132" text-anchor="middle">engine first</text></g>
+<g class="d-item d-edge"><line class="d-line" x1="368" y1="68" x2="470" y2="121"/></g>
+<g class="d-item d-edge d-edge--up"><line class="d-line" x1="375" y1="148" x2="470" y2="121"/></g>
+<g class="d-item d-edge d-edge--up"><line class="d-line" x1="402" y1="221" x2="470" y2="121"/></g>
+<g class="d-item d-node d-node--store"><rect class="d-shape" x="665" y="100" width="230" height="42" rx="8"/><text class="d-label" x="780" y="118" text-anchor="middle">findings hashed</text><text class="d-label" x="780" y="132" text-anchor="middle">to SHA-256</text></g>
+<g class="d-item d-edge"><line class="d-line" x1="610" y1="121" x2="665" y2="121"/></g>
+<g class="d-item d-node d-node--dashed"><rect class="d-shape" x="940" y="100" width="201" height="42" rx="1"/><text class="d-label" x="1041" y="118" text-anchor="middle">only the hash and findings</text><text class="d-label" x="1041" y="132" text-anchor="middle">JSON reach the model</text></g>
+<g class="d-item d-edge"><line class="d-line" x1="895" y1="121" x2="940" y2="121"/></g>
+<g class="d-item d-node d-node--box"><rect class="d-shape" x="940" y="220" width="249" height="42" rx="1"/><text class="d-label" x="1065" y="238" text-anchor="middle">narrative labeled: verify against</text><text class="d-label" x="1065" y="252" text-anchor="middle">the deterministic findings above</text></g>
+<g class="d-item d-edge"><line class="d-line" x1="1041" y1="142" x2="1065" y2="220"/></g>
+<g class="d-item d-node d-node--dashed"><rect class="d-shape" x="470" y="220" width="256" height="42" rx="1"/><text class="d-label" x="598" y="238" text-anchor="middle">AI never writes SQL, queries data,</text><text class="d-label" x="598" y="252" text-anchor="middle">or produces a number</text></g>
+</svg>

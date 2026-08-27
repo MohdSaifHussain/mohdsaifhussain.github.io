@@ -1,0 +1,21 @@
+<svg class="diagram" data-post viewBox="0 0 1200 330" role="img" aria-labelledby="ts-sentry-diagram-title" xmlns="http://www.w3.org/2000/svg">
+<title id="ts-sentry-diagram-title">TS-Sentry control path: an agent proposes, the input firewall and mandate check bound it, the consequence gate and hash-chained ledger record it, and only an analyst can enforce</title>
+<g class="d-item d-node d-node--box"><rect class="d-shape" x="0" y="53" width="110" height="42" rx="1"/><text class="d-label" x="55" y="72" text-anchor="middle">Agent</text><text class="d-label" x="55" y="84" text-anchor="middle">proposes</text></g>
+<g class="d-item d-node d-node--box"><rect class="d-shape" x="160" y="53" width="167" height="42" rx="1"/><text class="d-label" x="244" y="72" text-anchor="middle">Input firewall</text><text class="d-label" x="244" y="84" text-anchor="middle">content is inert data</text></g>
+<g class="d-item d-edge"><line class="d-line" x1="110" y1="74" x2="160" y2="74"/></g>
+<g class="d-item d-node d-node--diamond"><polygon class="d-shape" points="473,40 556,81 473,122 390,81"/><text class="d-label" x="473" y="78" text-anchor="middle">Mandate check</text><text class="d-label" x="473" y="92" text-anchor="middle">before dispatch</text></g>
+<g class="d-item d-edge"><line class="d-line" x1="327" y1="74" x2="390" y2="81"/></g>
+<g class="d-item d-node d-node--diamond"><polygon class="d-shape" points="754,40 889,81 754,122 620,81"/><text class="d-label" x="754" y="78" text-anchor="middle">Consequence gate</text><text class="d-label" x="754" y="92" text-anchor="middle">OBSERVE / ASSEMBLE / RECOMMEND</text></g>
+<g class="d-item d-edge"><line class="d-line" x1="556" y1="81" x2="620" y2="81"/><text class="d-edge-label" x="588" y="60" text-anchor="middle">inside</text></g>
+<g class="d-item d-node d-node--store"><rect class="d-shape" x="960" y="53" width="154" height="42" rx="8"/><text class="d-label" x="1037" y="78" text-anchor="middle">Hash-chained ledger</text></g>
+<g class="d-item d-edge d-edge--up"><line class="d-line" x1="889" y1="81" x2="960" y2="74"/><text class="d-edge-label" x="924" y="60" text-anchor="middle">passes</text></g>
+<g class="d-item d-node d-node--box"><rect class="d-shape" x="390" y="190" width="119" height="42" rx="1"/><text class="d-label" x="450" y="208" text-anchor="middle">Never executed</text><text class="d-label" x="450" y="222" text-anchor="middle">and ledgered</text></g>
+<g class="d-item d-edge d-edge--back"><line class="d-line" x1="473" y1="122" x2="450" y2="190"/><text class="d-edge-label" x="505" y="155" text-anchor="middle">outside</text></g>
+<g class="d-item d-node d-node--box"><rect class="d-shape" x="650" y="190" width="119" height="29" rx="1"/><text class="d-label" x="710" y="208" text-anchor="middle">GATE_REJECTION</text></g>
+<g class="d-item d-edge d-edge--back"><line class="d-line" x1="754" y1="122" x2="710" y2="190"/><text class="d-edge-label" x="760" y="155" text-anchor="middle">fails</text></g>
+<g class="d-item d-edge d-edge--up"><line class="d-line" x1="509" y1="211" x2="1037" y2="95"/></g>
+<g class="d-item d-edge d-edge--up"><line class="d-line" x1="769" y1="204" x2="1037" y2="95"/></g>
+<g class="d-item d-node d-node--gate"><rect class="d-shape" x="960" y="180" width="194" height="42" rx="1"/><text class="d-label" x="1057" y="198" text-anchor="middle">Analyst signs</text><text class="d-label" x="1057" y="212" text-anchor="middle">the only route to ENFORCE</text></g>
+<g class="d-item d-edge"><line class="d-line" x1="1037" y1="95" x2="1057" y2="180"/></g>
+<g class="d-item d-node d-node--danger"><rect class="d-shape" x="0" y="240" width="194" height="55" rx="1"/><text class="d-label" x="97" y="258" text-anchor="middle">ENFORCE</text><text class="d-label" x="97" y="272" text-anchor="middle">unreachable by any agent,</text><text class="d-label" x="97" y="284" text-anchor="middle">at type level</text></g>
+</svg>

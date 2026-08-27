@@ -1,0 +1,36 @@
+<svg class="diagram" data-post viewBox="0 0 1200 400" role="img" aria-labelledby="finding-bridge-diagram-title" xmlns="http://www.w3.org/2000/svg">
+<title id="finding-bridge-diagram-title">finding-bridge architecture: sources, a deterministic core with a sealing boundary and a human gate, and destinations</title>
+<g class="d-item d-region"><text class="d-eyebrow" x="0" y="14">SOURCES</text></g>
+<g class="d-item d-region"><text class="d-eyebrow" x="200" y="14">DETERMINISTIC CORE: NO AI, NO API KEY</text></g>
+<g class="d-item d-region"><text class="d-eyebrow" x="1000" y="134">DESTINATIONS</text></g>
+<g class="d-item d-region"><rect class="d-boundary" x="185" y="215" width="440" height="130" rx="2"/><text class="d-eyebrow d-eyebrow--accent" x="197" y="231">SEALING BOUNDARY: RAW CONTENT ENCRYPTED AT REST</text></g>
+<g class="d-item d-node d-node--box"><rect class="d-shape" x="0" y="30" width="150" height="29" rx="1"/><text class="d-label" x="75" y="48" text-anchor="middle">garak hitlog JSONL</text></g>
+<g class="d-item d-node d-node--box"><rect class="d-shape" x="0" y="92" width="150" height="42" rx="1"/><text class="d-label" x="75" y="110" text-anchor="middle">attack transcript,</text><text class="d-label" x="75" y="124" text-anchor="middle">text or JSON</text></g>
+<g class="d-item d-node d-node--box"><rect class="d-shape" x="200" y="53" width="100" height="29" rx="1"/><text class="d-label" x="250" y="72" text-anchor="middle">ingest</text></g>
+<g class="d-item d-edge"><line class="d-line" x1="150" y1="44" x2="200" y2="68"/></g>
+<g class="d-item d-edge d-edge--up"><line class="d-line" x1="150" y1="113" x2="200" y2="68"/></g>
+<g class="d-item d-node d-node--box"><rect class="d-shape" x="350" y="53" width="150" height="42" rx="1"/><text class="d-label" x="425" y="72" text-anchor="middle">safe metadata</text><text class="d-label" x="425" y="84" text-anchor="middle">preview</text></g>
+<g class="d-item d-edge"><line class="d-line" x1="300" y1="68" x2="350" y2="74"/></g>
+<g class="d-item d-node d-node--box"><rect class="d-shape" x="550" y="53" width="170" height="42" rx="1"/><text class="d-label" x="635" y="72" text-anchor="middle">stamp: RFC 8785</text><text class="d-label" x="635" y="84" text-anchor="middle">hash and chain</text></g>
+<g class="d-item d-edge"><line class="d-line" x1="500" y1="74" x2="550" y2="74"/></g>
+<g class="d-item d-node d-node--box"><rect class="d-shape" x="770" y="53" width="130" height="42" rx="1"/><text class="d-label" x="835" y="72" text-anchor="middle">dedup,</text><text class="d-label" x="835" y="84" text-anchor="middle">exact match</text></g>
+<g class="d-item d-edge"><line class="d-line" x1="720" y1="74" x2="770" y2="74"/></g>
+<g class="d-item d-node d-node--diamond"><polygon class="d-shape" points="1025,40 1100,81 1025,122 950,81"/><text class="d-label" x="1025" y="78" text-anchor="middle">human gate:</text><text class="d-label" x="1025" y="92" text-anchor="middle">confirm or reject</text></g>
+<g class="d-item d-edge"><line class="d-line" x1="900" y1="74" x2="950" y2="81"/></g>
+<g class="d-item d-node d-node--store"><rect class="d-shape" x="1100" y="53" width="100" height="42" rx="8"/><text class="d-label" x="1150" y="78" text-anchor="middle">ledger and head</text></g>
+<g class="d-item d-edge d-edge--up"><line class="d-line" x1="1100" y1="81" x2="1100" y2="74"/></g>
+<g class="d-item d-node d-node--box"><rect class="d-shape" x="1000" y="150" width="200" height="30" rx="1"/><text class="d-label" x="1100" y="169" text-anchor="middle">Markdown packet</text></g>
+<g class="d-item d-edge d-edge--back"><line class="d-line" x1="1150" y1="95" x2="1000" y2="165"/></g>
+<g class="d-item d-node d-node--box"><rect class="d-shape" x="1000" y="200" width="200" height="30" rx="1"/><text class="d-label" x="1100" y="219" text-anchor="middle">SARIF 2.1.0</text></g>
+<g class="d-item d-edge d-edge--back"><line class="d-line" x1="1150" y1="95" x2="1000" y2="215"/></g>
+<g class="d-item d-node d-node--box"><rect class="d-shape" x="1000" y="250" width="200" height="30" rx="1"/><text class="d-label" x="1100" y="269" text-anchor="middle">tracker JSON</text></g>
+<g class="d-item d-edge d-edge--back"><line class="d-line" x1="1150" y1="95" x2="1000" y2="265"/></g>
+<g class="d-item d-node d-node--box"><rect class="d-shape" x="1000" y="300" width="200" height="30" rx="1"/><text class="d-label" x="1100" y="319" text-anchor="middle">FLARE-AI, provisional</text></g>
+<g class="d-item d-edge d-edge--back"><line class="d-line" x1="1150" y1="95" x2="1000" y2="315"/></g>
+<g class="d-item d-node d-node--store"><rect class="d-shape" x="200" y="245" width="150" height="42" rx="8"/><text class="d-label" x="275" y="264" text-anchor="middle">sealed store,</text><text class="d-label" x="275" y="276" text-anchor="middle">Fernet blobs</text></g>
+<g class="d-item d-edge"><line class="d-line" x1="250" y1="82" x2="275" y2="245"/><text class="d-edge-label" x="250" y="170" text-anchor="middle">raw content</text></g>
+<g class="d-item d-node d-node--store"><rect class="d-shape" x="460" y="245" width="150" height="42" rx="8"/><text class="d-label" x="535" y="264" text-anchor="middle">exposure log,</text><text class="d-label" x="535" y="276" text-anchor="middle">append-only</text></g>
+<g class="d-item d-edge d-edge--dashed"><line class="d-line" x1="350" y1="266" x2="460" y2="266"/><text class="d-edge-label" x="405" y="320" text-anchor="middle">unseal --explicit, every read logged</text></g>
+<g class="d-item d-node d-node--dashed"><rect class="d-shape" x="660" y="245" width="222" height="42" rx="1"/><text class="d-label" x="771" y="264" text-anchor="middle">caged --ai: prose suggestions</text><text class="d-label" x="771" y="276" text-anchor="middle">only, off by default</text></g>
+<g class="d-item d-edge d-edge--dashed d-edge--up"><line class="d-line" x1="771" y1="245" x2="1025" y2="122"/><text class="d-edge-label" x="840" y="200" text-anchor="middle">reads the preview, never sealed content</text></g>
+</svg>
