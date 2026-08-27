@@ -92,6 +92,11 @@ After newest-push-first with the date (P5.5), `measure-live` at 2026-08-28
 profiles, LCP 1.52 s, CLS 0.000, 149,197 B, 0 axe violations, 0 validator
 errors. C-01 MET.
 
+After the record block and the API pin (P5.6), `measure-live` at 2026-08-28
+00:42 IST: Lighthouse **100 / 100 / 100 / 100** worst median across both
+profiles, LCP 1.52 s, CLS 0.000, 149,322 B, 0 axe violations, 0 validator
+errors. C-01 MET.
+
 ### Declared, unchanged
 
 - **C-02** LCP 1.53 s against 1.5 s stays declared: the one lever left, an
