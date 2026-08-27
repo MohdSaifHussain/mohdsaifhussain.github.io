@@ -112,6 +112,14 @@ After the record block and the API pin (P5.6), `measure-live` at 2026-08-28
 profiles, LCP 1.52 s, CLS 0.000, 149,322 B, 0 axe violations, 0 validator
 errors. C-01 MET.
 
+After the light-mode re-derivation and high contrast (P5.7), `measure-live`
+at 2026-08-28 01:00 IST: **100 / 100 / 100 / 100**, LCP 1.39 s, CLS 0.000,
+148,677 B, 0 axe violations, 0 validator errors, and the contrast line reads
+"7:1 met in full" in all four palettes for the first time. After the Case
+studies section (P5.8), `measure-live` at 01:15 IST: **100 / 100 / 100 / 100**,
+LCP 1.55 s, CLS 0.000, 148,907 B, 0 axe violations, 0 validator errors.
+C-01 MET.
+
 ### Declared, unchanged
 
 - **C-02** LCP 1.53 s against 1.5 s stays declared: the one lever left, an
