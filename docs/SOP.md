@@ -60,6 +60,12 @@ a defect in this build (D-39) came from filtering output and hiding a failure.
 Counts update themselves — `05 ENTRIES`, the `01 / 05` positions, the home
 flagship count. Never type a number.
 
+**Case studies (P5.8).** Set `"case_study": true` on an entry and it renders
+in the Case studies section of /projects/ instead of the slider. Give it an
+`outcome` (`source` naming the README lines, `groups` of `title` and `rows`
+of `k`/`v`) quoted from the README, and the outcome block renders in the
+figure slot.
+
 **Two dates render per entry (P5.6).** ISSUED is the latest formal
 release (publish a GitHub release, or push a semver tag, and the next
 refresh picks it up); MODIFIED is the last push. A repository with neither

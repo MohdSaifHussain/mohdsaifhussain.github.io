@@ -190,6 +190,21 @@ nav {
 .record-row dd { margin: 0; display: inline-flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
 .record-legend { max-width: 72ch; margin-top: 10px; }
 .card-foot .record { min-width: 260px; }
+
+/* P5.8: the case-study section and the outcome block. The outcome is a
+   definition list: term left, value right on wide screens, stacked on narrow
+   ones. Text only, no motion. */
+.section--cases { padding-top: var(--pad-section-top-lg); }
+.outcome-wrap { margin: 4px 0 0; display: flex; flex-direction: column; gap: 14px; }
+.outcome-group { display: flex; flex-direction: column; gap: 8px; }
+.outcome { margin: 0; display: flex; flex-direction: column; gap: 6px; }
+.outcome-row { display: grid; grid-template-columns: minmax(180px, 2fr) 3fr; gap: 6px 20px; padding-top: 6px; border-top: var(--rule-faint-w) solid var(--rule-faint); }
+.outcome-row dt { color: var(--bright); }
+.outcome-row dd { margin: 0; }
+.outcome-source { max-width: 80ch; }
+@media (max-width: 900px) {
+  .outcome-row { grid-template-columns: 1fr; gap: 2px; }
+}
 .anchor:hover, .anchor:focus-visible { color: var(--accent); }
 
 /* --- Truth strip -------------------------------------------------------- */

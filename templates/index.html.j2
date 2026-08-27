@@ -96,7 +96,7 @@
     <span class="mono-meta" data-clock-text>SNAPSHOT {{ github.as_of_display.split(' ')[1] }} IST</span>
   </span>
   <span class="mono-meta">{{ profile.location | upper }}</span>
-  {% for p in projects if p.verified_metrics %}
+  {% for p in entries if p.verified_metrics %}
   <span class="truth-item">
     <span class="mono-meta">{{ p.name | upper }} — {{ p.verified_metrics[0] }}</span>
     {{ m.anchor(p._anchor) }}

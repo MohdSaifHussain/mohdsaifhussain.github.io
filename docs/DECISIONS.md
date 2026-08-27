@@ -172,6 +172,16 @@ Owner's observation, 2026-08-28: in light mode the accent "is not dark enough an
 | 5.7.4 | **Forced colours (Windows High Contrast) get three targeted rules: the live dot becomes a currentColor ring, a pressed toggle shows an outline, diagram shapes fill with `Canvas`** | Nothing | These are the only elements whose meaning lives in a background colour, which forced colours remove | `static/css/site.css` |
 | 5.7.5 | **The browser audit still runs axe on the two colour themes; the high-contrast palettes are verified by `check_contrast.py`'s WCAG 2.2 computation, which is the same formula axe's colour-contrast rule applies** | Run axe four times per page | The witness logic in `browser_audit.py` is built around the two colour themes; doubling the matrix for a computed guarantee already held is cost without a new fact. Declared, not hidden | this row |
 
+## Phase P5.8: The Case studies section (v1.2)
+
+Owner's direction, 2026-08-28: on /projects/ only, a second section below the projects, titled Case studies, holding the two engagement records, each carrying the result of its case study where a project carries its architecture.
+
+| # | Decision | Alternative(s) not taken | Reason | Recorded in |
+|---|---|---|---|---|
+| 5.8.1 | **An entry flagged `case_study` renders in the Case studies section of /projects/ and nowhere else; the same card, gates, basis sentence, record block and newest-MODIFIED-first order apply. The FDE engagement moves there; ts-sentry-case-study is added, every field from its README at origin/main 6b09456** | A separate page (a sixth nav item): the owner ruled this page only. Mixing them into the projects slider: a record of an engagement is not a tool, and the reader should not have to tell them apart by reading | One schema, one macro, two sections; the count line and JSON-LD stay derived | `data/projects.json`, `build.py`, `templates/projects.html.j2` |
+| 5.8.2 | **The outcome block is a definition list, "OUTCOME, FROM THE README": the README's own row labels as terms and its cells or lead sentences as values, grouped under the README's own headings, with the lines cited beneath. Verbatim, by the owner's instruction ("no paraphrasing, all the content from the disk or repo only"): the READMEs' own em-dashes, en-dashes, arrows and ≤ are kept, which supersedes CU-4's habit of dropping em-dashes for this section (the C-27 gate is scoped to experience.json, CU-2). Only backticks, bold and links are dropped** | Summarise the results in the site's voice | The owner's rule for entry text is the repository's own words, and a result restated is a result changed. `test_every_case_study_carries_its_outcome_and_source` proves every term and value renders | `data/projects.json` `outcome` |
+| 5.8.3 | **Home is untouched: its truth strip still lists every entry with a figure, and the flagship rows are unchanged** | Drop case studies from the strip | The owner's ruling: this change is /projects/ only | `templates/index.html.j2` (`entries`) |
+
 ## Content updates (after P4.2, SOP section 1)
 
 Not a phase. Recorded here because a content update extended a closed set that a gate guards.

@@ -239,7 +239,10 @@ def test_counts_render_from_data_not_literals(site):
     assert f"ENTRIES {len(flagship):02d}" in home
 
     listing = (site / "projects/index.html").read_text(encoding="utf-8")
-    assert f"{len(data['projects']):02d} ENTRIES" in listing
+    n_projects = len([p for p in data["projects"] if not p.get("case_study")])
+    n_cases = len([p for p in data["projects"] if p.get("case_study")])
+    assert f"{n_projects:02d} ENTRIES" in listing
+    assert f"{n_cases:02d} ENTRIES" in listing   # P5.8, the case-studies section
 
 
 def test_no_third_party_resources_load(site):

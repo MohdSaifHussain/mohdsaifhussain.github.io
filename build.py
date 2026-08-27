@@ -595,9 +595,18 @@ def build() -> int:
     attach_basis_sentences(projects)
     projects = order_by_push(projects)
 
+    # P5.8: case studies are entries too (same schema, same gates, same
+    # ordering) but they render in their own section of /projects/. Home's
+    # truth strip and the JSON-LD keep every entry.
+    entries = projects
+    projects = [p for p in entries if not p.get("case_study")]
+    case_studies = [p for p in entries if p.get("case_study")]
+
     ctx_common = {
         "profile": data["profile"],
+        "entries": entries,
         "projects": projects,
+        "case_studies": case_studies,
         "flagship": [p for p in projects if p.get("flagship")],
         "roles": data["experience"]["roles"],
         "education": data["experience"]["education"],
@@ -681,7 +690,7 @@ def build() -> int:
                       # A never-released repository carries no datePublished.
                       **({"datePublished": p["_issued_iso"]} if p["_issued_iso"] else {}),
                       "dateModified": p["_pushed_iso"]}}
-            for i, p in enumerate(projects, 1)],
+            for i, p in enumerate(entries, 1)],
     }
     ctx_common["person_jsonld"] = Markup(json.dumps(person_ld, indent=2))
     ctx_common["projects_jsonld"] = Markup(json.dumps(projects_ld, indent=2))

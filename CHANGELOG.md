@@ -14,6 +14,10 @@ somewhere in this repository. Where a condition is unmet it says so.
 
 ### Added
 
+- **Case studies** (P5.8): a second section on /projects/ for the two
+  engagement records, ts-sentry-case-study (new) and the Delivery Engine FDE
+  engagement (moved), each carrying its outcome as its README states it, in
+  the slot a project uses for its architecture. Projects page only.
 - **High contrast** (P5.7): a second display toggle beside Light mode, and
   the OS "increase contrast" setting honoured automatically
   (`prefers-contrast: more`). Every text pair in the high-contrast palettes

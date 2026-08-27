@@ -3,6 +3,7 @@ pushed_at, with the date shown as ISO 8601 in a <time datetime>. Positive
 controls over the real build; negative controls over fixtures."""
 from __future__ import annotations
 
+import html as html_mod
 import json
 import pathlib
 import re
@@ -32,11 +33,31 @@ def _expected(entries):
     return [e["name"] for e in sorted(entries, key=pushed, reverse=True)]
 
 
-def test_projects_page_is_newest_push_first(site):
+def test_projects_page_is_newest_push_first_in_each_section(site):
+    """P5.8: two sections, each ordered on its own; the case-studies section
+    starts at its own h2, so the split point is that heading."""
     data = json.loads((ROOT / "data/projects.json").read_text(encoding="utf-8"))
     html = (site / "projects/index.html").read_text(encoding="utf-8")
-    names = re.findall(r'<h2 class="display-md">(.*?)</h2>', html)
-    assert names == _expected(data["projects"])
+    top, cases = html.split('<h2 class="display-lg">Case studies</h2>')
+    names_top = re.findall(r'<h2 class="display-md">(.*?)</h2>', top)
+    names_cases = re.findall(r'<h2 class="display-md">(.*?)</h2>', cases)
+    assert names_top == _expected([p for p in data["projects"] if not p.get("case_study")])
+    assert names_cases == _expected([p for p in data["projects"] if p.get("case_study")])
+    assert len(names_cases) == 2
+
+
+def test_every_case_study_carries_its_outcome_and_source(site):
+    data = json.loads((ROOT / "data/projects.json").read_text(encoding="utf-8"))
+    html = (site / "projects/index.html").read_text(encoding="utf-8")
+    cases = [p for p in data["projects"] if p.get("case_study")]
+    assert html.count("OUTCOME — FROM THE README") == len(cases)
+    text = html_mod.unescape(html)   # Jinja escapes " as &#34; and ' as &#39;
+    for p in cases:
+        assert "outcome" in p and p["outcome"]["groups"], p["id"]
+        assert "README" in p["outcome"]["source"], p["id"]
+        for g in p["outcome"]["groups"]:
+            for row in g["rows"]:
+                assert row["k"] in text and row["v"] in text, (p["id"], row["k"])
 
 
 def test_home_flagship_is_newest_push_first(site):

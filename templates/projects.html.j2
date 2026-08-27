@@ -10,39 +10,15 @@
 {% endblock %}
 
 {% block content %}
-
-{# Handoff §3 (3a). The slider is native CSS scroll-snap — no JS carousel, no
-   arrows. A3.2 in the animation list is precisely the declaration that this
-   scrolling is native and nothing else moves; the layout is built here because
-   the page cannot exist without it, and P3.3 verifies it against C-14/C-15 and
-   records it in the audit list. Recorded as reading R-06.
-
-   This is also the first page carrying BOTH marks — verified ✓ rows and
-   TS-Sentry's pending ✗ — which discharges obligation O-9: MARK_DRIFT's first
-   coverage of real dual-mark output. #}
-
-<section class="section section--head">
-  <div class="section-head">
-    {# R-07, owner-directed deviation from handoff §3 (which specifies "Case
-       ledger"): the h1 matches its nav label, per the anti-lost doctrine —
-       C-13 wants the current location unambiguous. The ledger voice stays in
-       the entries line below. #}
-    <h1 class="display-lg">Projects</h1>
-    <span class="mono-meta">{{ '%02d' % (projects | length) }} ENTRIES · SCROLL →</span>
-  </div>
-  {# P5.6 legend: the two dates every card carries, named by DCMI terms and
-     sourced from the snapshot whose "as of" the footer prints. #}
-  <p class="mono-meta record-legend">Newest MODIFIED first. ISSUED is the latest formal release of the anchored version (GitHub's published date). MODIFIED is the last push to the repository. Both from the snapshot as of {{ github.as_of_display }}.</p>
-</section>
-
-<div class="slider" tabindex="0" role="region" aria-label="Project case studies, scrollable">
-  {% for p in projects %}
+{# P5.8: one card, used by both sections. `kind` is the word after the
+   position; `total` the count of the section it sits in. #}
+{% macro card(p, index, total, kind) %}
   <article class="card">
 
     <div class="card-head">
-      <span class="numeral">{{ '%02d' % loop.index }}
-        <span class="card-pos">/ {{ '%02d' % (projects | length) }}
-          {%- if p.get('flagship') %} · FLAGSHIP{% elif p.get('archived') %} · ARCHIVED{% endif -%}
+      <span class="numeral">{{ '%02d' % index }}
+        <span class="card-pos">/ {{ '%02d' % total }}
+          {%- if kind %} · {{ kind }}{% elif p.get('flagship') %} · FLAGSHIP{% elif p.get('archived') %} · ARCHIVED{% endif -%}
         </span>
       </span>
       {% if p.get('metrics_pending') %}
@@ -102,6 +78,29 @@
     </figure>
     {% endif %}
 
+    {% if p.get('outcome') %}
+    {# P5.8: a case study's outcome, as its own README states it, in the slot
+       a project uses for its architecture. A definition list: the README's
+       row labels are the terms, its cells and sentences the values. #}
+    <figure class="outcome-wrap">
+      <figcaption class="mono-label">OUTCOME — FROM THE README</figcaption>
+      {% for g in p.outcome.groups %}
+      <div class="outcome-group">
+        <span class="mono-label accent">{{ g.title }}</span>
+        <dl class="outcome">
+          {% for row in g.rows %}
+          <div class="outcome-row">
+            <dt class="mono-body">{{ row.k }}</dt>
+            <dd class="mono-body">{{ row.v }}</dd>
+          </div>
+          {% endfor %}
+        </dl>
+      </div>
+      {% endfor %}
+      <p class="mono-meta outcome-source">Source: {{ p.outcome.source }}</p>
+    </figure>
+    {% endif %}
+
     <div class="card-foot">
       {% if p.get('ai_collaboration') %}
       <span class="mono-meta">{{ p.ai_collaboration }}</span>
@@ -115,6 +114,55 @@
     </div>
 
   </article>
+{% endmacro %}
+
+
+{# Handoff §3 (3a). The slider is native CSS scroll-snap — no JS carousel, no
+   arrows. A3.2 in the animation list is precisely the declaration that this
+   scrolling is native and nothing else moves; the layout is built here because
+   the page cannot exist without it, and P3.3 verifies it against C-14/C-15 and
+   records it in the audit list. Recorded as reading R-06.
+
+   This is also the first page carrying BOTH marks — verified ✓ rows and
+   TS-Sentry's pending ✗ — which discharges obligation O-9: MARK_DRIFT's first
+   coverage of real dual-mark output. #}
+
+<section class="section section--head">
+  <div class="section-head">
+    {# R-07, owner-directed deviation from handoff §3 (which specifies "Case
+       ledger"): the h1 matches its nav label, per the anti-lost doctrine —
+       C-13 wants the current location unambiguous. The ledger voice stays in
+       the entries line below. #}
+    <h1 class="display-lg">Projects</h1>
+    <span class="mono-meta">{{ '%02d' % (projects | length) }} ENTRIES · SCROLL →</span>
+  </div>
+  {# P5.6 legend: the two dates every card carries, named by DCMI terms and
+     sourced from the snapshot whose "as of" the footer prints. #}
+  <p class="mono-meta record-legend">Newest MODIFIED first. ISSUED is the latest formal release of the anchored version (GitHub's published date). MODIFIED is the last push to the repository. Both from the snapshot as of {{ github.as_of_display }}.</p>
+</section>
+
+<div class="slider" tabindex="0" role="region" aria-label="Projects, scrollable">
+  {% for p in projects %}
+{{ card(p, loop.index, projects | length, '') }}
+  {% endfor %}
+</div>
+
+{# ---- CASE STUDIES (P5.8) ----------------------------------------------
+   Owner's direction 2026-08-28: a second section on this page only, below
+   the projects, for the entries that are records of one engagement or one
+   build rather than a tool. Same card, same gates, same order rule; the
+   figure slot carries the outcome instead of an architecture. #}
+<section class="section section--head section--cases">
+  <div class="section-head">
+    <h2 class="display-lg">Case studies</h2>
+    <span class="mono-meta">{{ '%02d' % (case_studies | length) }} ENTRIES · SCROLL →</span>
+  </div>
+  <p class="mono-meta record-legend">A case study is the record of one engagement or one build, read end to end: what was asked, what was done, and what it showed. Each carries its outcome as its own README states it, with the lines cited.</p>
+</section>
+
+<div class="slider" tabindex="0" role="region" aria-label="Case studies, scrollable">
+  {% for p in case_studies %}
+{{ card(p, loop.index, case_studies | length, 'CASE STUDY') }}
   {% endfor %}
 </div>
 {% endblock %}

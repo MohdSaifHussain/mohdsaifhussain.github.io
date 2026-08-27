@@ -1,5 +1,5 @@
 {
-  "_status": "Owner-verified 2026-08-05 at Phase 1 close (chat record), covering the fields as they stood on that date. OPEN EXCEPTION: TS-Sentry metrics unverified — renders as an honest ✗ pending owner supply. SUPERSEDED FIELDS: the promise strings and per-count version anchoring rewritten under decision D-02 are new text, pending owner re-verification at the P3.2 review stop. C-27 does not report MET until that re-verification is recorded. CLOSED 2026-08-22: the TS-Sentry exception is discharged; its description and metrics are re-sourced to the repo's own README and CI logs (DECISIONS CU-4). EXTENDED 2026-08-25: finding-bridge added as the seventh entry and fourth flagship, every field quoted from its README at origin/master 41a33ed with markup dropped and no rewording, on the owner's direction (DECISIONS CU-5). EXTENDED 2026-08-27 (P5.4): each live entry carries `diagram`, the name of its architecture drawing under templates/diagrams/, and `diagram_source`, the README lines it was transcribed from; the archived FDE case study has none.",
+  "_status": "Owner-verified 2026-08-05 at Phase 1 close (chat record), covering the fields as they stood on that date. OPEN EXCEPTION: TS-Sentry metrics unverified — renders as an honest ✗ pending owner supply. SUPERSEDED FIELDS: the promise strings and per-count version anchoring rewritten under decision D-02 are new text, pending owner re-verification at the P3.2 review stop. C-27 does not report MET until that re-verification is recorded. CLOSED 2026-08-22: the TS-Sentry exception is discharged; its description and metrics are re-sourced to the repo's own README and CI logs (DECISIONS CU-4). EXTENDED 2026-08-25: finding-bridge added as the seventh entry and fourth flagship, every field quoted from its README at origin/master 41a33ed with markup dropped and no rewording, on the owner's direction (DECISIONS CU-5). EXTENDED 2026-08-27 (P5.4): each live entry carries `diagram`, the name of its architecture drawing under templates/diagrams/, and `diagram_source`, the README lines it was transcribed from; the archived FDE case study has none. EXTENDED 2026-08-28 (P5.8): entries flagged `case_study` render in the Case studies section of /projects/ rather than the Projects slider, with an `outcome` block quoted from their README; ts-sentry-case-study added as the second case study, every field from its README at origin/main 6b09456.",
   "_metrics_basis": "Owner-signed 2026-08-06 (O-3 discharged). FOUR BASES ARE DEFINED, three in use, and each entry declares its own in metrics_basis. (1) CI-MEASURED — delivery-engine, analystkit and opskit: their CI publishes a stats.json counted from the JUnit report of the run that executed the tests, and the site renders that count with the commit it was measured at and the timestamp of that measurement. The timestamp means WHEN THE MEASUREMENT LAST CHANGED, not when CI last ran: each repo commits its stats.json only when the count or the release anchor differs, so a run that measures the same number leaves the file alone (owner's ruling 2026-08-10). This is defect D-02's recorded upgrade path (DECISIONS 3.1.3a), landed 2026-08-10. The label is 'tests', not 'unit tests': the measurement counts what pytest executed and does not establish that every one is a unit test. The resume-stated baseline each replaced is retained in verified_metrics in this file and is NOT rewritten — only the rendered figure changed. (2) OWNER-MEASURED — retired 2026-08-22, no entry declares it. TS-Sentry carried it from 2026-08-06 (figures from a local run, corroborated by the repo's pinned CI and coverage badges) until its figures were re-sourced under (4). Kept here so the record shows the basis existed. (3) RESUME-STATED BASELINES — delivery-engine-fde, whose metrics are qualitative rather than counts and which publishes no stats.json. (4) REPO-STATED - Switchyard: the count is the source repository's own published figure (README, v1.0.0), with its stated definition of passed plus skipped; adopted by owner's ruling 2026-08-22. TS-Sentry: the test count is the CI log at the v1.0.0 commit (run 30718834429: 1,229 passed, 1 skipped, 1,230 collected), and the coverage and mypy figures are the README's own (lines 143-144, identical at the tag and on main); adopted by owner's ruling 2026-08-22. The repo publishes no stats.json yet, so its CI-MEASURED upgrade via the D-02 path is a named follow-up in that repo, not a claim made here. finding-bridge: every figure is the README's own at origin/master 41a33ed (the Honest numbers and How this project was built sections), quoted without rewording; adopted by owner's direction 2026-08-25 (CU-5). Every entry still renders a version anchor and an evidence link, so no figure travels without its source.",
   "projects": [
     {
@@ -38,7 +38,61 @@
       ],
       "links": {
         "repo": "https://github.com/MohdSaifHussain/delivery-engine-fde",
-        "docs_site": "https://mohdsaifhussain.github.io/delivery-engine-fde-case-study/index.html"
+        "docs_site": "https://mohdsaifhussain.github.io/delivery-engine-fde-case-study/index.html",
+        "site_source": "https://github.com/MohdSaifHussain/delivery-engine-fde-case-study"
+      },
+      "case_study": true,
+      "outcome": {
+        "source": "README.md at origin/main 7891608, verbatim: The arc table (lines 35-41, column headings carried as labels), The closing move (45-52), Honest limitations (62-68). Backticks, bold and links dropped; nothing reworded.",
+        "groups": [
+          {
+            "title": "The arc",
+            "rows": [
+              {
+                "k": "Naive baseline",
+                "v": "Recall (fail class): 0% (0/26). Flag rate: —. Note: predicts \"pass\" for every unit; scores 93% accuracy while catching zero escapes"
+              },
+              {
+                "k": "Final tuned baseline, at customer's ceiling",
+                "v": "Recall (fail class): 42.31% (11/26; 95% CI 25.5–61.1%). Flag rate: 19.4%. Note: within Meridian's ≤20% re-inspection budget"
+              },
+              {
+                "k": "Walk-forward evaluation (5 time-ordered folds)",
+                "v": "Recall (fail class): mean 39.3%, range 0–70%. Flag rate: —. Note: exposes fold-to-fold volatility the random split concealed entirely"
+              }
+            ]
+          },
+          {
+            "title": "The closing move: field learnings shipped to the product",
+            "rows": [
+              {
+                "k": "Build Step 24 → v1.5.0 (30 Jul 2026)",
+                "v": "identifier-aware injected-numbers scanning (a column named sensor_060 no longer misreads as an unprovenanced number), opt-in Wilson 95% confidence intervals on recall/precision (metric_ci), and opt-in time-ordered / walk-forward evaluation (split, n_splits)."
+              },
+              {
+                "k": "Build Step 25 → v1.6.0 (31 Jul 2026)",
+                "v": "the playbook generator now surfaces those three keys as feasibility-gated, commented suggestions inside a drafted model stage: split/n_splits only when the profile classifies a timestamp column."
+              },
+              {
+                "k": "Five more were deliberately excluded, in the receiving product's own words (\"those five changes\")",
+                "v": "class weighting, feature scaling, median imputation, threshold tuning to an operating budget, and coefficient-based signal attribution. The base engine's model stage stays a deterministic reference point, by charter design — those five would make the baseline a better model, and that judgment is reserved to the human."
+              }
+            ]
+          },
+          {
+            "title": "Honest limitations",
+            "rows": [
+              {
+                "k": "The improvement deltas are not statistically distinguishable.",
+                "v": "Every recall figure rests on 26 failures in the test set. The 95% interval for the headline 42.31% is [25.5%, 61.1%], which contains the earlier 23.08%. The direction is consistent across improvements; the magnitudes are not established."
+              },
+              {
+                "k": "The customer is simulated.",
+                "v": "The data, the engineering, and every number are real."
+              }
+            ]
+          }
+        ]
       }
     },
     {
@@ -145,6 +199,85 @@
       },
       "diagram": "finding-bridge",
       "diagram_source": "README.md:63-99 (Architecture, mermaid flowchart LR) at origin/master 41a33ed; node and edge labels verbatim"
+    },
+    {
+      "id": "ts-sentry-case-study",
+      "metrics_basis": "repo-stated",
+      "name": "Trust and Safety Sentry: a case study",
+      "flagship": false,
+      "case_study": true,
+      "problem": "The design question it answers is not \"can a model do this\" but \"what has to be true before anyone is allowed to act on what a model produced\".",
+      "method": "A ten-minute account of a governed agentic system for Trust and Safety work: what it is, how it was built, and what the build taught. Trust and Safety Sentry is a workbench for the analyst work that happens downstream of abuse detection: triage, investigation, evidence assembly, enforcement rationale drafting, prompt quality assurance, and impact measurement. Four narrow agents do bounded work under a deterministic control layer. One human holds sole enforcement authority. This repository is the short version. Everything it claims is verifiable in ts-sentry, which holds the code, the tests, the eight-phase build log, and eight complete example runs.",
+      "verified_metrics": [
+        "Eight build phases: Each with a written contract, an exit criterion, and a recorded outcome",
+        "1,230 tests: 93.16% coverage against a 90% floor enforced in CI",
+        "Types: mypy --strict clean on 164 files"
+      ],
+      "outcome": {
+        "source": "README.md at origin/main 6b09456, verbatim: What was built table (lines 48-57), What the build taught (62-80, the bold lead and the sentence after it). Bold and the arrow links dropped; nothing reworded.",
+        "groups": [
+          {
+            "title": "What was built",
+            "rows": [
+              {
+                "k": "Eight build phases",
+                "v": "Each with a written contract, an exit criterion, and a recorded outcome"
+              },
+              {
+                "k": "Four agents",
+                "v": "Triage, evidence, memo, prompt evaluation, each with a mandate ceiling"
+              },
+              {
+                "k": "Eight CLI verbs",
+                "v": "Offline by default, no credential, no cost"
+              },
+              {
+                "k": "Eight worked examples",
+                "v": "Six carry a verifiable ledger; three show the system refusing something"
+              },
+              {
+                "k": "1,230 tests",
+                "v": "93.16% coverage against a 90% floor enforced in CI"
+              },
+              {
+                "k": "Types",
+                "v": "mypy --strict clean on 164 files"
+              }
+            ]
+          },
+          {
+            "title": "What the build taught",
+            "rows": [
+              {
+                "k": "Green tests do not mean the result means anything.",
+                "v": "Three of the most serious defects in this project were found by a human reading an output file, with the whole suite passing."
+              },
+              {
+                "k": "A check you have never seen fail is not a check.",
+                "v": "Every control here was deliberately made to fail once, on purpose, before its passing result was trusted."
+              },
+              {
+                "k": "The shape of your data leaks things its contents do not.",
+                "v": "An evaluation set with no labels in it gave away every label through row order, while every content test passed."
+              },
+              {
+                "k": "Rehearse the irreversible step.",
+                "v": "Five release candidates were cut before the real release. They found four defects that green workflows had not, three of them in the publish path itself."
+              },
+              {
+                "k": "Narrow the claim rather than overselling the behaviour.",
+                "v": "This is the single rule the whole project runs on."
+              }
+            ]
+          }
+        ]
+      },
+      "links": {
+        "repo": "https://github.com/MohdSaifHussain/ts-sentry-case-study",
+        "site": "https://mohdsaifhussain.github.io/ts-sentry-case-study/",
+        "evidence": "https://github.com/MohdSaifHussain/ts-sentry",
+        "field_notes": "https://github.com/MohdSaifHussain/ts-sentry-case-study/blob/main/FIELD_NOTES.md"
+      }
     }
   ]
 }
