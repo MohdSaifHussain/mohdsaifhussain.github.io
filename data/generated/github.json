@@ -1,7 +1,7 @@
 {
   "_generated": "Machine-written by tools/fetch_stats.py. Never hand-edited. Anchors are release tags or commit SHAs fetched from the GitHub API; they are NOT test counts \u2014 the API returns no test count (defect D-02, DECISIONS 3.1.3).",
-  "as_of": "2026-08-27T19:34:21Z",
-  "as_of_display": "2026-08-28 01:04 IST",
+  "as_of": "2026-08-31T10:52:40Z",
+  "as_of_display": "2026-08-31 16:22 IST",
   "repos": {
     "OpsKit": {
       "anchor": "959b352",
@@ -104,7 +104,7 @@
       "anchor_type": "release",
       "anchor_url": "https://github.com/MohdSaifHussain/ts-sentry/releases/tag/v1.0.0",
       "issued_at": "2026-08-01T21:23:21Z",
-      "pushed_at": "2026-08-22T15:25:35Z",
+      "pushed_at": "2026-08-29T15:22:58Z",
       "repo_url": "https://github.com/MohdSaifHussain/ts-sentry"
     },
     "ts-sentry-case-study": {
