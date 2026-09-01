@@ -41,15 +41,21 @@ WHAT CHANGES, AND NOTHING ELSE
     problem rather than merely inheriting it. An earlier note in this file put
     all three overruns on the source, by applying the monospace advance to
     Georgia as well; that arithmetic was wrong and the browser is the
-    correction. Held
-    as HTML the same words wrap, stay selectable, and are read as text by a
-    screen reader at every viewport. The words, and their order, are the
+    correction.
+
+    Held as HTML the same words wrap, stay selectable, and are read as text by
+    a screen reader at every viewport. The words, and their order, are the
     source's own; tests/test_chart.py re-derives all four from the source SVG
     and refuses if the copy in projects.json has drifted by one character.
+  - The LEGEND moves out of the plot onto a row beneath the axis, and only the
+    legend. See the note above LEGEND_Y for the finding that forced it and the
+    convention that decided where it lands.
 
-WHAT DOES NOT CHANGE. Every coordinate, every path, every data point, every
-word, every font-size and every stroke-width is carried across untouched, and
-tests/test_chart.py re-derives them from the source to prove it.
+WHAT DOES NOT CHANGE. Every data coordinate, every path, every data point,
+every word, every font-size and every stroke-width is carried across untouched,
+and tests/test_chart.py re-derives them from the source to prove it. The legend
+is the one exception and is exempted BY NAME in that test, never by loosening
+what the test checks for everything else.
 
 READING R-P5.9-1 — why the font-size attributes stay. Contract 3.2 bars type
 steps outside tokens.css. A font-size inside a viewBox is not a type step: it is
@@ -157,10 +163,78 @@ def prose() -> list[str]:
     return out
 
 
+# THE LEGEND MOVES OUT OF THE PLOT, and only the legend. Owner's ruling,
+# 2026-09-01, on finding 5.9.10: in the source the Clopper-Pearson path runs
+# straight through its own "Clopper-Pearson" label -- 14 crossings there in
+# Georgia, 25 here because this site's monospace makes the label wider. The
+# owner confirmed it by eye and directed that the labels be placed "how labels
+# are professionally positioned in such images".
+#
+# That convention is a legend OUTSIDE the data region, on one horizontal row
+# beneath the axis: it is matplotlib's `loc="lower center"` placed outside the
+# axes and ggplot2's `legend.position = "bottom"`, and it is what published
+# statistical figures do. It cannot collide with the data, because it is not in
+# the same region as the data -- collision-free by construction rather than by
+# finding a gap and hoping nothing grows into it.
+#
+# Direct labelling at each line's end -- the Cleveland/Tufte preference, and
+# otherwise the better answer -- was measured and does not fit: both series end
+# at x=648.8, "Clopper-Pearson" is 117 units wide, and 648.8 + 117 runs past the
+# 760-unit box. Recorded because it was the first choice, not because it won.
+#
+# The row is centred on the plot's own span (x=80 to x=730, centre 405): the two
+# entries run 274 to 537, centre 405.5. It sits at y=444, below the threshold
+# sublabels at y=412, in space the lifted footnotes vacated.
+#
+# This moves ANNOTATION. No data point, no axis, no gridline and no word is
+# touched, and tests/test_chart.py proves the legend now collides with nothing.
+LEGEND_Y = 444                       # swatch line
+LEGEND_BASELINE = 448                # label baseline, optically centred on the swatch
+LEGEND_LAYOUT = {                    # series -> (swatch x1, swatch x2, label x)
+    "c-wilson": (274, 302, 310),     # "Wilson" is 46.8 units -> ends 356.8
+    "c-cp": (384, 412, 420),         # "Clopper-Pearson" is 117 units -> ends 537
+}
+LEGEND_MARK = 'x1="92"'              # both swatch lines start here, and nothing else does
+
 # Room left above the topmost and below the lowest retained coordinate. The
 # lower figure is the larger because the coordinates down there are text
 # BASELINES, and a baseline is not the bottom of its glyphs.
 PAD_TOP, PAD_BOTTOM = 14, 16
+
+
+def move_legend(line: str, series: str) -> str:
+    """Place one legend element on the row beneath the axis. See the note above.
+
+    Absolute placement, not a translation: the two entries sit side by side on
+    one row, so they do not share a single offset.
+    """
+    x1, x2, label_x = LEGEND_LAYOUT[series]
+    if line.startswith("<line"):
+        line = re.sub(r'(?<![\w-])x1="[-\d.]+"', f'x1="{x1}"', line)
+        line = re.sub(r'(?<![\w-])x2="[-\d.]+"', f'x2="{x2}"', line)
+        return re.sub(r'(?<![\w-])(y1|y2)="[-\d.]+"',
+                      lambda m: f'{m.group(1)}="{LEGEND_Y}"', line)
+    line = re.sub(r'(?<![\w-])x="[-\d.]+"', f'x="{label_x}"', line)
+    return re.sub(r'(?<![\w-])y="[-\d.]+"', f'y="{LEGEND_BASELINE}"', line)
+
+
+def is_legend(line: str) -> bool:
+    return LEGEND_MARK in line or 'class="c-legend"' in line
+
+
+def legend_series(line: str, seen: list[str]) -> str:
+    """Which series a legend element belongs to.
+
+    A swatch line says so in its own class. A label does not, so it takes the
+    series of the swatch immediately before it -- the order the source draws
+    them in, and the order the reader reads them in.
+    """
+    for s in LEGEND_LAYOUT:
+        if s in line:
+            return s
+    if not seen:
+        raise ChartRefused("CHART_LEGEND", f"a label with no swatch before it: {line[:60]}")
+    return seen[-1]
 
 
 def crop_box(kept: list[str]) -> tuple[str, float, float]:
@@ -220,6 +294,8 @@ def transform(src: str) -> str:
 
     out: list[str] = []
     dropped_ground = 0
+    moved_legend = 0
+    legend_order: list[str] = []
     dropped_prose: list[str] = []
     for line in lines[1:-1]:
         line = line.strip()
@@ -244,11 +320,21 @@ def transform(src: str) -> str:
         tag = re.match(r"<([a-z]+)", stripped)
         if not tag:
             raise ChartRefused("CHART_SHAPE", f"not an element: {stripped[:70]}")
-        out.append(f'<{tag.group(1)} class="{cls}"' + stripped[tag.end():])
+        el = f'<{tag.group(1)} class="{cls}"' + stripped[tag.end():]
+        if is_legend(el):
+            series = legend_series(el, legend_order)
+            if el.startswith("<line"):
+                legend_order.append(series)
+            el = move_legend(el, series)
+            moved_legend += 1
+        out.append(el)
 
     if dropped_ground != 1:
         raise ChartRefused("CHART_GROUND",
                            f"expected exactly one white ground rect, found {dropped_ground}")
+    if moved_legend != 4:
+        raise ChartRefused("CHART_LEGEND",
+                           f"expected 4 legend elements to move, moved {moved_legend}")
     if len(dropped_prose) != len(PROSE_Y):
         raise ChartRefused("CHART_PROSE",
                            f"expected {len(PROSE_Y)} prose lines to lift out, "

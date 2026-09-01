@@ -80,11 +80,21 @@ datum:
    The dash pattern is chosen distinct from the nominal-0.95 reference line's
    existing `6 4` so the two cannot be confused.
 
-A third may follow from measurement and is not yet claimed: the source SVG's two
-footnote lines may overflow a 760-wide viewBox once set in the site's monospace,
-which is wider than the source's Georgia. If they do, the viewBox widens; no
-datum moves. Recorded here before measuring so the outcome cannot be written to
-fit.
+3. **The four prose lines are lifted out of the drawing** and rendered as HTML
+   beside it, and the viewBox is cropped to the geometry that remains. Foreseen
+   as a possibility before measuring (the paragraph this replaces said "may
+   follow from measurement and is not yet claimed"), then measured: in the
+   source's Georgia one line overruns the 760-unit box, in this site's wider
+   monospace three do. An SVG clips to its viewport, so an overrun is lost text.
+   The remedy the earlier paragraph guessed at — widening the viewBox — was
+   rejected once measured, because fitting the longest line needs about 1,216
+   units and would flatten the plot into a strip.
+
+4. **The legend moves out of the plot** onto one row beneath the axis, on the
+   owner's ruling of 2026-09-01 after they confirmed the overlap by eye
+   (decision 5.9.10). Not foreseen: the Clopper-Pearson path crosses its own
+   label in the source drawing too, and this site's monospace widened the
+   crossing from 14 sampled points to 25. Annotation only; no datum moves.
 
 ## 7. Outcome
 
