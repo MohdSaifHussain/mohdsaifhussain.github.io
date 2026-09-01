@@ -808,3 +808,55 @@ main   { view-transition-name: page-content; }
 .diagram.is-posted > :nth-child(39) { transition-delay: calc(var(--motion-draw-step) * 38); }
 .diagram.is-posted > :nth-child(40) { transition-delay: calc(var(--motion-draw-step) * 39); }
 .diagram.is-posted > :nth-child(n+41) { transition-delay: calc(var(--motion-draw-step) * 40); }
+
+/* ===========================================================================
+   The chart figure — Projects.  v1.2 / P5.9.
+   An entry whose README publishes a figure of its own carries THAT figure,
+   recoloured to these tokens by tools/gen_chart.py. No colour literal lives
+   here or in the drawing: the SVG carries classes only, and every one of them
+   resolves below, which is what lets one drawing follow dark, light and high
+   contrast without a second copy.
+
+   IT DOES NOT ANIMATE, and that is deliberate. diagram.js selects `.diagram`,
+   so a figure classed `.chart` is never armed and never posts. A3.7's declared
+   ledger is therefore untouched and check_animations.py stays green in both
+   directions: nothing new ships, nothing new is declared.
+
+   THE TWO SERIES ARE TOLD APART TWICE. Colour is the first channel and is not
+   enough: under forced colours the browser repaints both to CanvasText, and
+   the legend would become two identical swatches with two different labels.
+   So Wilson is also dashed, which survives any repaint. WCAG 2.2 SC 1.4.1.
+   https://www.w3.org/WAI/WCAG22/Understanding/use-of-color.html
+   ======================================================================== */
+.chart-wrap { margin: 4px 0 0; display: flex; flex-direction: column; gap: 10px; }
+.chart-head { display: flex; flex-direction: column; gap: 4px; }
+.chart-title { color: var(--bright); }
+.chart-note  { max-width: 80ch; }
+
+/* Same frame as a diagram: wider than the card, natively scrollable (C-14).
+   The floor is the width at which the smallest label in the drawing still
+   reads; below it the figure scrolls rather than shrinking into illegibility. */
+.chart { display: block; width: 100%; min-width: 700px; height: auto;
+         font-family: var(--font-mono); font-weight: var(--w-mono); }
+
+.c-note   { fill: var(--body); }
+.c-dim    { fill: var(--dim); }
+.c-legend { fill: var(--ink); }
+.c-grid       { stroke: var(--rule-mid); }
+.c-grid--v    { stroke: var(--rule-faint); }
+.c-nominal    { stroke: var(--ink); }
+.c-series, .c-err { fill: none; }
+.c-series.c-wilson, .c-err.c-wilson { stroke: var(--accent); }
+.c-series.c-cp,     .c-err.c-cp     { stroke: var(--ink); }
+.c-dot.c-wilson { fill: var(--accent); }
+.c-dot.c-cp     { fill: var(--ink); }
+/* Not the nominal line's own `6 4`, so the two dashed strokes cannot be read
+   as the same kind of thing. */
+.c-series.c-wilson { stroke-dasharray: 5 3; }
+
+@media (forced-colors: active) {
+  /* Forced colours paint every stroke CanvasText, which would make the grid
+     shout as loudly as the data. GrayText is the system's own recessive ink,
+     so the hierarchy survives a palette this site does not control. */
+  .c-grid, .c-grid--v { stroke: GrayText; }
+}

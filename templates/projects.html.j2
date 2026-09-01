@@ -78,6 +78,34 @@
     </figure>
     {% endif %}
 
+    {% if p.get('figure') %}
+    {# P5.9: an entry whose README publishes a figure of its own carries THAT,
+       in the slot another entry uses for its architecture. The drawing is the
+       repository's own SVG with its colours replaced by classes
+       (tools/gen_chart.py); its four lines of prose are rendered here as HTML
+       because SVG text cannot wrap, and at phone widths those lines ran past
+       the viewBox and were clipped by it. Same words, same order, wrapped.
+       It does not animate: `.chart` is not `.diagram`, so diagram.js never
+       arms it and the A3.7 ledger is untouched. #}
+    <figure class="chart-wrap">
+      <figcaption class="chart-head">
+        <span class="mono-label">FIGURE — FROM THE README</span>
+        <span class="mono-body chart-title">{{ p.figure.title }}</span>
+        <span class="mono-meta">{{ p.figure.subtitle }}</span>
+      </figcaption>
+      {# One region per instance, named for its entry: six regions named alike
+         are one landmark six times to a screen reader, and axe refused the
+         deploy for exactly that (D-66). #}
+      <div class="diagram-scroll" tabindex="0" role="region" aria-label="{{ p.name }} coverage chart, scrollable">
+        {% include 'figures/' ~ p.figure.file ~ '.svg.j2' %}
+      </div>
+      {% for n in p.figure.notes %}
+      <p class="mono-meta chart-note">{{ n }}</p>
+      {% endfor %}
+      <p class="mono-meta chart-note">Source: {{ p.figure.source }}</p>
+    </figure>
+    {% endif %}
+
     {% if p.get('outcome') %}
     {# P5.8: a case study's outcome, as its own README states it, in the slot
        a project uses for its architecture. A definition list: the README's

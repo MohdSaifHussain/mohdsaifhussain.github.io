@@ -14,6 +14,22 @@ somewhere in this repository. Where a condition is unmet it says so.
 
 ### Added
 
+- **prevalence-kit** (P5.9): the eighth entry and fifth flagship, every field
+  quoted from its README at origin/main 6155194. Anchored to release v1.0.0,
+  so it renders first under the newest-push order.
+- **A second kind of figure** (P5.9): an entry may carry `figure` — the figure
+  its own README publishes — where another carries `diagram`. prevalence-kit's
+  coverage curve is the first, adapted from `demo/coverage_curve.svg` by
+  `tools/gen_chart.py`: its eight colour attributes become classes so one
+  drawing follows dark, light and high contrast; its opaque white ground is
+  dropped; the Wilson series is dashed as well as coloured, because forced
+  colours repaint both series alike and a legend of two identical swatches
+  distinguishes nothing (WCAG 2.2 SC 1.4.1). Every coordinate, path and word is
+  the source's, and a test re-derives them from the committed original to prove
+  it. The four lines of prose render as HTML beside the drawing rather than
+  inside it: measured against IBM Plex Mono's 0.6 em advance, three of the four
+  overran the 760-unit box, the longest by 436 units, and an SVG clips to its
+  viewport. It does not animate, so the A3.7 ledger is unchanged.
 - **Case studies** (P5.8): a second section on /projects/ for the two
   engagement records, ts-sentry-case-study (new) and the Delivery Engine FDE
   engagement (moved), each carrying its outcome as its README states it, in
