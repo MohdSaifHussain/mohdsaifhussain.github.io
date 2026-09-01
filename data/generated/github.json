@@ -1,7 +1,7 @@
 {
   "_generated": "Machine-written by tools/fetch_stats.py. Never hand-edited. Anchors are release tags or commit SHAs fetched from the GitHub API; they are NOT test counts \u2014 the API returns no test count (defect D-02, DECISIONS 3.1.3).",
-  "as_of": "2026-08-31T10:52:40Z",
-  "as_of_display": "2026-08-31 16:22 IST",
+  "as_of": "2026-09-01T16:57:49Z",
+  "as_of_display": "2026-09-01 22:27 IST",
   "repos": {
     "OpsKit": {
       "anchor": "959b352",
@@ -88,8 +88,16 @@
       "anchor_type": "release",
       "anchor_url": "https://github.com/MohdSaifHussain/finding-bridge/releases/tag/v1.0.0",
       "issued_at": "2026-08-25T11:48:26Z",
-      "pushed_at": "2026-08-25T13:38:24Z",
+      "pushed_at": "2026-09-01T16:54:45Z",
       "repo_url": "https://github.com/MohdSaifHussain/finding-bridge"
+    },
+    "prevalence-kit": {
+      "anchor": "v1.0.0",
+      "anchor_type": "release",
+      "anchor_url": "https://github.com/MohdSaifHussain/prevalence-kit/releases/tag/v1.0.0",
+      "issued_at": "2026-08-31T19:21:26Z",
+      "pushed_at": "2026-08-31T19:48:11Z",
+      "repo_url": "https://github.com/MohdSaifHussain/prevalence-kit"
     },
     "switchyard": {
       "anchor": "v1.0.0",
@@ -104,7 +112,7 @@
       "anchor_type": "release",
       "anchor_url": "https://github.com/MohdSaifHussain/ts-sentry/releases/tag/v1.0.0",
       "issued_at": "2026-08-01T21:23:21Z",
-      "pushed_at": "2026-08-29T15:22:58Z",
+      "pushed_at": "2026-08-31T18:09:19Z",
       "repo_url": "https://github.com/MohdSaifHussain/ts-sentry"
     },
     "ts-sentry-case-study": {
