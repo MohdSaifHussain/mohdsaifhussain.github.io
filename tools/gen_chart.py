@@ -26,11 +26,22 @@ WHAT CHANGES, AND NOTHING ELSE
     The pattern is deliberately not the nominal line's own `6 4`.
   - The four lines of PROSE leave the drawing and are rendered as HTML beside
     it. This is not a preference. SVG text cannot wrap: it is laid out on one
-    line at a fixed coordinate, and the longest footnote needs about 1,120
-    units of a viewBox that is 760 wide and offers 680 from its left margin.
-    In the source's Georgia it already overruns; in this site's monospace,
-    which is wider, it overruns further, and the root <svg> clips to its
-    viewport, so the overrun is silently CUT OFF rather than merely ugly. Held
+    line at a fixed coordinate, and the root <svg> clips to its viewport, so an
+    overrun is silently CUT OFF rather than merely ugly. Measured in a browser
+    on 2026-09-01, against the 760-unit box:
+
+        line          in the source's Georgia      in this site's mono
+        title  y=24    ends  497.2   fits           ends  627.2   fits
+        sub    y=42    ends  636.7   fits           ends  805.4   over by  45.4
+        note   y=436   ends  952.6   over by 192.6  ends 1196.0   over by 436.0
+        note   y=454   ends  633.1   fits           ends  850.4   over by  90.4
+
+    Stated in that direction deliberately: ONE line overran in the source and
+    THREE overrun here, so this site's wider monospace widened an inherited
+    problem rather than merely inheriting it. An earlier note in this file put
+    all three overruns on the source, by applying the monospace advance to
+    Georgia as well; that arithmetic was wrong and the browser is the
+    correction. Held
     as HTML the same words wrap, stay selectable, and are read as text by a
     screen reader at every viewport. The words, and their order, are the
     source's own; tests/test_chart.py re-derives all four from the source SVG
