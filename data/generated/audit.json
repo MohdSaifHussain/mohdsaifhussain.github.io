@@ -1,7 +1,7 @@
 {
   "_generated": "Machine-written by tools/write_audit.py in CI from tool output. NEVER hand-edited. A value with no measurement is ABSENT, so /audit renders '\u2014 AT DEPLOY' rather than a plausible-looking number.",
-  "as_of": "2026-09-01T17:10:11Z",
-  "as_of_display": "2026-09-01 22:40 IST",
+  "as_of": "2026-09-01T17:24:01Z",
+  "as_of_display": "2026-09-01 22:54 IST",
   "detail": {
     "axe": {
       "pages": {
@@ -834,7 +834,7 @@
             "performance": {
               "median": 100,
               "runs": [
-                90,
+                93,
                 100,
                 100
               ]
@@ -1063,7 +1063,7 @@
               "median": 100,
               "runs": [
                 100,
-                100,
+                98,
                 100
               ]
             },
@@ -1136,10 +1136,10 @@
               ]
             },
             "performance": {
-              "median": 100,
+              "median": 97,
               "runs": [
-                98,
-                100,
+                97,
+                97,
                 100
               ]
             },
@@ -1178,13 +1178,13 @@
             {
               "category": "performance",
               "id": "total-blocking-time",
-              "score": 0.69,
+              "score": 0.79,
               "title": "Total Blocking Time"
             },
             {
               "category": "performance",
               "id": "speed-index",
-              "score": 0.99,
+              "score": 0.98,
               "title": "Speed Index"
             },
             {
@@ -1194,27 +1194,27 @@
                 {
                   "cacheLifetimeMs": 600000,
                   "url": "https://mohdsaifhussain.github.io/assets/fonts/InstrumentSerif-Italic.woff2",
-                  "wastedBytes": 31075.916666666664
+                  "wastedBytes": 31067.666666666664
                 },
                 {
                   "cacheLifetimeMs": 600000,
                   "url": "https://mohdsaifhussain.github.io/assets/fonts/InstrumentSerif-Regular.woff2",
-                  "wastedBytes": 29921.833333333332
+                  "wastedBytes": 29902.583333333332
                 },
                 {
                   "cacheLifetimeMs": 600000,
                   "url": "https://mohdsaifhussain.github.io/assets/fonts/IBMPlexMono-SemiBold.woff2",
-                  "wastedBytes": 21316.166666666664
+                  "wastedBytes": 21306.083333333332
                 },
                 {
                   "cacheLifetimeMs": 600000,
                   "url": "https://mohdsaifhussain.github.io/assets/fonts/IBMPlexMono-Medium.woff2",
-                  "wastedBytes": 18722
+                  "wastedBytes": 18735.75
                 },
                 {
                   "cacheLifetimeMs": 600000,
                   "url": "https://mohdsaifhussain.github.io/assets/fonts/IBMPlexMono-Regular.woff2",
-                  "wastedBytes": 18534.083333333332
+                  "wastedBytes": 18521.25
                 }
               ],
               "score": 0,
@@ -1231,16 +1231,15 @@
               "id": "render-blocking-insight",
               "items": [
                 {
-                  "totalBytes": 970,
-                  "url": "https://mohdsaifhussain.github.io/js/theme-init.js",
-                  "wastedMs": 150
+                  "totalBytes": 5990,
+                  "url": "https://mohdsaifhussain.github.io/css/site.css"
                 },
                 {
-                  "totalBytes": 5984,
-                  "url": "https://mohdsaifhussain.github.io/css/site.css"
+                  "totalBytes": 766,
+                  "url": "https://mohdsaifhussain.github.io/js/theme-init.js"
                 }
               ],
-              "score": 0,
+              "score": 0.5,
               "title": "Render blocking requests"
             },
             {
@@ -1252,21 +1251,8 @@
             {
               "category": "performance",
               "id": "max-potential-fid",
-              "score": 0.13,
+              "score": 0.15,
               "title": "Max Potential First Input Delay"
-            },
-            {
-              "category": "performance",
-              "id": "render-blocking-resources",
-              "items": [
-                {
-                  "totalBytes": 970,
-                  "url": "https://mohdsaifhussain.github.io/js/theme-init.js",
-                  "wastedMs": 150
-                }
-              ],
-              "score": 0,
-              "title": "Eliminate render-blocking resources"
             },
             {
               "category": "performance",
@@ -1279,9 +1265,9 @@
                     "max-age": 600,
                     "type": "debugdata"
                   },
-                  "totalBytes": 33901,
+                  "totalBytes": 33892,
                   "url": "https://mohdsaifhussain.github.io/assets/fonts/InstrumentSerif-Italic.woff2",
-                  "wastedBytes": 31075.916666666664
+                  "wastedBytes": 31067.666666666664
                 },
                 {
                   "cacheHitProbability": 0.08333333333333333,
@@ -1290,9 +1276,9 @@
                     "max-age": 600,
                     "type": "debugdata"
                   },
-                  "totalBytes": 32642,
+                  "totalBytes": 32621,
                   "url": "https://mohdsaifhussain.github.io/assets/fonts/InstrumentSerif-Regular.woff2",
-                  "wastedBytes": 29921.833333333332
+                  "wastedBytes": 29902.583333333332
                 },
                 {
                   "cacheHitProbability": 0.08333333333333333,
@@ -1301,9 +1287,9 @@
                     "max-age": 600,
                     "type": "debugdata"
                   },
-                  "totalBytes": 23254,
+                  "totalBytes": 23243,
                   "url": "https://mohdsaifhussain.github.io/assets/fonts/IBMPlexMono-SemiBold.woff2",
-                  "wastedBytes": 21316.166666666664
+                  "wastedBytes": 21306.083333333332
                 },
                 {
                   "cacheHitProbability": 0.08333333333333333,
@@ -1312,9 +1298,9 @@
                     "max-age": 600,
                     "type": "debugdata"
                   },
-                  "totalBytes": 20424,
+                  "totalBytes": 20439,
                   "url": "https://mohdsaifhussain.github.io/assets/fonts/IBMPlexMono-Medium.woff2",
-                  "wastedBytes": 18722
+                  "wastedBytes": 18735.75
                 },
                 {
                   "cacheHitProbability": 0.08333333333333333,
@@ -1323,45 +1309,45 @@
                     "max-age": 600,
                     "type": "debugdata"
                   },
-                  "totalBytes": 20219,
+                  "totalBytes": 20205,
                   "url": "https://mohdsaifhussain.github.io/assets/fonts/IBMPlexMono-Regular.woff2",
-                  "wastedBytes": 18534.083333333332
+                  "wastedBytes": 18521.25
                 }
               ],
               "score": 0.5,
               "title": "Serve static assets with an efficient cache policy"
             }
           ],
-          "lcp_ms": 2002.645,
-          "performance": 90,
+          "lcp_ms": 1984.152,
+          "performance": 93,
           "profile": "mobile",
           "seo": 100,
-          "tbt_ms": 389,
-          "transfer_bytes": 149711,
+          "tbt_ms": 292,
+          "transfer_bytes": 149608,
           "url": "https://mohdsaifhussain.github.io/"
         },
         {
           "accessibility": 100,
           "best-practices": 100,
           "cls": 0,
-          "lcp_ms": 1527.1109999999999,
+          "lcp_ms": 1524.501,
           "performance": 100,
           "profile": "mobile",
           "seo": 100,
           "tbt_ms": 0,
-          "transfer_bytes": 149704,
+          "transfer_bytes": 149527,
           "url": "https://mohdsaifhussain.github.io/"
         },
         {
           "accessibility": 100,
           "best-practices": 100,
           "cls": 0,
-          "lcp_ms": 1503.02,
+          "lcp_ms": 1525.7440000000001,
           "performance": 100,
           "profile": "mobile",
           "seo": 100,
           "tbt_ms": 0,
-          "transfer_bytes": 149767,
+          "transfer_bytes": 149525,
           "url": "https://mohdsaifhussain.github.io/"
         },
         {
@@ -1378,13 +1364,13 @@
             {
               "category": "performance",
               "id": "largest-contentful-paint",
-              "score": 0.99,
+              "score": 0.98,
               "title": "Largest Contentful Paint"
             },
             {
               "category": "performance",
               "id": "speed-index",
-              "score": 0.82,
+              "score": 0.8,
               "title": "Speed Index"
             },
             {
@@ -1394,27 +1380,27 @@
                 {
                   "cacheLifetimeMs": 600000,
                   "url": "https://mohdsaifhussain.github.io/assets/fonts/InstrumentSerif-Italic.woff2",
-                  "wastedBytes": 31130
+                  "wastedBytes": 31116.25
                 },
                 {
                   "cacheLifetimeMs": 600000,
                   "url": "https://mohdsaifhussain.github.io/assets/fonts/InstrumentSerif-Regular.woff2",
-                  "wastedBytes": 29901.666666666664
+                  "wastedBytes": 29992.416666666664
                 },
                 {
                   "cacheLifetimeMs": 600000,
                   "url": "https://mohdsaifhussain.github.io/assets/fonts/IBMPlexMono-SemiBold.woff2",
-                  "wastedBytes": 21463.75
+                  "wastedBytes": 21311.583333333332
                 },
                 {
                   "cacheLifetimeMs": 600000,
                   "url": "https://mohdsaifhussain.github.io/assets/fonts/IBMPlexMono-Medium.woff2",
-                  "wastedBytes": 18735.75
+                  "wastedBytes": 18613.833333333332
                 },
                 {
                   "cacheLifetimeMs": 600000,
                   "url": "https://mohdsaifhussain.github.io/assets/fonts/IBMPlexMono-Regular.woff2",
-                  "wastedBytes": 18556.083333333332
+                  "wastedBytes": 18568.916666666664
                 }
               ],
               "score": 0,
@@ -1440,7 +1426,7 @@
                   ],
                   "items": [
                     {
-                      "reflowTime": 30.178,
+                      "reflowTime": 43.554,
                       "source": {
                         "column": 20,
                         "line": 22,
@@ -1450,7 +1436,7 @@
                       }
                     },
                     {
-                      "reflowTime": 1.789,
+                      "reflowTime": 6.233,
                       "source": {
                         "column": 12,
                         "line": 25,
@@ -1477,12 +1463,12 @@
               "id": "render-blocking-insight",
               "items": [
                 {
-                  "totalBytes": 814,
-                  "url": "https://mohdsaifhussain.github.io/js/theme-init.js"
+                  "totalBytes": 6057,
+                  "url": "https://mohdsaifhussain.github.io/css/site.css"
                 },
                 {
-                  "totalBytes": 6020,
-                  "url": "https://mohdsaifhussain.github.io/css/site.css"
+                  "totalBytes": 752,
+                  "url": "https://mohdsaifhussain.github.io/js/theme-init.js"
                 }
               ],
               "score": 0.5,
@@ -1491,7 +1477,7 @@
             {
               "category": "performance",
               "id": "max-potential-fid",
-              "score": 0.99,
+              "score": 0.93,
               "title": "Max Potential First Input Delay"
             },
             {
@@ -1505,9 +1491,9 @@
                     "max-age": 600,
                     "type": "debugdata"
                   },
-                  "totalBytes": 33960,
+                  "totalBytes": 33945,
                   "url": "https://mohdsaifhussain.github.io/assets/fonts/InstrumentSerif-Italic.woff2",
-                  "wastedBytes": 31130
+                  "wastedBytes": 31116.25
                 },
                 {
                   "cacheHitProbability": 0.08333333333333333,
@@ -1516,9 +1502,9 @@
                     "max-age": 600,
                     "type": "debugdata"
                   },
-                  "totalBytes": 32620,
+                  "totalBytes": 32719,
                   "url": "https://mohdsaifhussain.github.io/assets/fonts/InstrumentSerif-Regular.woff2",
-                  "wastedBytes": 29901.666666666664
+                  "wastedBytes": 29992.416666666664
                 },
                 {
                   "cacheHitProbability": 0.08333333333333333,
@@ -1527,9 +1513,9 @@
                     "max-age": 600,
                     "type": "debugdata"
                   },
-                  "totalBytes": 23415,
+                  "totalBytes": 23249,
                   "url": "https://mohdsaifhussain.github.io/assets/fonts/IBMPlexMono-SemiBold.woff2",
-                  "wastedBytes": 21463.75
+                  "wastedBytes": 21311.583333333332
                 },
                 {
                   "cacheHitProbability": 0.08333333333333333,
@@ -1538,9 +1524,9 @@
                     "max-age": 600,
                     "type": "debugdata"
                   },
-                  "totalBytes": 20439,
+                  "totalBytes": 20306,
                   "url": "https://mohdsaifhussain.github.io/assets/fonts/IBMPlexMono-Medium.woff2",
-                  "wastedBytes": 18735.75
+                  "wastedBytes": 18613.833333333332
                 },
                 {
                   "cacheHitProbability": 0.08333333333333333,
@@ -1549,9 +1535,9 @@
                     "max-age": 600,
                     "type": "debugdata"
                   },
-                  "totalBytes": 20243,
+                  "totalBytes": 20257,
                   "url": "https://mohdsaifhussain.github.io/assets/fonts/IBMPlexMono-Regular.woff2",
-                  "wastedBytes": 18556.083333333332
+                  "wastedBytes": 18568.916666666664
                 }
               ],
               "score": 0.5,
@@ -1596,11 +1582,277 @@
                 {
                   "node": {
                     "boundingRect": {
-                      "bottom": 2275,
+                      "bottom": 2361,
                       "height": 389,
                       "left": 428,
                       "right": 1128,
-                      "top": 1886,
+                      "top": 1973,
+                      "width": 700
+                    },
+                    "lhId": "1-48-svg",
+                    "nodeLabel": "article.card > figure.chart-wrap > div.diagram-scroll > svg.chart",
+                    "path": "1,HTML,1,BODY,2,MAIN,1,DIV,1,ARTICLE,4,FIGURE,1,DIV,0,svg",
+                    "selector": "article.card > figure.chart-wrap > div.diagram-scroll > svg.chart",
+                    "snippet": "<svg class=\"chart\" viewBox=\"0 42 760 422\" role=\"img\" aria-labelledby=\"pk-coverage-title\" xmlns=\"http://www.w3.org/2000/svg\">",
+                    "type": "node"
+                  },
+                  "statistic": "Maximum Child Elements",
+                  "value": {
+                    "granularity": 1,
+                    "type": "numeric",
+                    "value": 46
+                  }
+                }
+              ],
+              "score": 0,
+              "title": "Avoid an excessive DOM size"
+            }
+          ],
+          "lcp_ms": 1797.1395,
+          "performance": 97,
+          "profile": "mobile",
+          "seo": 100,
+          "tbt_ms": 64,
+          "transfer_bytes": 162534,
+          "url": "https://mohdsaifhussain.github.io/projects/"
+        },
+        {
+          "accessibility": 100,
+          "best-practices": 100,
+          "cls": 0,
+          "failed_audits": [
+            {
+              "category": "performance",
+              "id": "first-contentful-paint",
+              "score": 0.96,
+              "title": "First Contentful Paint"
+            },
+            {
+              "category": "performance",
+              "id": "largest-contentful-paint",
+              "score": 0.98,
+              "title": "Largest Contentful Paint"
+            },
+            {
+              "category": "performance",
+              "id": "speed-index",
+              "score": 0.82,
+              "title": "Speed Index"
+            },
+            {
+              "category": "performance",
+              "id": "cache-insight",
+              "items": [
+                {
+                  "cacheLifetimeMs": 600000,
+                  "url": "https://mohdsaifhussain.github.io/assets/fonts/InstrumentSerif-Italic.woff2",
+                  "wastedBytes": 31097.916666666664
+                },
+                {
+                  "cacheLifetimeMs": 600000,
+                  "url": "https://mohdsaifhussain.github.io/assets/fonts/InstrumentSerif-Regular.woff2",
+                  "wastedBytes": 29893.416666666664
+                },
+                {
+                  "cacheLifetimeMs": 600000,
+                  "url": "https://mohdsaifhussain.github.io/assets/fonts/IBMPlexMono-SemiBold.woff2",
+                  "wastedBytes": 21347.333333333332
+                },
+                {
+                  "cacheLifetimeMs": 600000,
+                  "url": "https://mohdsaifhussain.github.io/assets/fonts/IBMPlexMono-Medium.woff2",
+                  "wastedBytes": 18660.583333333332
+                },
+                {
+                  "cacheLifetimeMs": 600000,
+                  "url": "https://mohdsaifhussain.github.io/assets/fonts/IBMPlexMono-Regular.woff2",
+                  "wastedBytes": 18521.25
+                }
+              ],
+              "score": 0,
+              "title": "Use efficient cache lifetimes"
+            },
+            {
+              "category": "performance",
+              "id": "forced-reflow-insight",
+              "items": [
+                {
+                  "headings": [
+                    {
+                      "key": "source",
+                      "label": "Source",
+                      "valueType": "source-location"
+                    },
+                    {
+                      "granularity": 1,
+                      "key": "reflowTime",
+                      "label": "Total reflow time",
+                      "valueType": "ms"
+                    }
+                  ],
+                  "items": [
+                    {
+                      "reflowTime": 31.174,
+                      "source": {
+                        "column": 20,
+                        "line": 22,
+                        "type": "source-location",
+                        "url": "https://mohdsaifhussain.github.io/js/diagram.js",
+                        "urlProvider": "network"
+                      }
+                    },
+                    {
+                      "reflowTime": 1.24,
+                      "source": {
+                        "column": 12,
+                        "line": 25,
+                        "type": "source-location",
+                        "url": "https://mohdsaifhussain.github.io/js/diagram.js",
+                        "urlProvider": "network"
+                      }
+                    }
+                  ],
+                  "type": "table"
+                }
+              ],
+              "score": 0,
+              "title": "Forced reflow"
+            },
+            {
+              "category": "performance",
+              "id": "network-dependency-tree-insight",
+              "score": 0,
+              "title": "Network dependency tree"
+            },
+            {
+              "category": "performance",
+              "id": "render-blocking-insight",
+              "items": [
+                {
+                  "totalBytes": 972,
+                  "url": "https://mohdsaifhussain.github.io/js/theme-init.js"
+                },
+                {
+                  "totalBytes": 5986,
+                  "url": "https://mohdsaifhussain.github.io/css/site.css"
+                }
+              ],
+              "score": 0.5,
+              "title": "Render blocking requests"
+            },
+            {
+              "category": "performance",
+              "id": "max-potential-fid",
+              "score": 0.99,
+              "title": "Max Potential First Input Delay"
+            },
+            {
+              "category": "performance",
+              "id": "uses-long-cache-ttl",
+              "items": [
+                {
+                  "cacheHitProbability": 0.08333333333333333,
+                  "cacheLifetimeMs": 600000,
+                  "debugData": {
+                    "max-age": 600,
+                    "type": "debugdata"
+                  },
+                  "totalBytes": 33925,
+                  "url": "https://mohdsaifhussain.github.io/assets/fonts/InstrumentSerif-Italic.woff2",
+                  "wastedBytes": 31097.916666666664
+                },
+                {
+                  "cacheHitProbability": 0.08333333333333333,
+                  "cacheLifetimeMs": 600000,
+                  "debugData": {
+                    "max-age": 600,
+                    "type": "debugdata"
+                  },
+                  "totalBytes": 32611,
+                  "url": "https://mohdsaifhussain.github.io/assets/fonts/InstrumentSerif-Regular.woff2",
+                  "wastedBytes": 29893.416666666664
+                },
+                {
+                  "cacheHitProbability": 0.08333333333333333,
+                  "cacheLifetimeMs": 600000,
+                  "debugData": {
+                    "max-age": 600,
+                    "type": "debugdata"
+                  },
+                  "totalBytes": 23288,
+                  "url": "https://mohdsaifhussain.github.io/assets/fonts/IBMPlexMono-SemiBold.woff2",
+                  "wastedBytes": 21347.333333333332
+                },
+                {
+                  "cacheHitProbability": 0.08333333333333333,
+                  "cacheLifetimeMs": 600000,
+                  "debugData": {
+                    "max-age": 600,
+                    "type": "debugdata"
+                  },
+                  "totalBytes": 20357,
+                  "url": "https://mohdsaifhussain.github.io/assets/fonts/IBMPlexMono-Medium.woff2",
+                  "wastedBytes": 18660.583333333332
+                },
+                {
+                  "cacheHitProbability": 0.08333333333333333,
+                  "cacheLifetimeMs": 600000,
+                  "debugData": {
+                    "max-age": 600,
+                    "type": "debugdata"
+                  },
+                  "totalBytes": 20205,
+                  "url": "https://mohdsaifhussain.github.io/assets/fonts/IBMPlexMono-Regular.woff2",
+                  "wastedBytes": 18521.25
+                }
+              ],
+              "score": 0.5,
+              "title": "Serve static assets with an efficient cache policy"
+            },
+            {
+              "category": "performance",
+              "id": "dom-size",
+              "items": [
+                {
+                  "statistic": "Total DOM Elements",
+                  "value": {
+                    "granularity": 1,
+                    "type": "numeric",
+                    "value": 1045
+                  }
+                },
+                {
+                  "node": {
+                    "boundingRect": {
+                      "bottom": 1174,
+                      "height": 4,
+                      "left": 42,
+                      "right": 49,
+                      "top": 1170,
+                      "width": 7
+                    },
+                    "lhId": "1-47-path",
+                    "nodeLabel": "div.metrics > span.metric > svg.mark > path",
+                    "path": "1,HTML,1,BODY,2,MAIN,1,DIV,0,ARTICLE,3,DIV,1,DIV,1,DIV,0,SPAN,0,svg,0,path",
+                    "selector": "div.metrics > span.metric > svg.mark > path",
+                    "snippet": "<path d=\"M1.6 6.3 4.5 9.2 10.4 3.3\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"square\">",
+                    "type": "node"
+                  },
+                  "statistic": "Maximum DOM Depth",
+                  "value": {
+                    "granularity": 1,
+                    "type": "numeric",
+                    "value": 10
+                  }
+                },
+                {
+                  "node": {
+                    "boundingRect": {
+                      "bottom": 2385,
+                      "height": 389,
+                      "left": 428,
+                      "right": 1128,
+                      "top": 1996,
                       "width": 700
                     },
                     "lhId": "1-48-svg",
@@ -1622,324 +1874,444 @@
               "title": "Avoid an excessive DOM size"
             }
           ],
-          "lcp_ms": 1759.876,
-          "performance": 98,
+          "lcp_ms": 1794.9035,
+          "performance": 97,
           "profile": "mobile",
           "seo": 100,
           "tbt_ms": 19,
-          "transfer_bytes": 162495,
+          "transfer_bytes": 162257,
           "url": "https://mohdsaifhussain.github.io/projects/"
         },
         {
           "accessibility": 100,
           "best-practices": 100,
           "cls": 0,
-          "lcp_ms": 1654.037,
+          "lcp_ms": 1653.127,
           "performance": 100,
           "profile": "mobile",
           "seo": 100,
           "tbt_ms": 0,
-          "transfer_bytes": 162268,
+          "transfer_bytes": 162263,
           "url": "https://mohdsaifhussain.github.io/projects/"
         },
         {
           "accessibility": 100,
           "best-practices": 100,
           "cls": 0,
-          "lcp_ms": 1653.435,
+          "lcp_ms": 1354.5394999999999,
           "performance": 100,
           "profile": "mobile",
           "seo": 100,
           "tbt_ms": 0,
-          "transfer_bytes": 162248,
-          "url": "https://mohdsaifhussain.github.io/projects/"
-        },
-        {
-          "accessibility": 100,
-          "best-practices": 100,
-          "cls": 0,
-          "lcp_ms": 1220.642,
-          "performance": 100,
-          "profile": "mobile",
-          "seo": 100,
-          "tbt_ms": 0,
-          "transfer_bytes": 111327,
+          "transfer_bytes": 111311,
           "url": "https://mohdsaifhussain.github.io/experience/"
         },
         {
           "accessibility": 100,
           "best-practices": 100,
           "cls": 0,
-          "lcp_ms": 1232.4940000000001,
-          "performance": 100,
+          "failed_audits": [
+            {
+              "category": "performance",
+              "id": "first-contentful-paint",
+              "score": 0.99,
+              "title": "First Contentful Paint"
+            },
+            {
+              "category": "performance",
+              "id": "speed-index",
+              "score": 0.85,
+              "title": "Speed Index"
+            },
+            {
+              "category": "performance",
+              "id": "cache-insight",
+              "items": [
+                {
+                  "cacheLifetimeMs": 600000,
+                  "url": "https://mohdsaifhussain.github.io/assets/fonts/InstrumentSerif-Regular.woff2",
+                  "wastedBytes": 29925.5
+                },
+                {
+                  "cacheLifetimeMs": 600000,
+                  "url": "https://mohdsaifhussain.github.io/assets/fonts/IBMPlexMono-SemiBold.woff2",
+                  "wastedBytes": 21384
+                },
+                {
+                  "cacheLifetimeMs": 600000,
+                  "url": "https://mohdsaifhussain.github.io/assets/fonts/IBMPlexMono-Medium.woff2",
+                  "wastedBytes": 18575.333333333332
+                },
+                {
+                  "cacheLifetimeMs": 600000,
+                  "url": "https://mohdsaifhussain.github.io/assets/fonts/IBMPlexMono-Regular.woff2",
+                  "wastedBytes": 18512.083333333332
+                },
+                {
+                  "cacheLifetimeMs": 600000,
+                  "url": "https://mohdsaifhussain.github.io/css/site.css",
+                  "wastedBytes": 5531.166666666666
+                }
+              ],
+              "score": 0,
+              "title": "Use efficient cache lifetimes"
+            },
+            {
+              "category": "performance",
+              "id": "network-dependency-tree-insight",
+              "score": 0,
+              "title": "Network dependency tree"
+            },
+            {
+              "category": "performance",
+              "id": "render-blocking-insight",
+              "items": [
+                {
+                  "totalBytes": 6034,
+                  "url": "https://mohdsaifhussain.github.io/css/site.css"
+                },
+                {
+                  "totalBytes": 938,
+                  "url": "https://mohdsaifhussain.github.io/js/theme-init.js"
+                }
+              ],
+              "score": 0.5,
+              "title": "Render blocking requests"
+            },
+            {
+              "category": "performance",
+              "id": "uses-long-cache-ttl",
+              "items": [
+                {
+                  "cacheHitProbability": 0.08333333333333333,
+                  "cacheLifetimeMs": 600000,
+                  "debugData": {
+                    "max-age": 600,
+                    "type": "debugdata"
+                  },
+                  "totalBytes": 32646,
+                  "url": "https://mohdsaifhussain.github.io/assets/fonts/InstrumentSerif-Regular.woff2",
+                  "wastedBytes": 29925.5
+                },
+                {
+                  "cacheHitProbability": 0.08333333333333333,
+                  "cacheLifetimeMs": 600000,
+                  "debugData": {
+                    "max-age": 600,
+                    "type": "debugdata"
+                  },
+                  "totalBytes": 23328,
+                  "url": "https://mohdsaifhussain.github.io/assets/fonts/IBMPlexMono-SemiBold.woff2",
+                  "wastedBytes": 21384
+                },
+                {
+                  "cacheHitProbability": 0.08333333333333333,
+                  "cacheLifetimeMs": 600000,
+                  "debugData": {
+                    "max-age": 600,
+                    "type": "debugdata"
+                  },
+                  "totalBytes": 20264,
+                  "url": "https://mohdsaifhussain.github.io/assets/fonts/IBMPlexMono-Medium.woff2",
+                  "wastedBytes": 18575.333333333332
+                },
+                {
+                  "cacheHitProbability": 0.08333333333333333,
+                  "cacheLifetimeMs": 600000,
+                  "debugData": {
+                    "max-age": 600,
+                    "type": "debugdata"
+                  },
+                  "totalBytes": 20195,
+                  "url": "https://mohdsaifhussain.github.io/assets/fonts/IBMPlexMono-Regular.woff2",
+                  "wastedBytes": 18512.083333333332
+                },
+                {
+                  "cacheHitProbability": 0.08333333333333333,
+                  "cacheLifetimeMs": 600000,
+                  "debugData": {
+                    "max-age": 600,
+                    "type": "debugdata"
+                  },
+                  "totalBytes": 6034,
+                  "url": "https://mohdsaifhussain.github.io/css/site.css",
+                  "wastedBytes": 5531.166666666666
+                }
+              ],
+              "score": 0.5,
+              "title": "Serve static assets with an efficient cache policy"
+            }
+          ],
+          "lcp_ms": 1413.059,
+          "performance": 98,
           "profile": "mobile",
           "seo": 100,
           "tbt_ms": 0,
-          "transfer_bytes": 111387,
+          "transfer_bytes": 111331,
           "url": "https://mohdsaifhussain.github.io/experience/"
         },
         {
           "accessibility": 100,
           "best-practices": 100,
           "cls": 0,
-          "lcp_ms": 1202.116,
+          "lcp_ms": 1353.3474999999999,
           "performance": 100,
           "profile": "mobile",
           "seo": 100,
           "tbt_ms": 0,
-          "transfer_bytes": 111354,
+          "transfer_bytes": 111329,
           "url": "https://mohdsaifhussain.github.io/experience/"
         },
         {
           "accessibility": 100,
           "best-practices": 100,
           "cls": 0,
-          "lcp_ms": 1356.643,
+          "lcp_ms": 1354.057,
           "performance": 100,
           "profile": "mobile",
           "seo": 100,
           "tbt_ms": 0,
-          "transfer_bytes": 143882,
+          "transfer_bytes": 143785,
           "url": "https://mohdsaifhussain.github.io/certifications/"
         },
         {
           "accessibility": 100,
           "best-practices": 100,
           "cls": 0,
-          "lcp_ms": 1363.7350000000001,
+          "lcp_ms": 1502.551,
           "performance": 100,
           "profile": "mobile",
           "seo": 100,
           "tbt_ms": 0,
-          "transfer_bytes": 144090,
+          "transfer_bytes": 143792,
           "url": "https://mohdsaifhussain.github.io/certifications/"
         },
         {
           "accessibility": 100,
           "best-practices": 100,
           "cls": 0,
-          "lcp_ms": 1504.017,
+          "lcp_ms": 1503.952,
           "performance": 100,
           "profile": "mobile",
           "seo": 100,
           "tbt_ms": 0,
-          "transfer_bytes": 144084,
+          "transfer_bytes": 143816,
           "url": "https://mohdsaifhussain.github.io/certifications/"
         },
         {
           "accessibility": 100,
           "best-practices": 100,
           "cls": 0,
-          "lcp_ms": 1361.2984999999999,
+          "lcp_ms": 1354.2115,
           "performance": 100,
           "profile": "mobile",
           "seo": 100,
           "tbt_ms": 0,
-          "transfer_bytes": 117509,
+          "transfer_bytes": 117425,
           "url": "https://mohdsaifhussain.github.io/audit/"
         },
         {
           "accessibility": 100,
           "best-practices": 100,
           "cls": 0,
-          "lcp_ms": 1210.6405,
+          "lcp_ms": 1357.8255,
           "performance": 100,
           "profile": "mobile",
           "seo": 100,
           "tbt_ms": 0,
-          "transfer_bytes": 117577,
+          "transfer_bytes": 117437,
           "url": "https://mohdsaifhussain.github.io/audit/"
         },
         {
           "accessibility": 100,
           "best-practices": 100,
           "cls": 0,
-          "lcp_ms": 1351.998,
+          "lcp_ms": 1355.4144999999999,
           "performance": 100,
           "profile": "mobile",
           "seo": 100,
           "tbt_ms": 0,
-          "transfer_bytes": 117513,
+          "transfer_bytes": 117382,
           "url": "https://mohdsaifhussain.github.io/audit/"
         },
         {
           "accessibility": 100,
           "best-practices": 100,
           "cls": 0,
-          "lcp_ms": 323.59000000000003,
+          "lcp_ms": 363.21500000000003,
           "performance": 100,
           "profile": "desktop",
           "seo": 100,
           "tbt_ms": 0,
-          "transfer_bytes": 150020,
+          "transfer_bytes": 149890,
           "url": "https://mohdsaifhussain.github.io/"
         },
         {
           "accessibility": 100,
           "best-practices": 100,
           "cls": 0,
-          "lcp_ms": 328.565,
+          "lcp_ms": 368.897,
           "performance": 100,
           "profile": "desktop",
           "seo": 100,
           "tbt_ms": 0,
-          "transfer_bytes": 149832,
+          "transfer_bytes": 149806,
           "url": "https://mohdsaifhussain.github.io/"
         },
         {
           "accessibility": 100,
           "best-practices": 100,
           "cls": 0,
-          "lcp_ms": 367.978,
+          "lcp_ms": 394.822,
           "performance": 100,
           "profile": "desktop",
           "seo": 100,
           "tbt_ms": 0,
-          "transfer_bytes": 149802,
+          "transfer_bytes": 149863,
           "url": "https://mohdsaifhussain.github.io/"
         },
         {
           "accessibility": 100,
           "best-practices": 100,
           "cls": 0,
-          "lcp_ms": 364.3515,
+          "lcp_ms": 382.897,
           "performance": 100,
           "profile": "desktop",
           "seo": 100,
           "tbt_ms": 0,
-          "transfer_bytes": 162516,
+          "transfer_bytes": 162509,
           "url": "https://mohdsaifhussain.github.io/projects/"
         },
         {
           "accessibility": 100,
           "best-practices": 100,
           "cls": 0,
-          "lcp_ms": 362.273,
+          "lcp_ms": 361.99199999999996,
           "performance": 100,
           "profile": "desktop",
           "seo": 100,
           "tbt_ms": 0,
-          "transfer_bytes": 162471,
+          "transfer_bytes": 162261,
           "url": "https://mohdsaifhussain.github.io/projects/"
         },
         {
           "accessibility": 100,
           "best-practices": 100,
           "cls": 0,
-          "lcp_ms": 383.447,
+          "lcp_ms": 361.801,
           "performance": 100,
           "profile": "desktop",
           "seo": 100,
           "tbt_ms": 0,
-          "transfer_bytes": 162540,
+          "transfer_bytes": 162483,
           "url": "https://mohdsaifhussain.github.io/projects/"
         },
         {
           "accessibility": 100,
           "best-practices": 100,
           "cls": 0,
-          "lcp_ms": 323.2075,
+          "lcp_ms": 329.452,
           "performance": 100,
           "profile": "desktop",
           "seo": 100,
           "tbt_ms": 0,
-          "transfer_bytes": 111414,
+          "transfer_bytes": 111283,
           "url": "https://mohdsaifhussain.github.io/experience/"
         },
         {
           "accessibility": 100,
           "best-practices": 100,
           "cls": 0,
-          "lcp_ms": 324.8705,
+          "lcp_ms": 323.651,
           "performance": 100,
           "profile": "desktop",
           "seo": 100,
           "tbt_ms": 0,
-          "transfer_bytes": 111374,
+          "transfer_bytes": 111316,
           "url": "https://mohdsaifhussain.github.io/experience/"
         },
         {
           "accessibility": 100,
           "best-practices": 100,
           "cls": 0,
-          "lcp_ms": 322.47749999999996,
+          "lcp_ms": 321.84000000000003,
           "performance": 100,
           "profile": "desktop",
           "seo": 100,
           "tbt_ms": 0,
-          "transfer_bytes": 111432,
+          "transfer_bytes": 111333,
           "url": "https://mohdsaifhussain.github.io/experience/"
         },
         {
           "accessibility": 100,
           "best-practices": 100,
           "cls": 0,
-          "lcp_ms": 323.89300000000003,
+          "lcp_ms": 363.658,
           "performance": 100,
           "profile": "desktop",
           "seo": 100,
           "tbt_ms": 0,
-          "transfer_bytes": 144085,
+          "transfer_bytes": 143893,
           "url": "https://mohdsaifhussain.github.io/certifications/"
         },
         {
           "accessibility": 100,
           "best-practices": 100,
           "cls": 0,
-          "lcp_ms": 334.222,
+          "lcp_ms": 390,
           "performance": 100,
           "profile": "desktop",
           "seo": 100,
           "tbt_ms": 0,
-          "transfer_bytes": 144084,
+          "transfer_bytes": 143779,
           "url": "https://mohdsaifhussain.github.io/certifications/"
         },
         {
           "accessibility": 100,
           "best-practices": 100,
           "cls": 0,
-          "lcp_ms": 362.486,
+          "lcp_ms": 364.903,
           "performance": 100,
           "profile": "desktop",
           "seo": 100,
           "tbt_ms": 0,
-          "transfer_bytes": 144075,
+          "transfer_bytes": 143755,
           "url": "https://mohdsaifhussain.github.io/certifications/"
         },
         {
           "accessibility": 100,
           "best-practices": 100,
           "cls": 0,
-          "lcp_ms": 323.31,
+          "lcp_ms": 323.098,
           "performance": 100,
           "profile": "desktop",
           "seo": 100,
           "tbt_ms": 0,
-          "transfer_bytes": 117580,
+          "transfer_bytes": 117405,
           "url": "https://mohdsaifhussain.github.io/audit/"
         },
         {
           "accessibility": 100,
           "best-practices": 100,
           "cls": 0,
-          "lcp_ms": 321.68100000000004,
+          "lcp_ms": 321.6645,
           "performance": 100,
           "profile": "desktop",
           "seo": 100,
           "tbt_ms": 0,
-          "transfer_bytes": 117522,
+          "transfer_bytes": 117349,
           "url": "https://mohdsaifhussain.github.io/audit/"
         },
         {
           "accessibility": 100,
           "best-practices": 100,
           "cls": 0,
-          "lcp_ms": 324.9975,
+          "lcp_ms": 322.0135,
           "performance": 100,
           "profile": "desktop",
           "seo": 100,
           "tbt_ms": 0,
-          "transfer_bytes": 117534,
+          "transfer_bytes": 117417,
           "url": "https://mohdsaifhussain.github.io/audit/"
         }
       ],
@@ -1949,7 +2321,7 @@
       "worst": {
         "accessibility": 100,
         "best-practices": 100,
-        "performance": 100,
+        "performance": 97,
         "seo": 100
       }
     },
@@ -1960,8 +2332,8 @@
   },
   "gates": {
     "_generated": "Machine-written by tools/gate_status.py from real gate exit codes. NEVER hand-edited. A row with no producer is absent here and renders its declared basis on /audit, never a verification mark.",
-    "as_of": "2026-09-01T17:10:10Z",
-    "commit": "fc9ef165e83df501466899c00736a4ffba103b3a",
+    "as_of": "2026-09-01T17:24:00Z",
+    "commit": "942686fd168d0fe907bed8e99cd3992a0c8fee23",
     "results": {
       "anchored": {
         "conditions": "C-27, C-35",
@@ -2008,9 +2380,9 @@
     "axe": "0 violations",
     "cls": "0.000 (worst median)",
     "contrast": "dark: AA met; 7:1 met in full \u00b7 light: AA met; 7:1 met in full \u00b7 dark-hc: AA met; 7:1 met in full \u00b7 light-hc: AA met; 7:1 met in full",
-    "lcp": "1.65 s (worst median)",
-    "lighthouse": "100 / 100 / 100 / 100",
-    "transfer": "149,832 B",
+    "lcp": "1.79 s (worst median)",
+    "lighthouse": "97 / 100 / 100 / 100",
+    "transfer": "149,863 B",
     "validator": "0 errors"
   },
   "measured_against": "https://mohdsaifhussain.github.io (published origin)"
