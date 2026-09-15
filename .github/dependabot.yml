@@ -45,3 +45,17 @@ updates:
       prefix: "ci"
     labels:
       - "dependencies"
+    # CodeQL's init and analyze must run the same version. As two separate
+    # dependencies, one upstream release arrived as two PRs, each bumping one
+    # half and each red for it (#4/#5, then #9/#10). Grouped, one release is one
+    # PR. The names are exactly as Dependabot reported them in those PRs; a
+    # third codeql-action path added to a workflow would need adding here.
+    # NOT YET VERIFIED: how dependabot/fetch-metadata reports update-type for a
+    # grouped PR (its README and the options reference are silent, read
+    # 2026-09-16). The auto-merge workflow's default verdict is hold, so the
+    # failure mode is a grouped PR held for the owner, not one merged blind.
+    groups:
+      codeql-action:
+        patterns:
+          - "github/codeql-action/init"
+          - "github/codeql-action/analyze"
