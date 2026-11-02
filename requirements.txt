@@ -1,7 +1,7 @@
 # Pinned so CI builds what was verified locally (obligation O-7).
 # Versions recorded in docs/DECISIONS.md 3.1.7.
 Jinja2==3.1.6
-fonttools==4.67.0
+fonttools==4.68.0
 Brotli==1.2.1
 pytest==9.2.0
 # Defect D-23: required by contract 3.5 — check_c33.py scans the extracted text
